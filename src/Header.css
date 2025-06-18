@@ -1,0 +1,75 @@
+/* Header container */
+.Header {
+    width: 100%;
+    text-align: center;
+    background-color: var(--primary-color);
+  }
+  
+  .BannerWrapper {
+    width: 100%;
+    padding: 1vw;
+    margin: 0 auto;
+  }
+  
+  /* Background block with image */
+  .Banner {
+    /* background-image: url('your-image-path.jpg'); or use imported `backgroundImg` */
+    background-size: cover;
+    background-position: center;
+    max-width: 100vw;
+    height: 20rem;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Title styling */
+  .Title {
+    width: 100%;
+    color: white;
+    font-size: 7rem;
+    text-shadow: 0 0 10px black;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  
+  .OpeningEnding {
+    color: var(--secondary-color);
+  }
+  .OpeningEnding:hover {
+    color: var(--tertiary-color);
+  }
+  
+  /* Table of Contents below */
+  .NavMenu {
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 1rem;
+  }
+  
+  /* Center nav list */
+  .NavMenu ul {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .NavMenu ul li {
+    /* margin: 0 0.5rem; */
+    font-size: 1.5rem;
+  }
+  
+  .NavMenu ul li:hover {
+    color: var(--tertiary-color);
+    /* font-size: 1.6rem; */
+  }
