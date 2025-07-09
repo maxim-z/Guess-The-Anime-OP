@@ -9,19 +9,26 @@ import traceback
 ### Handles DB reads and DB writes
 
 FILE_PATH = os.path.dirname(__file__)
+# JSON grabbed with top_anime_data_fetcher.py
 TOP_ANIME_JSON = os.path.join(FILE_PATH, "anime_json/top_anime_info.json") # {P1:{}, P2:{}, P3:{}, ... PN:{}}
-ANIME_OPS_EDS = os.path.join(FILE_PATH, "anime_json/anime_ops_eds.json")   # [{mal_id:###, ops:[], eds:[]}, {...}, ...]
-ANIME_DB = "guess_the_anime_op.db"
+ANIME_OPS_EDS_JSON = os.path.join(FILE_PATH, "anime_json/anime_ops_eds.json")   # [{mal_id:###, ops:[], eds:[]}, {...}, ...]
+# sqlite databases
+ANIME_DB = os.path.join(FILE_PATH, "guess_the_anime_op.db")
+TOP_1000_OP_DB = os.path.join(FILE_PATH, "../fastapi/top_1000.db")
+# sqlite tables 
 ANIME_TABLE = "anime"
 YT_OPS_TABLE = "yt_ops"
 YT_EDS_TABLE = "yt_eds"
 ALL_TABLES = [ANIME_DB, YT_OPS_TABLE, YT_EDS_TABLE]
+# folders
+RANDOM_PRESETS = os.path.join(FILE_PATH, "random_presets/")
 
 def get_connection(db):
     # connect to db and cursor lets us interact with it
     sqliteConnection = sqlite3.connect(db)
     sqliteConnection.row_factory = sqlite3.Row # make rows behave like dicts not tuples 
     cursor = sqliteConnection.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON;")
     return cursor, sqliteConnection
 
 def create_table_anime(cursor):
@@ -48,8 +55,9 @@ def create_table_yt_ops(cursor):
     CREATE TABLE IF NOT EXISTS yt_ops (
         id INTEGER PRIMARY KEY,
         anime_id INTEGER NOT NULL,
-        op_name TEXT,
-        yt_url TEXT,
+        song_title TEXT,
+        song_artist TEXT,
+        yt_video_id TEXT,
         yt_viewcount INTEGER,
         FOREIGN KEY(anime_id) REFERENCES anime(mal_id)
     )
@@ -61,8 +69,9 @@ def create_table_yt_eds(cursor):
     CREATE TABLE IF NOT EXISTS yt_eds (
         id INTEGER PRIMARY KEY,
         anime_id INTEGER NOT NULL,
-        ed_name TEXT,
-        yt_url TEXT,
+        song_title TEXT,
+        song_artist TEXT,
+        yt_video_id TEXT,
         yt_viewcount INTEGER,
         FOREIGN KEY(anime_id) REFERENCES anime(mal_id)
     )
@@ -140,28 +149,55 @@ def initialize_yt_ops_eds_table(cursor, connection, source):
 
                 for op in ops:
                     front_pass = re.sub(r"\A\d*:\s*", "", op) # gets rid of 1: or 2: and so on from the front of the string
-                    clean_op = re.sub(r"\s*\(eps[\d,\s\-]+\)\Z", "", front_pass) # removes the episodes the op/ed were featured in from the back of the string (eps ??? - ???)
+                    second_pass = re.sub(r"\s*\(eps.*\)\Z", "", front_pass) # removes the episodes the op/ed were featured in from the back of the string (eps ??? - ???)
+                    third_pass = re.sub(r'["\'&?%+#=/\\:<>[\](){\}]', '', second_pass) # gets rid of " ' & ? % + # = / \ : < > [ ] ( ) { }
+                    # splits Mirai Kuru Kuru Yume Kururu ミライくるくるユメくるる by Maria Sawada 澤田真里愛
+                    # into
+                    # song_title = Mirai Kuru Kuru Yume Kururu ミライくるくるユメくるる
+                    # song_artist = Maria Sawada 澤田真里愛
+                    split = third_pass.split(" by ", 1)
+                    song_title, song_artist = (split + [''])[:2] # if no by in string song_title = split[0] which is the entire string and song_artist = "" otherwise they get assigned the first and second part of split respectively
                     cursor.execute('''
                     INSERT INTO yt_ops
-                            (anime_id, op_name, yt_url, yt_viewcount)
-                            VALUES (?, ?, ?, ?)
-                    ''', (anime_id, clean_op, "", 0))
-
+                            (anime_id, song_title, song_artist, yt_video_id, yt_viewcount)
+                            VALUES (?, ?, ?, ?, ?)
+                    ''', (anime_id, song_title, song_artist, "", 0))
+                # copy of what happens for ops
                 for ed in eds:
                     front_pass = re.sub(r"\A\d*:\s*", "", ed)
-                    clean_ed = re.sub(r"\s*\(eps[\d,\s\-]+\)\Z", "", front_pass)
+                    second_pass = re.sub(r"\s*\(eps.*\)\Z", "", front_pass)
+                    third_pass = re.sub(r'["\'&?%+#=/\\:<>[\](){\}]', '', second_pass)
+                    split = third_pass.split(" by ", 1)
+                    song_title, song_artist = (split + [''])[:2]
                     cursor.execute('''
                     INSERT INTO yt_eds
-                            (anime_id, ed_name, yt_url, yt_viewcount)
-                            VALUES (?, ?, ?, ?)
-                    ''', (anime_id, clean_ed, "", 0))
+                            (anime_id, song_title, song_artist, yt_video_id, yt_viewcount)
+                            VALUES (?, ?, ?, ?, ?)
+                    ''', (anime_id, song_title, song_artist, "", 0))
 
                 connection.commit()
                 
             except Exception as e:
                 print(f"{anime_id} : {e}")
                 traceback.print_exc()
-        print(f"Finished writing to {source}!")
+        print(f"Finished writing to {ANIME_DB}!")
+
+# writes a to a txt file
+# col_name_1 col_name_2 ... col_name_n
+# col_name_1 col_name_2 ... col_name_n
+# ...
+def save_rows_to_txt(cursor, table, col_names, start_row, write_to):
+    write_to = os.path.join(FILE_PATH, write_to)
+    with open(write_to, "w", encoding="utf-8") as file:
+        for index, row in enumerate(get_table(cursor, table), start=1):
+            if index < start_row:
+                continue
+            for index, col in enumerate(col_names, start=1):
+                file.write(f"{row[col]}")
+                if index < len(col_names):
+                    file.write(" ") # write a space between cols except for col_n and \n
+            file.write("\n")
+    print(f"Wrote to {write_to}!")
 
 def update_row(cursor, connection, table, col_name, value, row_id):
     try:
@@ -170,10 +206,45 @@ def update_row(cursor, connection, table, col_name, value, row_id):
     except sqlite3.OperationalError as e:
         print(f"SQL error: {e}")
 
+# WRITING RANDOM PRESETS
+def update_random_preset(cursor, col_number, value, row_id):
+    try:
+        cursor.execute(f"UPDATE random_presets SET song_order_{col_number} = ? WHERE id = ?", (value, row_id))
+    except sqlite3.OperationalError as e:
+        print(f"SQL error: {e}")
+
+# grabs a txt file with numbers from 1 to 1000 randomly placed on each line and puts those into the song_order column of a random_preset_# table
+def write_random_preset(cursor, connection, col_number, txt_file):
+    with open(os.path.join(RANDOM_PRESETS, txt_file), "r") as file:
+        for index, row in enumerate(file, start=1):
+            order_id = row.strip()
+            update_random_preset(cursor, col_number, order_id, index)
+        connection.commit()
+
+def create_table_random_presets(cursor, connection, length, num_presets):
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS random_presets (
+        id INTEGER PRIMARY KEY,
+        song_order_1 INTEGER DEFAULT 0,
+        song_order_2 INTEGER DEFAULT 0,
+        song_order_3 INTEGER DEFAULT 0,
+        song_order_4 INTEGER DEFAULT 0,
+        song_order_5 INTEGER DEFAULT 0,
+        song_order_6 INTEGER DEFAULT 0,
+        FOREIGN KEY(id) REFERENCES yt_ops(id)
+    )
+    ''')
+
+# num_orders determines how many rows are in the table which corresponds to the number of lines in each of the random_presets/#########.txt 
+def initialize_random_presets_table(cursor, connection, num_orders):
+    for i in range(num_orders):
+        cursor.execute(f"INSERT INTO random_presets (song_order_1) VALUES (?)", (0,))
+    connection.commit()
+
 # cursor, connection = get_connection(ANIME_DB)
 # # cursor.execute("PRAGMA foreign_keys = ON")
 # create_table_yt_ops(cursor)
 # create_table_yt_eds(cursor)
-# initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS)
+# initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS_JSON)
 # create_table_anime(cursor)
 # transfer_anime_to_db(1,200, cursor, connection)
