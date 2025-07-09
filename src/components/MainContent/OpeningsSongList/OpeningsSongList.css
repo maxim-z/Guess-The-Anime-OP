@@ -1,0 +1,39 @@
+/* Always include this reset globally */
+* {
+    box-sizing: border-box;
+  }
+
+.SongListContainer {
+    width: 70vw;
+    max-height: 100%;
+}
+
+.OpeningsSongList {
+    padding: 0.5vw;
+    max-width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(max(2.6em, 2.6vw), 1fr));
+    /* gap: 2rem; */
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(180deg, var(--primary-color), var(--primary-color-gradient-two), var(--primary-color-gradient-three));
+}
+
+.linky {
+    display: inline-block;
+    width: minmax(5rem, 50px);
+    aspect-ratio: 1/1;
+    color: white;
+    font-size: minmax(3rem, 2vw);
+    background: transparent;
+    /* background-color: var(--primary-color); */
+    text-align: center;
+    justify-content: center;
+    /* border-radius: 2rem; */
+}
+
+.linky:hover {
+    color: var(--secondary-color);
+}

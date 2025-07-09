@@ -1,6 +1,9 @@
 * {
-  outline: 1px solid red;
+  /* outline: 1px solid red; */
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* overflow-x: hidden; */
 }
 
 body, html, #root {
@@ -18,10 +21,15 @@ body, html, #root {
   --secondary-color: #E0D0EA;
   --tertiary-color: #F7C8D2;
   --quad-color: #364832;
+
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .Opening {
   --primary-color: #4E9BF5;
+  --primary-color-gradient-two: #215ea3;
+  --primary-color-gradient-three: #00254f;
+
   --secondary-color: #E0D0EA;
   --tertiary-color: #F7C8D2;
   --quad-color: #364832;
@@ -30,6 +38,22 @@ body, html, #root {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  /* StarShapes.css */
+  --star-color: white;
+
+  /* RandomSong Button */
+  /* --linear-gradient-one: #ffffdc; */
+  --linear-gradient-one: #fffe9e;
+  --linear-gradient-two: #fffe6c;
+  --linear-gradient-three: #fffd44;
+  --linear-gradient-four: #4E9BF5;
+  --linear-gradient-five: #fffc00;
+  /* --linear-gradient-one: red;
+  --linear-gradient-two: blue;
+  --linear-gradient-three: green;
+  --linear-gradient-four: yellow;
+  --linear-gradient-five: black; */
 }
 
 .Ending {
@@ -37,17 +61,19 @@ body, html, #root {
   --secondary-color: #B36EC7;
   --tertiary-color: #7B5240;
   --quad-color: #F2DA70;
-
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
+  
+  /* StarShapes.css */
+  --star-color: rgb(128, 255, 138);
 
-.MainContent {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  /* align-items: center; */
+  /* RandomSong Button */
+  --linear-gradient-one: #b3ffb3;
+  --linear-gradient-two: #81ff81;
+  --linear-gradient-three: #56ff55;
+  --linear-gradient-four: #29ff28;
+  --linear-gradient-five: #01ff00;
 }

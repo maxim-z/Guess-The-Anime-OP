@@ -1,14 +1,11 @@
 import backgroundImgOpening from '/backgroundOpening.jpg'
 import backgroundImgEnding from '/backgroundEnding.jpg'
-import type { Dispatch, SetStateAction } from 'react'
+import { Link } from 'react-router-dom'
 import './Header.css'
+import StarShapes from '@components/StarShapes/StarShapes'
+import type { ModeProps } from '@types/props'
 
-type HeaderProps = {
-    mode: 'Opening' | 'Ending';
-    setMode: Dispatch<SetStateAction<'Opening' | 'Ending'>>;
-};
-
-function Header( { mode, setMode } : HeaderProps) {
+function Header( { mode, setMode } : ModeProps) {
   // Mode Changes which go up to App to change the Theme as well as the list of songs displayed in the list
   const toggleMode = () => {
     setMode(prev => (prev === 'Opening' ? 'Ending' : 'Opening'))
@@ -20,17 +17,20 @@ function Header( { mode, setMode } : HeaderProps) {
         <div className='BannerWrapper'>
           <div className='Banner' style={{backgroundImage: `url(${backgroundImg})`}}>
             <h1 className='Title'>
-              Guess the Anime&nbsp;
-              <span className='OpeningEnding' onClick={toggleMode}>{mode}!</span>
+              <pre>Guess the Anime{' '}</pre>
+              <span className='OpeningEnding' onClick={toggleMode}>
+                {mode}!
+                <StarShapes />
+              </span>
               {/* <span className='OpeningEnding' onClick={toggleMode}>Guess the Anime {mode}!</span>               */}
             </h1>
             <nav className='NavMenu'>
               <ul>
-                <li>Guess</li>
-                <li>About</li>
-                <li>Rules</li>
-                <li>FAQ</li>
-                <li>Stats</li>
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/rules">Rules</Link></li>
+                <li><Link to="/faq">FAQ</Link></li>
+                <li><Link to="/stats">Stats</Link></li>
               </ul>
             </nav>
           </div>

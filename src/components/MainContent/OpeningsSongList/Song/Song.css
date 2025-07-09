@@ -1,0 +1,17 @@
+/* Always include this reset globally */
+* {
+    box-sizing: border-box;
+  }
+
+.Song {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+}
+
+/* .Song:hover {
+    color: var(--secondary-color);
+} */

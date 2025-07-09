@@ -1,8 +1,14 @@
 .SaveLoad {
-    max-width: 15%;
+    width: 15vw;
     max-height: 100%;
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
     /* align-items: center; */
 }
+
+@media only screen and (max-width: 1268px) {
+    .SaveLoad {
+      width: 25vw;
+    }
+  }

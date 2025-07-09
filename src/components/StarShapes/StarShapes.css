@@ -1,0 +1,100 @@
+.stars {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.star {
+  width: 0.3vw;
+  height: max(0.3vw, 3px);
+  top: 0;
+  left: 0;
+  position: absolute;
+
+  transform-origin: center center;
+  animation: spin 3.0s linear infinite;
+}
+
+@keyframes spin {
+  0%    { transform: rotate(0deg) scale(1.0); }
+  50%   { transform: rotate(180deg) scale(0.5); }
+  75%   { transform: rotate(270deg) scale(1.2); }
+  100%  {transform: rotate(360deg) scale(1.0); }
+}
+
+.stick {
+  background-color: var(--star-color);
+  position: absolute;
+  width: 100%;
+  height: 15%;
+  top: 50%;
+  left: 0%;
+}
+
+.stick.one {
+  animation: shine 3.0s linear infinite;
+}
+
+.stick.two {
+  animation: shine-rotate-90 3.0s linear infinite;
+}
+
+/* different scaling gives star that kind of throbbing uneven light we see in the night sky */
+@keyframes shine {
+  0% { transform: scale(1.0); }
+  20% {transform: scale(2.0); }
+  45% {transform: scale(1.5); }
+  60% {transform: scale(2.5); }
+  85% {transform: scale(1.5); }
+  100% { transform: scale(1.0); }
+}
+
+@keyframes shine-rotate-90 {
+  0% { transform: rotate(90deg) scale(1.0); }
+  20% {transform: rotate(90deg) scale(1.5); }
+  45% {transform: rotate(90deg) scale(1.25); }
+  60% {transform: rotate(90deg) scale(1.75); }
+  85% {transform: rotate(90deg) scale(1.25); }
+  100% { transform: rotate(90deg) scale(1.0); }
+}
+
+/* .star {
+  width: 96px;
+  height: 96px;
+  background: red;
+  border: 2px solid red;
+  position: absolute;
+  box-sizing: content-box;
+  top: 0px;
+  left: 20px;
+}
+  
+.circle {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: #eee;
+  border-radius: 50%;
+}
+
+.top-left {
+  top: -25%;
+  left: -25%;
+}
+
+.top-right {
+  top: -25%;
+  left: 50%;
+}
+
+.bottom-left {
+  top: 50%;
+  left: -25%;
+}
+
+.bottom-right {
+  top: 50%;
+  left: 50%;
+}   */
