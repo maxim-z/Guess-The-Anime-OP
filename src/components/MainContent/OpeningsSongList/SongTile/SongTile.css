@@ -15,3 +15,11 @@
 /* .Song:hover {
     color: var(--secondary-color);
 } */
+
+.Correct {
+    background: green;
+}
+
+.Incorrect {
+    background: red;
+}

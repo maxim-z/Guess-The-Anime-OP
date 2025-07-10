@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './OpeningsSongList.css'
-import Song from '@components/MainContent/OpeningsSongList/Song/Song'
+import SongTile from '@components/MainContent/OpeningsSongList/SongTile/SongTile'
 import { Link, Routes, Route } from 'react-router-dom';
 import type { FilterProps } from '@types/filter';
 import { MAX_SONGS } from '@config/config';
@@ -19,7 +19,7 @@ function OpeningsSongList( { filter, setFilter } : FilterProps) {
           return (
             <>
             <Link key={id} className="linky" to={`/guess?id=${id}&filter=${filter}`}>
-              <Song song_id={id} song_filter={filter} />
+              <SongTile song_id={id} song_filter={filter} />
             </Link>
             </>
           )

@@ -1,3 +1,6 @@
+// Used in GuessTheSong and Songs.tsx
+export type GuessedType = 'Correct' | 'Incorrect' | 'None';
+
 // Used for api calls
 export type SongFilterType =
 |  "anime_id"

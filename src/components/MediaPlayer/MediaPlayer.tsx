@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import './MediaPlayer.css'
+import type { MediaPlayerProps } from '@types/props';
 
 type IntervalSeconds = '1' | '2' | '5' | '10' | '15' | '30';
 
-function MediaPlayer() {
+function MediaPlayer({showVideo} : MediaPlayerProps) {
     // how many seconds of audio the player should be allowed to play
     // this is based on how many hints are available to the player
     const [maxSecs, setMaxSecs] = useState<IntervalSeconds>('1');
     
-    return (
+    return showVideo ? (
         <div>
             <iframe 
                 width="560" 
@@ -21,6 +22,8 @@ function MediaPlayer() {
                 allowFullScreen>
             </iframe>
         </div>
+    ) : (
+        <div>Custom Player</div>
     )
 }
 

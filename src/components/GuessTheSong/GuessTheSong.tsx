@@ -1,17 +1,26 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { filters } from "@types/filter";
-import { song_params } from "@types/song";
-import type { SongFilterType, SongType } from "@types/song";
+import type { SongType } from "@types/song";
 import './GuessTheSong.css';
 import MediaPlayer from "@components/MediaPlayer/MediaPlayer";
 import GuessBar from "@components/GuessBar/GuessBar";
+import Hints from "@components/Hints/Hints";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
 function GuessTheSong() {
     const [song, setSong] = useState<SongType>(null);
     const [error, setError] = useState<string | null>(null);
+    // for Hints
+    const [hintsRevealed, setHintsRevealed] = useState(0);
+    // for GuessBar
+    const [guess, setGuess] = useState('');
+    // Did the user guess correctly and win??! and for MediaPlayer
+    const guessedAnimeCorrectly = song?.eng_title === guess || song?.def_title === guess ? true : false;
+    const failedToGuess = hintsRevealed == 5 ? true : false;
+
+    const navigate = useNavigate();
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -40,20 +49,30 @@ function GuessTheSong() {
 
     useEffect(() => {
         fetchSong()
+        // reset guess states
+        setGuess('');
+        setHintsRevealed(-1);
     }, [songId]);
+
+    useEffect(() => {
+        setHintsRevealed((prev) => prev + 1)
+        if (guessedAnimeCorrectly && song) {
+            localStorage.setItem(`${song.id}`, 'Correct');
+        } else if (failedToGuess && song) {
+            localStorage.setItem(`${song.id}`, 'Incorrect');
+        }
+    }, [guess])
 
     // return appropriate html based on song and error states
     if (validSong && song) {
         return (
             <div>
                 <div>Guess the song {songId} and {decodedFilter}</div>
-                {song_params.map((param) => {
-                    return (
-                        <div>{song[param]}</div>
-                    )
-                })}
-                <GuessBar />
-                <MediaPlayer />
+                <div>Num guesses: {hintsRevealed}</div>
+                <Hints hintsRevealed={hintsRevealed} song={song} />
+                <GuessBar onSubmit={setGuess} disabled={guessedAnimeCorrectly || failedToGuess} />
+                <MediaPlayer showVideo={guessedAnimeCorrectly || failedToGuess} />
+                <button onClick={() => navigate(-1)}>Back</button>
             </div>
         )
     } else if (error) {

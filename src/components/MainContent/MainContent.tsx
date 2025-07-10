@@ -8,10 +8,13 @@ import type { FilterProps } from '@types/filter'
 function Main( { filter, setFilter } : FilterProps ) {
 
     return (
-        <div className='MainContent'>
-          <Dropdown filter={filter} setFilter={setFilter} />
-          <OpeningsSongList filter={filter} setFilter={setFilter} />
-          <SaveLoad />
+        <div className='MainFilter'>
+          {filter}
+          <div className='MainContent'>
+            <Dropdown filter={filter} setFilter={setFilter} />
+            <OpeningsSongList filter={filter} setFilter={setFilter} />
+            <SaveLoad />
+          </div>
         </div>
     )
 }
