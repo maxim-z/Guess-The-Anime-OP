@@ -20,8 +20,6 @@ function App() {
   const location = useLocation();
   const hideHeader = location.pathname.startsWith('/guess');
 
-  const [filter, setFilter] = useState<FilterType>("Top 1000 by Song Viewcount");
-
   return (
     <div className={theme}>
       {/* {!hideHeader && <Header mode={mode} setMode={setMode}/>} */}
@@ -29,7 +27,7 @@ function App() {
       <Routes>
         <Route 
           path="/" 
-          element={<MainContent filter={filter} setFilter={setFilter} />} />
+          element={<MainContent />} />
         <Route 
           path='/guess' 
           element={<GuessTheSong />} />

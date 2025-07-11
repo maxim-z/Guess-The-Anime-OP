@@ -2,14 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import './GuessBar.css'
 import type { GuessBarProps } from '@types/props';
 
-function GuessBar({onSubmit, disabled} : GuessBarProps) {
+function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [search, setSearch] = useState('');
     const [selectedAnime, setSelectedAnime] = useState<string | null>(null);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
     
-    const animeList = ['Apothecary Diaries', 'Apothecary Diaries Season 2', 'Attack on Titan', 'Frieren: Beyond Journey\'s End', 'Hunter x Hunter', 'Steins Gate'];
-    const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
+    const animeList = ['Apothecary Diaries', 'Apothecary Diaries Season 2', 'Attack on Titan', 'Frieren: Beyond Journey\'s End', 'Hunter x Hunter', 'Steins Gate', 'Fullmetal Alchemist: Brotherhood'];
+    // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
     const filtered = search
             // return a list of anime that match the search query
             ? animeList.filter((anime) => {
@@ -17,7 +17,7 @@ function GuessBar({onSubmit, disabled} : GuessBarProps) {
                 // does anime start with search
                 const matchesSearch = animeLowerCase.startsWith(search.toLowerCase());
                 // is anime already one of the ones guessed
-                const matchesGuessed = guessed.filter((guess) => guess.trim().toLowerCase() === anime.toLowerCase()).length > 0 ? true : false;
+                const matchesGuessed = guesses.filter((guess) => guess.trim().toLowerCase() === anime.toLowerCase()).length > 0 ? true : false;
                 // if it matches the selected anime filter it out
                 const noMatchSelectedAnime = selectedAnime
                     ? animeLowerCase != selectedAnime.toLowerCase() // anime doesn't include selectedAnime
@@ -40,7 +40,7 @@ function GuessBar({onSubmit, disabled} : GuessBarProps) {
 
     const submitGuess = () => {
         if (selectedAnime) {
-            setGuessed((prev) => [...prev, selectedAnime.trim()]);
+            // setGuessed((prev) => [...prev, selectedAnime.trim()]);
             onSubmit(selectedAnime.trim());
             // reset
             setSearch('');
@@ -51,6 +51,7 @@ function GuessBar({onSubmit, disabled} : GuessBarProps) {
 
     // for navigating list with up/down arrows and choosing/submitting with enter
     const handleKeyboardInput = ((e: React.KeyboardEvent<HTMLInputElement>) => {
+        // if (disabled) return;
         // cycle down the list
         if (e.key === 'ArrowDown') {
             e.preventDefault();
@@ -85,7 +86,8 @@ function GuessBar({onSubmit, disabled} : GuessBarProps) {
         <div className='GuessContainer'>
             {/* Want to add a submit button which will use the selectedAnime as input
                 and if the user presses enter in the input it will submit it as well as a guess */}
-            <div>
+            {!disabled && (
+                <div>
                 <input 
                     type='text'
                     ref={searchRef}
@@ -107,15 +109,15 @@ function GuessBar({onSubmit, disabled} : GuessBarProps) {
                 >
                     Submit Guess!
                 </button>
-            </div>
+            </div>)}
             
             {/* Put guessed entries here */}
-            {guessed.length > 0 && (
+            {guesses.length > 0 && (
                 <ul>
-                    {guessed.map((guess, i) => (
+                    {guesses.map((guess, i) => (
                         <li
                             key={`guess_${guess}`}
-                            className='GuessedAnimeItem'>
+                            className={(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}>
                            {guess} 
                         </li>
                     ))}

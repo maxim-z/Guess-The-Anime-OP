@@ -2,6 +2,10 @@
     background-color: rgba(232, 250, 252, 0.5);
 }
 
-.GuessedAnimeItem {
+.IncorrectGuess {
     background-color: rgba(255, 34, 0, 0.5);
+}
+
+.CorrectGuess {
+    background-color: rgb(0, 184, 0, 0.5);
 }

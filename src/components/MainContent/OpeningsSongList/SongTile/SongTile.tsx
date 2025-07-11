@@ -1,25 +1,17 @@
-import { useEffect, useState } from "react";
-import type { FilterType } from "./types/types";
 import "./SongTile.css"
+import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesContext";
+import { useFilterContext } from "@components/ContextProviders/FilterContext";
 
-type SongProps = {
-    song_id: number;
-    song_filter: FilterType
-}
+function Song( {song_id} : {song_id : number} ) {
+    const { filter } = useFilterContext();
+    const { guessStates } = useGuessStatesContext();
 
-function Song( {song_id, song_filter} : SongProps ) {
-    const [guessed, setGuessed] = useState('None'); // Correct = green Incorrect = red None = default color
-
-    useEffect(() => {
-        const getGuess = localStorage.getItem(`${song_id}`);
-        if (getGuess){
-            setGuessed(getGuess);
-        }
-    }, [])
+    const guessed = guessStates[filter]?.[song_id]?.status ?? 'None';
 
     return (
-        <div 
-            className={`Song ${guessed}`}>{song_id}</div>
+        <div className={`Song ${guessed}`}>
+            {song_id}
+        </div>
     )
 }
 

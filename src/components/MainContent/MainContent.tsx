@@ -2,17 +2,17 @@ import './MainContent.css'
 import Dropdown from '@components/MainContent/DropDown/DropDown'
 import OpeningsSongList from '@components/MainContent/OpeningsSongList/OpeningsSongList'
 import SaveLoad from '@components/MainContent/SaveLoad/SaveLoad'
-import { useState } from 'react'
-import type { FilterProps } from '@types/filter'
+import { useFilterContext } from '@components/ContextProviders/FilterContext'
 
-function Main( { filter, setFilter } : FilterProps ) {
+function Main() {
+  const filterContext = useFilterContext();
 
     return (
         <div className='MainFilter'>
-          {filter}
+          {filterContext.filter}
           <div className='MainContent'>
-            <Dropdown filter={filter} setFilter={setFilter} />
-            <OpeningsSongList filter={filter} setFilter={setFilter} />
+            <Dropdown />
+            <OpeningsSongList />
             <SaveLoad />
           </div>
         </div>

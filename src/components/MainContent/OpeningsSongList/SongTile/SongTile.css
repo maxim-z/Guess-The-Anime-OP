@@ -23,3 +23,7 @@
 .Incorrect {
     background: red;
 }
+
+.Attempting {
+    background: rgba(97, 99, 76, 0.5);
+}

@@ -1,5 +1,5 @@
 // Used in GuessTheSong and Songs.tsx
-export type GuessedType = 'Correct' | 'Incorrect' | 'None';
+export type GuessedType = 'Correct' | 'Incorrect' | 'Attempting' | 'None';
 
 // Used for api calls
 export type SongFilterType =
@@ -57,3 +57,8 @@ export const song_params: SongFilterType[] = [
     yt_video_id: string,
     yt_viewcount: number
   }
+
+export type SongProps = {
+    song_id: number;
+    song_filter: SongFilterType
+}

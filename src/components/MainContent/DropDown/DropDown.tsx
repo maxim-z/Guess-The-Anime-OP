@@ -1,29 +1,27 @@
-import { useState, type ReactHTMLElement } from 'react';
 import './DropDown.css'
-import { filters } from '@types/filter';
-import type { FilterProps, FilterType } from '@types/filter';
+import { filters, type FilterType } from '@types/filter';
 import { useNavigate } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
+import { useFilterContext } from '@components/ContextProviders/FilterContext';
 
-function Dropdown( { filter, setFilter } : FilterProps ) {
+function Dropdown() {
   const navigate = useNavigate();
-  const [value, setValue] = useState<FilterType>(filter);
+  const filterContext = useFilterContext();
 
   const handleChange = (e : React.ChangeEvent<HTMLSelectElement>) => {
     const selected = e.target.value as FilterType;
-    setValue(selected);
-    setFilter(selected);
+    filterContext.updateFilter(selected);
   };
 
   const navRandomSong = () => {
     const randomNum = Math.floor(Math.random() * MAX_SONGS + 1);
-    navigate(`/guess?id=${randomNum}&filter=${filter}`)
+    navigate(`/guess?id=${randomNum}&filter=${filterContext.filter}`)
   }
 
   return (
     <div className='FilterContainer'>
       <div className='Filter'>
-        <select value={value} onChange={handleChange}>
+        <select value={filterContext.filter} onChange={handleChange}>
           {filters.map((f, i) => (
             <option className='FilterOptions' key={i} value={f}>{f}</option>
           ))}
@@ -51,11 +49,3 @@ function Dropdown( { filter, setFilter } : FilterProps ) {
 }
 
 export default Dropdown;
-
-{/* <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <text x="50%" text-anchor="middle" font-family="Arial, sans-serif"
-                  font-size="2.3vw" stroke="white" stroke-width="0.045vw" fill="none">
-              <tspan x="50%" y="50%">Random</tspan>
-              <tspan x="50%" y="90%">Song!</tspan>
-            </text>
-          </svg> */}
