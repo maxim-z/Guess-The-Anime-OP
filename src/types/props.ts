@@ -21,7 +21,7 @@ export type HintProps = {
 }
 
 export type GuessBarProps = {
-    onSubmit: React.Dispatch<React.SetStateAction<string>>;
+    onSubmit: (newGuess : string) => void;
     guesses: string[];
     won: boolean;
     disabled: boolean;

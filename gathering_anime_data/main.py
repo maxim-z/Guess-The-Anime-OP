@@ -6,7 +6,7 @@ def main():
     yt_api = get_searcher()
     cursor, connection = get_connection(ANIME_DB)
     # initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS_JSON)
-    save_yt_searches_json(cursor, 1600, YT_OPS_TABLE, OP_SEARCH_RESULTS_JSON, yt_api)
+    save_yt_searches_json(cursor, 3200, YT_OPS_TABLE, OP_SEARCH_RESULTS_JSON, yt_api)
 
     # save_rows_to_txt(cursor, YT_OPS_TABLE, ['song_title', 'song_artist'], 0, "queries_ops.txt")
     # save_rows_to_txt(cursor, YT_EDS_TABLE, ['song_title', 'song_artist'], 0, "queries_eds.txt")

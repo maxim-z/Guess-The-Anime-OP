@@ -1,12 +1,14 @@
 import type { FilterType } from "@types/filter";
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 type FilterContextType = {
     filter: FilterType;
     updateFilter: (filter: FilterType) => void;
 };
 
+const defaultFilter : FilterType = 'Top 1000 by Anime Score';
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
+FilterContext.displayName = 'FilterContext';
 
 // return nothing if being accessed outside the provider
 export const useFilterContext = () => {
@@ -15,17 +17,24 @@ export const useFilterContext = () => {
     return context;
 };
 
-export const FilterProvider = (({children} : {children : React.ReactNode}) => {
-    const [filter, setFilter] = useState<FilterType>('Top 1000 by Song Viewcount');
+type FilterProviderProps = {
+    initial? : FilterType;
+    children : React.ReactNode;
+}
 
-    const updateFilter = ((filter: FilterType) => {
-        setFilter(filter);
-    });
+export const FilterProvider : React.FC<FilterProviderProps> = ({
+    children,
+    initial = defaultFilter,
+}) => {
+    const [filter, setFilter] = useState<FilterType>(initial);
+
+    const updateFilter = useCallback((f : FilterType) => setFilter(f), []);
+
+    const value = useMemo(() => ({ filter, updateFilter }), [filter]);
 
     return (
-        <FilterContext.Provider value={{ filter, updateFilter }}>
+        <FilterContext.Provider value={value}>
             {children}
         </FilterContext.Provider>
     )
-})
-
+};

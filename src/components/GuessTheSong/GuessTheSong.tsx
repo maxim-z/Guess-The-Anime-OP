@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { filters } from "@types/filter";
-import type { SongType } from "@types/song";
+import { useCallback, useEffect, useState } from "react";
+import { filters, type FilterType } from "@types/filter";
+import type { GuessedType, SongType } from "@types/song";
 import './GuessTheSong.css';
 import MediaPlayer from "@components/MediaPlayer/MediaPlayer";
 import GuessBar from "@components/GuessBar/GuessBar";
@@ -12,21 +12,6 @@ import { useFilterContext } from "@components/ContextProviders/FilterContext";
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
 function GuessTheSong() {
-    const [song, setSong] = useState<SongType>(null);
-    const [error, setError] = useState<string | null>(null);
-    // for Hints
-    const [hintsRevealed, setHintsRevealed] = useState(0);
-    // for GuessBar
-    const [guess, setGuess] = useState('');
-    const [guesses, setGuesses] = useState<string[]>([]);
-    // Did the user guess correctly and win??! and for GuessBar and MediaPlayer
-    let guessedAnimeCorrectly = song?.eng_title === guess || song?.def_title === guess ? true : false;
-    const failedToGuessCorrectly = hintsRevealed == 6 ? true : false;
-
-    // update guess states
-    const guessContext = useGuessStatesContext();
-    const filterContext = useFilterContext();
-
     // for back button to go to home page
     const navigate = useNavigate();
     
@@ -40,6 +25,20 @@ function GuessTheSong() {
     const decodedFilter = filter ?? "";
     // check that the id is valid and that decodedFilter matches one of the FilterType strings
     const validSong = songId && songId > 0 && songId < 1001 && filters.map((f) => f == decodedFilter).length > 0;
+
+    const [song, setSong] = useState<SongType>(null);
+    const [error, setError] = useState<string | null>(null);
+    // for Hints
+    const [hintsRevealed, setHintsRevealed] = useState(0);
+    // for GuessBar
+    const [guesses, setGuesses] = useState<string[]>([]);
+    
+    // update guess states
+    const { guessStates, updateGuessStates } = useGuessStatesContext();
+    const filterContext = useFilterContext();
+    
+    // Did the user guess correctly and win??! and for GuessBar and MediaPlayer
+    const [status, setStatus] = useState<GuessedType>(() => guessStates[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
     
     // grab the song details with the fast api
     const fetchSong = () => {
@@ -56,44 +55,33 @@ function GuessTheSong() {
             .catch((err) => console.error("Fetch error:", err));
     }
 
-    // loads the state that this songId was previously in
-    const reloadGuessing = () => {
-        // reset guess states
-        setGuess('');
-        setHintsRevealed(0);
-        // now load whatever is in context
-        if (songId) {
-            const getGuesses = guessContext.guessStates[filterContext.filter]?.[songId].guesses;
-            const loadedGuesses = getGuesses ? [...getGuesses] : [];
-            setGuesses(loadedGuesses);
-            setHintsRevealed(loadedGuesses.length);
-            const status = guessContext.guessStates[filterContext.filter]?.[songId].status;
-            if (status && status === 'Correct') {
-                guessedAnimeCorrectly = true;
-            }
-        }
-    }
-
-    // useEffect(() => {
-    //     if (hintsRevealed === 0){
-    //         // if its reloaded update the state
-    //         reloadGuessing();
-    //     }
-    // }, [hintsRevealed]);
-
+    // keep local state in sync
     useEffect(() => {
         fetchSong();
-        reloadGuessing();
-    }, [songId]);
+        const songEntry = guessStates[filterContext.filter]?.[songId ?? ''];
+        setGuesses(songEntry?.guesses ?? []);
+        setHintsRevealed(songEntry?.guesses.length ?? 0);
+        setStatus(songEntry?.status ?? 'Attempting');
+    }, [songId, filterContext.filter, guessStates]);
+
+    const submitGuess = useCallback((newGuess : string) => {
+        const guess = newGuess.trim();
+        if (!songId || guess === '') return;
+
+        // update local ui
+        setHintsRevealed((prev) => prev + 1);
+        setGuesses((prev) => [...prev, guess]);
+        const guessedAnimeCorrectly = song?.def_title === guess || song?.eng_title === guess;
+        const failedToGuess = hintsRevealed === 6 ? true : false;
+        const result : GuessedType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
+        setStatus(result);
+
+        updateGuessStates(filterContext.filter, songId, guess, result);
+    }, [songId, filterContext.filter, guesses, status, guessStates]);
 
     useEffect(() => {
-        if (songId && guess.trim() !== '') {
-            setHintsRevealed((prev) => prev + 1);
-            setGuesses((prev) => [...prev, guess]);
-            const result = guessedAnimeCorrectly ? 'Correct' : (failedToGuessCorrectly ? 'Incorrect' : 'Attempting');
-            guessContext.updateGuessStates(filterContext.filter, songId, guess, result);
-        }
-    }, [guess])
+        console.log('guessStates updated', guessStates);
+    }, [guessStates]);
 
     // return appropriate html based on song and error states
     if (validSong && song) {
@@ -101,16 +89,16 @@ function GuessTheSong() {
             <div>
                 <div>Guess the song {songId} and {decodedFilter}</div>
                 <div>Num guesses: {hintsRevealed}</div>
-                {guessedAnimeCorrectly && (
+                {status === 'Correct' && (
                     <div>You guessed correctly!</div>
                 )}
-                {failedToGuessCorrectly && (
+                {status === 'Incorrect' && (
                     <div>Better Luck Next Time!</div>
                 )}
                 {guesses}
                 <Hints hintsRevealed={hintsRevealed} song={song} />
-                <GuessBar onSubmit={setGuess} guesses={guesses} won={guessedAnimeCorrectly} disabled={guessedAnimeCorrectly || failedToGuessCorrectly} />
-                <MediaPlayer showVideo={guessedAnimeCorrectly || failedToGuessCorrectly} />
+                <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={status === 'Correct' || status === 'Incorrect'} />
+                <MediaPlayer showVideo={status === 'Correct' || status === 'Incorrect'} />
                 <button onClick={() => navigate(-1)}>Back</button>
             </div>
         )

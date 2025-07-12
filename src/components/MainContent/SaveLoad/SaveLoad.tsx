@@ -6,8 +6,8 @@ function SaveLoad() {
 
   return (
     <div className='SaveLoad'>
-        <button>Save Progress</button>
-        <button>Load Progress</button>
+        <button className='SaveButton'>Save Progress</button>
+        <button className='LoadButton'>Load Progress</button>
     </div>
   );
 }

@@ -8,7 +8,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
     
-    const animeList = ['Apothecary Diaries', 'Apothecary Diaries Season 2', 'Attack on Titan', 'Frieren: Beyond Journey\'s End', 'Hunter x Hunter', 'Steins Gate', 'Fullmetal Alchemist: Brotherhood'];
+    const animeList = ['Apothecary Diaries', 'Apothecary Diaries Season 2', 'Attack on Titan', 'Frieren: Beyond Journey\'s End', 'Hunter x Hunter', 'Steins Gate', 'Fullmetal Alchemist: Brotherhood', 'Reincarnating with the biggest Gyat the world has ever seen! in an isekai!!'];
     // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
     const filtered = search
             // return a list of anime that match the search query

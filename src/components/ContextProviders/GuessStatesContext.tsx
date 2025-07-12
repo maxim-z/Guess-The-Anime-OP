@@ -1,5 +1,6 @@
 import type { FilterType } from "@types/filter"
 import type { GuessedType } from "@types/song"
+import { readFileSync } from "fs"
 import { createContext, useContext, useState } from "react"
 
 // {filter: {songId: {status:'', guesses: []}, songId: ...}, filter: {}, ...}
@@ -14,6 +15,7 @@ type GuessStatesMap = {
 
 // what information and functions the context will provide
 type GuessStateContextType = {
+    // animeGuessList: string[];
     guessStates: GuessStatesMap;
     updateGuessStates: (filter: FilterType, songId: number, newGuess: string | null, result: GuessedType) => void;
 }
@@ -28,12 +30,20 @@ export const useGuessStatesContext = () => {
 };
 
 export const GuessStatesProvider = ({children} : {children: React.ReactNode}) => {
+    // load animeGuessList from localStorage or from txt file
+    // const [animeGuessList, setAnimeGuessList] = useState<string[]>(() => {
+    //     const raw = localStorage.getItem('animeGuessList');
+    //     return raw ? JSON.parse(raw) : 
+    //         readFileSync('../../assets/animeGuessList.txt')
+    // });
+
     // load guessState from localStorage
     const [guessStates, setGuessStates] = useState<GuessStatesMap>(() => {
         const raw = localStorage.getItem('guessState');
         console.log(raw ? JSON.parse(raw) : {});
         return raw ? JSON.parse(raw) : {};
     });
+
 
     // can update just the result by passing null for newGuess or update both by passing a string for newGuess
     const updateGuessStates = ((filter: FilterType, songId: number, newGuess: string | null, result: GuessedType) => {
@@ -59,7 +69,7 @@ export const GuessStatesProvider = ({children} : {children: React.ReactNode}) =>
 
     // wrap App in Provider in main.tsx
     return (
-        <GuessStatesContext.Provider value={{ guessStates, updateGuessStates }}>
+        <GuessStatesContext.Provider value={{ /*animeGuessList,*/ guessStates, updateGuessStates }}>
             {children}
         </GuessStatesContext.Provider>
     );
