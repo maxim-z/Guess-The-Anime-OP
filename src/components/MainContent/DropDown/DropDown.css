@@ -17,9 +17,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3.5vh;
+    gap: 3.5vw;
     padding: 1vw;
     /* position: relative; */
+}
+
+.SelectOptions {
+  width: 100%;
+  font-size: max(1.0vw, 13.5px);
+  background: none;
+  /* height: 50px; */
+  /* font-size: max(0.8vw, 13.5px); */
 }
 
 .FilterOptions {
@@ -58,8 +66,8 @@
 }
 
 .RandomSong {
-  width: 7vw;
-  height: 7vw;
+  width: var(--random-song-size);
+  height: var(--random-song-size);
   z-index: 0;
   /* background-color: #c2fbd7; */
   /* background: transparent; */
@@ -72,7 +80,7 @@
   cursor: pointer;
   display: inline-block;
   /* font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif; */
-  padding: 7px 20px;
+  /* padding: 7px 20px; */
   text-align: center;
   text-decoration: none;
   
@@ -81,7 +89,7 @@
   box-shadow: 0px 0px 10px rgba(255, 254, 198, 1.0);
 
   border: 0;
-  font-size: 16px;
+  font-size: max(2.0vw, 16px);
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -125,8 +133,8 @@
   z-index: -1;
   top: 0;
   left: 0;
-  width: 7vw;
-  height: 7vw;
+  width: var(--random-song-size);
+  height: var(--random-song-size);
   border-radius: 100%;
   position: absolute;
   
@@ -161,8 +169,8 @@
   z-index: -2;
   top: 0;
   left: 0;
-  width: 7vw;
-  height: 7vw;
+  width: var(--random-song-size);
+  height: var(--random-song-size);
   border-radius: 100%;
   position: absolute;
 

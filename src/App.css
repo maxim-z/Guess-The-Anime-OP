@@ -23,6 +23,8 @@ body, html, #root {
   --quad-color: #364832;
 
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --random-song-size: max(75px, 10vw);
 }
 
 .Opening {
