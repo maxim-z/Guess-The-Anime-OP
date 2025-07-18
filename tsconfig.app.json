@@ -30,6 +30,8 @@
       "@types/*": ["types/*"],
       "@config/*": ["config/*"]
     },
+    /* Make source code visible in dev tools for debugging */
+    "sourceMap": true,
   },
   "include": ["src"]
 }

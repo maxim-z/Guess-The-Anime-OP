@@ -6,7 +6,7 @@ function Song( {song_id} : {song_id : number} ) {
     const { filter } = useFilterContext();
     const { guessStates } = useGuessStatesContext();
 
-    const guessed = guessStates[filter]?.[song_id]?.status ?? 'None';
+    const guessed = guessStates['op']?.[filter]?.[song_id]?.status ?? 'None';
 
     return (
         <div className={`Song ${guessed}`}>

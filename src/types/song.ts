@@ -1,5 +1,6 @@
 // Used in GuessTheSong and Songs.tsx
-export type GuessedType = 'Correct' | 'Incorrect' | 'Attempting' | 'None';
+export type GuessedStatusType = 'Correct' | 'Incorrect' | 'Attempting' | 'None';
+export const statusFilters : GuessedStatusType[] = ['Correct', 'Incorrect', 'Attempting', 'None'] as const;
 
 // Used for api calls
 export type SongFilterType =

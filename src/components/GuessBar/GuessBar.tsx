@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './GuessBar.css'
 import type { GuessBarProps } from '@types/props';
-import { useGuessStatesContext } from '@components/ContextProviders/GuessStatesContext';
-import { openingAnimeGuessList } from '@components/ContextProviders/GuessStatesContext';
+import { openingAnimeGuessListEnglishTitle } from '@components/ContextProviders/GuessStatesContext';
 
 function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [search, setSearch] = useState('');
@@ -14,7 +13,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
     const filtered = search
             // return a list of anime that match the search query
-            ? openingAnimeGuessList.filter((anime) => {
+            ? openingAnimeGuessListEnglishTitle.filter((anime) => {
                 const animeLowerCase = anime.toLowerCase();
                 // does anime start with search
                 const matchesSearch = animeLowerCase.startsWith(search.toLowerCase());
@@ -26,7 +25,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     : true // selectedAnime is null so anime can't include selectedAnime
                 // starts with the search query, has not already been guessed, and is not the currently selected anime
                 return matchesSearch && !matchesGuessed && noMatchSelectedAnime;
-            }).filter((_, i) => i > 5 ? false : true) // get only the top 5 results
+            }).filter((_, i) => i < 5 ? true : false) // get only the top 5 results
             : [] // search is '' so there is nothing to search
 
     useEffect(() => {

@@ -194,9 +194,9 @@ def save_rows_to_txt(cursor, table, col_names, start_row, write_to):
                 continue
             for index, col in enumerate(col_names, start=1):
                 file.write(f"{row[col]}")
-                if index < len(col_names):
-                    file.write("\n") # write a space between cols except for col_n and \n
-            file.write("\n")
+                # if index < len(col_names):
+                #     file.write("\n") # write a space between cols except for col_n and \n
+                file.write("\n")
     print(f"Wrote to {write_to}!")
 
 def update_row(cursor, connection, table, col_name, value, row_id):

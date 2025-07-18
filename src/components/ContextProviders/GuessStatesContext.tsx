@@ -1,31 +1,66 @@
-import type { FilterType } from "@types/filter"
-import type { GuessedType } from "@types/song"
+import { filters, type FilterType, type MainSectionType } from "@types/filter"
+import { statusFilters, type GuessedStatusType } from "@types/song"
 import { createContext, useCallback, useContext, useState, useMemo, useEffect } from "react"
 import fallBackGuessList from '../../assets/animeguesslist.txt?raw'
+import z from "zod"
 
 // all possible anime guesses for the openings
-export const openingAnimeGuessList = fallBackGuessList
+const baseList = fallBackGuessList
     .split('\n')
     .map(g => g.trim())
-    .filter(Boolean)
+    .filter(Boolean);
+
+export const openingAnimeGuessListDefaultTitle = baseList.filter((_, i) => i % 2 === 1 ? true : false);
+export const openingAnimeGuessListEnglishTitle = baseList.filter((_, i) => i % 2 === 0 ? true : false);
 
 // {filter: {songId: {status:'', guesses: []}, songId: ...}, filter: {}, ...}
 export type GuessStatesMap = {
-    'op' : {
+    ['op'] : {
         [filter in FilterType]? : {
             [songId : string] : {
-                'status' : GuessedType, // Correct | Incorrect | None
+                'status' : GuessedStatusType, // Correct | Incorrect | None
                 'guesses' : string[] // anime_1, anime_2, anime_3... anime_n
             }
         }
     }
-    // add ed here with the same definition as for op
+    ['ed'] : {
+        [filter in FilterType]? : {
+            [songId : string] : {
+                'status' : GuessedStatusType, // Correct | Incorrect | None
+                'guesses' : string[] // anime_1, anime_2, anime_3... anime_n
+            }
+        }
+    }
 }
+
+// zod enforcing typechecking section for GuessStatesMap
+// used when loading JSON Progress for guessing the songs
+// can do this because the arrays passed in are declared as [...] as const
+const filterEnum = z.enum(filters); // Top 1000...
+const statusEnum = z.enum(statusFilters); // Correct...
+// guess schema
+const guessEntrySchema = z.object({
+    status: statusEnum,
+    guesses: z.array(z.string())
+});
+// song id -> guessEntry
+const songMapSchema = z.record(z.string(), guessEntrySchema);
+// filter -> songs
+const filterMapSchema = z.object(
+    Object.fromEntries(
+        filterEnum.options.map((f) => [f, songMapSchema.optional()]) // Top 1000 : {songid...} Random Preset 1 ...
+    )
+);
+export const guessStatesSchema = z.object({
+    op : filterMapSchema.optional(),
+    ed : filterMapSchema.optional(),
+});
+export type guessStatesType = z.infer<typeof guessStatesSchema>;
 
 // what information and functions the context will provide
 type GuessStateContextType = {
     guessStates: GuessStatesMap;
-    updateGuessStates: (filter: FilterType, songId: number, newGuess: string | null, result: GuessedType) => void;
+    updateGuessStates: (section: MainSectionType, filter: FilterType, songId: number, newGuess: string | null, result: GuessedStatusType) => void;
     loadGuessStates: (data: GuessStatesMap) => void;
     saveGuessStates: () => void;
 }
@@ -55,22 +90,24 @@ export const GuessStatesProvider = ({children} : {children: React.ReactNode}) =>
     // can update just the result by passing null for newGuess or update both by passing a string for newGuess
     const updateGuessStates = useCallback(
         (
+            section: MainSectionType,
             filter: FilterType, 
             songId: number, 
             newGuess: string | null, 
-            result: GuessedType
+            result: GuessedStatusType
         ) => {
             setGuessStates(prev => {
-                const op = prev['op'];
+                const sectionData = prev[section] ?? {};
                 // see if guesses are empty
-                const prevGuesses = op[filter]?.[songId]?.guesses ?? [];
+                const prevGuesses = sectionData[filter]?.[songId]?.guesses ?? [];
                 // update with a new guess if it exists and isn't just an empty string
                 const updatedGuesses = (newGuess != null && newGuess.trim() !== '') ? [...prevGuesses, newGuess] : prevGuesses;
                 const updated = {
                     ...prev,
-                    'op' : {
+                    [section] : {
+                        ...sectionData,
                         [filter]: {
-                            ...(op[filter] || {}),
+                            ...(sectionData[filter] || {}),
                             [songId]: {
                                 status: result,
                                 guesses: updatedGuesses

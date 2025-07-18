@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { filters, type FilterType } from "@types/filter";
-import type { GuessedType, SongType } from "@types/song";
+import type { GuessedStatusType, SongType } from "@types/song";
 import './GuessTheSong.css';
 import MediaPlayer from "@components/MediaPlayer/MediaPlayer";
 import GuessBar from "@components/GuessBar/GuessBar";
@@ -36,9 +36,12 @@ function GuessTheSong() {
     // update guess states
     const { guessStates, updateGuessStates } = useGuessStatesContext();
     const filterContext = useFilterContext();
+
+    // replace once ModeContext is written
+    const section = 'op';
     
     // Did the user guess correctly and win??! and for GuessBar and MediaPlayer
-    const [status, setStatus] = useState<GuessedType>(() => guessStates[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
+    const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[section]?.[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
     
     // grab the song details with the fast api
     const fetchSong = () => {
@@ -58,7 +61,7 @@ function GuessTheSong() {
     // keep local state in sync
     useEffect(() => {
         fetchSong();
-        const songEntry = guessStates[filterContext.filter]?.[songId ?? ''];
+        const songEntry = guessStates[section]?.[filterContext.filter]?.[songId ?? ''];
         setGuesses(songEntry?.guesses ?? []);
         setHintsRevealed(songEntry?.guesses.length ?? 0);
         setStatus(songEntry?.status ?? 'Attempting');
@@ -73,10 +76,11 @@ function GuessTheSong() {
         setGuesses((prev) => [...prev, guess]);
         const guessedAnimeCorrectly = song?.def_title === guess || song?.eng_title === guess;
         const failedToGuess = hintsRevealed === 6 ? true : false;
-        const result : GuessedType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
+        const result : GuessedStatusType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
         setStatus(result);
-
-        updateGuessStates(filterContext.filter, songId, guess, result);
+        
+        // update context
+        updateGuessStates(section, filterContext.filter, songId, guess, result);
     }, [songId, filterContext.filter, guesses, status, guessStates]);
 
     useEffect(() => {

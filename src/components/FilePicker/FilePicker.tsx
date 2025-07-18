@@ -1,3 +1,4 @@
+import { guessStatesSchema } from "@components/ContextProviders/GuessStatesContext";
 import React, { useCallback } from "react";
 
 type useJsonFilePickerType<T> = {
@@ -30,10 +31,16 @@ export function useJsonFilePicker<T = unknown>(
             if (!file) return; // if user cancelled
             const text = await file.text();
             try {
-                onLoad(JSON.parse(text) as T); // use button's passed in function to process data
-            } catch (err) {
-                alert('Invalid JSON file')
-                onLoad(null)
+                const parsed = JSON.parse(text) as T;
+                const result = guessStatesSchema.safeParse(parsed);
+                console.log(guessStatesSchema.strict);
+                if (result.success) {
+                    onLoad(result.data as T); // use button's passed in function to process data
+                } else {
+                    onLoad(null); // json file doesn't match schema
+                }
+            } catch(err) {
+                onLoad(null); // json failed to parse
             }
         }}
     />
