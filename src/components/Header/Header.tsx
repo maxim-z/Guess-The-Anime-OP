@@ -3,12 +3,13 @@ import backgroundImgEnding from '/backgroundEnding.jpg'
 import { Link } from 'react-router-dom'
 import './Header.css'
 import StarShapes from '@components/StarShapes/StarShapes'
-import type { ModeProps } from '@types/props'
+import { type HeaderProps, type ModeType } from '@types/props'
 
-function Header( { mode, setMode } : ModeProps) {
+function Header( { hidden, mode, setMode } : HeaderProps) {
   // Mode Changes which go up to App to change the Theme as well as the list of songs displayed in the list
   const toggleMode = () => {
-    setMode(prev => (prev === 'Opening' ? 'Ending' : 'Opening'))
+    const nextMode: ModeType = mode === 'Opening' ? 'Ending' : 'Opening';
+    setMode(nextMode);
   };
   const backgroundImg = mode === 'Opening' ? backgroundImgOpening : backgroundImgEnding;
 

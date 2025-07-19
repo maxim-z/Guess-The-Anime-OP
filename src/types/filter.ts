@@ -1,7 +1,3 @@
-// different main guessing sections of site
-export type MainSectionType = "op" | "ed";
-export const mainSectionFilters : MainSectionType[] = ['op', 'ed'] as const;
-
 // Used for keeping track of how songs are filtered
 export type FilterType = 
 // |   "Top 1000 by Song Viewcount"

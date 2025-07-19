@@ -6,24 +6,24 @@ import MainContent from '@components/MainContent/MainContent'
 import GuessTheSong from '@components/GuessTheSong/GuessTheSong'
 import type { FilterType } from './types/filter'
 import type { HeaderProps, ModeType } from '@types/props'
+import { useModeContext } from '@components/ContextProviders/ModeContext'
 
 // to avoid re-rendering every time the path changes except for /guess where it should be hidden
 const MemoizedHeader = memo(({ hidden, mode, setMode }: HeaderProps) => {
   if (hidden) return null;
-  return <Header mode={mode} setMode={setMode} />;
+  return <Header hidden={hidden} mode={mode} setMode={setMode} />;
 });
 
 function App() {
-  const [mode, setMode] = useState<ModeType>('Opening');
-  const theme = mode === 'Opening' ? 'Opening' : 'Ending';
+  const { mode, updateMode } = useModeContext();
 
   const location = useLocation();
   const hideHeader = location.pathname.startsWith('/guess');
 
   return (
-    <div className={theme}>
+    <div className={mode}>
       {/* {!hideHeader && <Header mode={mode} setMode={setMode}/>} */}
-      <MemoizedHeader hidden={hideHeader} mode={mode} setMode={setMode} />
+      <MemoizedHeader hidden={hideHeader} mode={mode} setMode={updateMode} />
       <Routes>
         <Route 
           path="/" 

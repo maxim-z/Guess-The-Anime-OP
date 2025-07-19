@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './GuessBar.css'
 import type { GuessBarProps } from '@types/props';
-import { openingAnimeGuessListEnglishTitle } from '@components/ContextProviders/GuessStatesContext';
+import { openingAnimeGuessListEnglishTitle, endingAnimeGuessListEnglishTitle } from '@components/ContextProviders/GuessStatesContext';
+import { useModeContext } from '@components/ContextProviders/ModeContext';
 
 function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [search, setSearch] = useState('');
@@ -9,11 +10,13 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
     
+    const { mode } = useModeContext();
+    const animeList = mode === 'Opening' ? openingAnimeGuessListEnglishTitle : endingAnimeGuessListEnglishTitle;
 
     // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
     const filtered = search
             // return a list of anime that match the search query
-            ? openingAnimeGuessListEnglishTitle.filter((anime) => {
+            ? animeList.filter((anime) => {
                 const animeLowerCase = anime.toLowerCase();
                 // does anime start with search
                 const matchesSearch = animeLowerCase.startsWith(search.toLowerCase());
@@ -47,6 +50,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
             setSearch('');
             setHighlightedIndex(-1);
             setSelectedAnime(null);
+            searchRef.current?.focus(); // auto-focus on search
         }
     }
 

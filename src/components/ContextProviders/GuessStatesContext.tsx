@@ -1,29 +1,38 @@
-import { filters, type FilterType, type MainSectionType } from "@types/filter"
+import { filters, type FilterType } from "@types/filter"
 import { statusFilters, type GuessedStatusType } from "@types/song"
 import { createContext, useCallback, useContext, useState, useMemo, useEffect } from "react"
-import fallBackGuessList from '../../assets/animeguesslist.txt?raw'
+import fallBackOpeningGuessList from '../../assets/animeopeningguesslist.txt?raw'
+import fallBackEndingGuessList from '../../assets/animeendingguesslist.txt?raw'
 import z from "zod"
+import { modes, type ModeType } from "@types/mode"
 
 // all possible anime guesses for the openings
-const baseList = fallBackGuessList
+const baseOpeningList = fallBackOpeningGuessList
     .split('\n')
     .map(g => g.trim())
-    .filter(Boolean);
+    // .filter(Boolean);
+// ordered
+// def title
+// eng title and so on
 
-export const openingAnimeGuessListDefaultTitle = baseList.filter((_, i) => i % 2 === 1 ? true : false);
-export const openingAnimeGuessListEnglishTitle = baseList.filter((_, i) => i % 2 === 0 ? true : false);
+export const openingAnimeGuessListDefaultTitle = baseOpeningList.filter((_, i) => i % 2 === 1 ? true : false);
+export const openingAnimeGuessListEnglishTitle = baseOpeningList.filter((_, i) => i % 2 === 0 ? true : false);
+
+// all possible anime guesses for the endings
+const baseEndingsList = fallBackEndingGuessList
+    .split('\n')
+    .map(g => g.trim())
+    // .filter(Boolean);
+// ordered
+// def title
+// eng title and so on
+
+export const endingAnimeGuessListDefaultTitle = baseEndingsList.filter((_, i) => i % 2 === 1 ? true : false);
+export const endingAnimeGuessListEnglishTitle = baseEndingsList.filter((_, i) => i % 2 === 0 ? true : false);
 
 // {filter: {songId: {status:'', guesses: []}, songId: ...}, filter: {}, ...}
 export type GuessStatesMap = {
-    ['op'] : {
-        [filter in FilterType]? : {
-            [songId : string] : {
-                'status' : GuessedStatusType, // Correct | Incorrect | None
-                'guesses' : string[] // anime_1, anime_2, anime_3... anime_n
-            }
-        }
-    }
-    ['ed'] : {
+    [mode in ModeType] : {
         [filter in FilterType]? : {
             [songId : string] : {
                 'status' : GuessedStatusType, // Correct | Incorrect | None
@@ -36,6 +45,7 @@ export type GuessStatesMap = {
 // zod enforcing typechecking section for GuessStatesMap
 // used when loading JSON Progress for guessing the songs
 // can do this because the arrays passed in are declared as [...] as const
+const modeEnum = z.enum(modes); // Opening...
 const filterEnum = z.enum(filters); // Top 1000...
 const statusEnum = z.enum(statusFilters); // Correct...
 // guess schema
@@ -51,16 +61,19 @@ const filterMapSchema = z.object(
         filterEnum.options.map((f) => [f, songMapSchema.optional()]) // Top 1000 : {songid...} Random Preset 1 ...
     )
 );
-export const guessStatesSchema = z.object({
-    op : filterMapSchema.optional(),
-    ed : filterMapSchema.optional(),
-});
+// mode -> filter
+export const guessStatesSchema = z.object(
+    Object.fromEntries(
+        modeEnum.options.map((m) => [m, filterMapSchema.optional()]) // Opening, ...
+    )
+);
+// mode -> filter -> song -> guess entry
 export type guessStatesType = z.infer<typeof guessStatesSchema>;
 
 // what information and functions the context will provide
 type GuessStateContextType = {
     guessStates: GuessStatesMap;
-    updateGuessStates: (section: MainSectionType, filter: FilterType, songId: number, newGuess: string | null, result: GuessedStatusType) => void;
+    updateGuessStates: (section: ModeType, filter: FilterType, songId: number, newGuess: string | null, result: GuessedStatusType) => void;
     loadGuessStates: (data: GuessStatesMap) => void;
     saveGuessStates: () => void;
 }
@@ -90,7 +103,7 @@ export const GuessStatesProvider = ({children} : {children: React.ReactNode}) =>
     // can update just the result by passing null for newGuess or update both by passing a string for newGuess
     const updateGuessStates = useCallback(
         (
-            section: MainSectionType,
+            section: ModeType,
             filter: FilterType, 
             songId: number, 
             newGuess: string | null, 

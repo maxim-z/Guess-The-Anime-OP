@@ -8,6 +8,8 @@ import GuessBar from "@components/GuessBar/GuessBar";
 import Hints from "@components/Hints/Hints";
 import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesContext";
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
+import { useModeContext } from "@components/ContextProviders/ModeContext";
+import type { ModeType } from "@types/mode";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
@@ -38,10 +40,10 @@ function GuessTheSong() {
     const filterContext = useFilterContext();
 
     // replace once ModeContext is written
-    const section = 'op';
+    const { mode } = useModeContext();
     
     // Did the user guess correctly and win??! and for GuessBar and MediaPlayer
-    const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[section]?.[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
+    const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[mode as ModeType]?.[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
     
     // grab the song details with the fast api
     const fetchSong = () => {
@@ -61,7 +63,7 @@ function GuessTheSong() {
     // keep local state in sync
     useEffect(() => {
         fetchSong();
-        const songEntry = guessStates[section]?.[filterContext.filter]?.[songId ?? ''];
+        const songEntry = guessStates[mode as ModeType]?.[filterContext.filter]?.[songId ?? ''];
         setGuesses(songEntry?.guesses ?? []);
         setHintsRevealed(songEntry?.guesses.length ?? 0);
         setStatus(songEntry?.status ?? 'Attempting');
@@ -80,7 +82,7 @@ function GuessTheSong() {
         setStatus(result);
         
         // update context
-        updateGuessStates(section, filterContext.filter, songId, guess, result);
+        updateGuessStates(mode, filterContext.filter, songId, guess, result);
     }, [songId, filterContext.filter, guesses, status, guessStates]);
 
     useEffect(() => {
