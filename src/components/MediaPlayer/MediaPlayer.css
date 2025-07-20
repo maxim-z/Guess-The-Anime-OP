@@ -7,4 +7,13 @@
 .Media {
     padding: 1vw;
     background: rgb(23, 128, 90);
+    position: relative;
+}
+
+.VolumeSlider {
+    height: 50px;
+    transform: rotate(-90deg);
+    position: absolute;
+    top: 100%;
+    left: 100%;
 }
