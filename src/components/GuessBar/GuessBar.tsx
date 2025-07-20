@@ -35,6 +35,11 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
         searchRef.current?.focus(); // auto-focus on search
     }, []);
 
+    // Re-focus on searchRef
+    const handleBlur = () => {
+        setTimeout(() => searchRef.current?.focus(), 0); // let other events resolve
+    };
+
     // for choosing out of list with mouse
     const handleSelect = (anime: string) => {
         setSelectedAnime(anime);
@@ -85,7 +90,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                 submitGuess();
             }
         }
-    })
+    });
 
     return (
         <div className='GuessContainer'>
@@ -107,6 +112,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                         setHighlightedIndex(-1);
                     }}
                     onKeyDown={handleKeyboardInput}
+                    onBlur={handleBlur}
                 />
                 <button 
                     onClick={submitGuess}
