@@ -20,5 +20,7 @@ export type GuessBarProps = {
 }
 
 export type MediaPlayerProps = {
+    hintsRevealed: number;
+    videoId: string;
     showVideo: boolean;
 }

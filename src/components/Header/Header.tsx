@@ -1,5 +1,7 @@
 import backgroundImgOpening from '/backgroundOpening.jpg'
 import backgroundImgEnding from '/backgroundEnding.jpg'
+import flowerField from '/flower field.jpg'
+import layingRiver from '/frieren in river.png'
 import { Link } from 'react-router-dom'
 import './Header.css'
 import StarShapes from '@components/StarShapes/StarShapes'
@@ -11,7 +13,8 @@ function Header( { hidden, mode, setMode } : HeaderProps) {
     const nextMode: ModeType = mode === 'Opening' ? 'Ending' : 'Opening';
     setMode(nextMode);
   };
-  const backgroundImg = mode === 'Opening' ? backgroundImgOpening : backgroundImgEnding;
+  // const backgroundImg = mode === 'Opening' ? backgroundImgOpening : backgroundImgEnding;
+  const backgroundImg = mode === 'Opening' ? layingRiver : flowerField;// : layingRiver;
 
   return (
     <header className='Header'>

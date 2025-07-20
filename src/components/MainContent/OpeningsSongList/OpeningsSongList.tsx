@@ -17,11 +17,9 @@ function OpeningsSongList() {
         {[...Array(numSongs)].map((_, i) => {
           const id = i+1;
           return (
-            <>
             <Link key={id} className="linky" to={`/guess?id=${id}&filter=${filterContext.filter}`}>
               <SongTile song_id={id} />
             </Link>
-            </>
           )
       })}
       </div>

@@ -1,0 +1,10 @@
+.MediaContainer {
+    width: 30vw;
+    height: 10vh;
+    background: rgb(211, 213, 132);
+}
+
+.Media {
+    padding: 1vw;
+    background: rgb(23, 128, 90);
+}

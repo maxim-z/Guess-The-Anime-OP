@@ -104,7 +104,7 @@ function GuessTheSong() {
                 {guesses}
                 <Hints hintsRevealed={hintsRevealed} song={song} />
                 <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={status === 'Correct' || status === 'Incorrect'} />
-                <MediaPlayer showVideo={status === 'Correct' || status === 'Incorrect'} />
+                <MediaPlayer hintsRevealed={hintsRevealed} videoId="o71vyLnNtBo" showVideo={status === 'Correct' || status === 'Incorrect'} />
                 <button onClick={() => navigate(-1)}>Back</button>
             </div>
         )

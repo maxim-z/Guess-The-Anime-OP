@@ -51,15 +51,13 @@ function StarShapes({ children }: StarShapesProps): JSX.Element {
           }
           const rLeft = -10 + Math.random() * 110 // %
           return (
-            <>
             <div key={`star_${id}`} className="star" 
                 style={{ width: `max(${rWidth}vw, 3px)`, /*height: `${rWidth}vw`, */
                 animation: `spin ${animationTime}s linear infinite ${animationDirection ? 'reverse' : 'normal'}`,
                 top: `${rTop}%`, left: `${rLeft}%` }}>
                 <span className='stick one'></span>
                 <span className='stick two'></span>
-              </div>
-              </>
+            </div>
             )
         })}
       </div>
