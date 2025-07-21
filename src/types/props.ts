@@ -10,6 +10,7 @@ export type HeaderProps = {
 export type HintProps = {
     hintsRevealed: number;
     song: SongType;
+    endGameState: boolean;
 }
 
 export type GuessBarProps = {

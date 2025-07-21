@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './MediaPlayer.css'
 import type { MediaPlayerProps } from '@types/props';
 import YouTube from 'react-youtube';
+import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
 
 declare global {
     interface Window {
@@ -20,6 +21,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
     const playerRef = useRef<any>(null); // a ref to the iframe player
     const [volume, setVolume] = useState(50); // 0 to 100
     const [playButton, setPlayButton] = useState(true);
+    const isMobile = useIsMobile();
     
     const handleReady = (e: any) => {
         playerRef.current = e.target;
@@ -85,6 +87,14 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
         return () => clearInterval(intervalId);
     }, [isPlaying, hintsRevealed]);
 
+    const changePlayTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const playAt = Math.floor(Number.parseInt(e.target.value));
+        setCurrentTime(playAt);
+        setIsPlaying(true);
+        playerRef.current.seekTo(playAt);
+        playerRef.current.playVideo();
+    };
+
     const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         const vol = Number.parseInt(e.target.value);
         setVolume(vol);
@@ -101,52 +111,56 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
 
     return ( 
         <div className="MediaContainer">
-            <YouTube
-                videoId={videoId}
-                onReady={handleReady}
-                opts={{
-                    height: `${showVideo ? "360" : "0"}`,
-                    width: `${showVideo ? "640" : "0"}`,
-                    playerVars: {
-                        autoplay: 0,
-                        controls: 1,
-                        modestbranding: 1,
-                        rel: 0,
-                        enablejsapi: 1,
-                    },
-                }}
-            />
+            <div className={`${showVideo ? 'FullSizeVideoContainer' : 'YouTubeContainer'}`}>
+                <YouTube
+                    videoId={videoId}
+                    onReady={handleReady}
+                    opts={{
+                        width: `${isMobile ? (showVideo ? 360 : 0) : (showVideo ? 640 : 0)}`,
+                        height: `${isMobile ? (showVideo ? 240 : 0) : (showVideo ? 360 : 0)}`,
+                        playerVars: {
+                            autoplay: 0,
+                            controls: 1,
+                            modestbranding: 1,
+                            rel: 0,
+                            enablejsapi: 1,
+                        },
+                    }}
+                />
+            </div>
             {!showVideo && (
                 <div className="Media">
-                    <button 
-                        className="PlayButton"
-                        onClick={handleClick}
-                        // onMouseDown={(e) => e.preventDefault()}
-                        disabled={playButton}
-                    >
-                        PlayButton
-                    </button>
-                    <div className="PlayTimeBar">
-                        <span>{Math.min(currentTime, interval[hintsRevealed])}</span>
-                        <input 
-                            className="Progress"
-                            type="range" 
-                            min="0" 
-                            max={interval[hintsRevealed]} 
-                            value={Math.min(currentTime, interval[hintsRevealed])} 
-                            readOnly={true}
-                        />
-                        <span>{interval[hintsRevealed]}</span>
+                    <div className='PlayButtonContainer'>
+                        <button 
+                            className="PlayButton"
+                            onClick={handleClick}
+                            disabled={playButton}
+                        >
+                        </button>
                     </div>
-                    <div className="VolumeSlider">
-                        <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            value={volume} 
-                            className="Slider"
-                            onChange={(e) => changeVolume(e)}
-                        />
+                    <div className='SlidersContainer'>
+                        <div className="PlayTimeBar">
+                            <span>{Math.min(currentTime, interval[hintsRevealed])}</span>
+                            <input 
+                                className="Progress"
+                                type="range" 
+                                min="0" 
+                                max={interval[hintsRevealed]} 
+                                value={Math.min(currentTime, interval[hintsRevealed])} 
+                                onChange={(e) => changePlayTime(e)}
+                            />
+                            <span>{interval[hintsRevealed]}</span>
+                        </div>
+                        <div className="VolumeSlider">
+                            <input 
+                                className="Slider"
+                                type="range" 
+                                min="0" 
+                                max="100" 
+                                value={volume} 
+                                onChange={(e) => changeVolume(e)}
+                            />
+                        </div>
                     </div>
                 </div>  
             )}

@@ -6,14 +6,27 @@
   /* overflow-x: hidden; */
 }
 
-body, html, #root {
-  width: 100%;
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  /* overflow: hidden; */
+}
+
+/* body, html, #root {
+  width: 100vw;
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* display: block; */
-}
+  
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+} */
 
 /* Variables */
 :root {
@@ -25,6 +38,29 @@ body, html, #root {
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   --random-song-size: max(75px, 10vw);
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.App {
+  width: 100%;
+  /* height: 90%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* overflow: hidden; */
 }
 
 .Opening {
@@ -35,11 +71,6 @@ body, html, #root {
   --secondary-color: #E0D0EA;
   --tertiary-color: #F7C8D2;
   --quad-color: #364832;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 
   /* StarShapes.css */
   --star-color: white;
@@ -60,14 +91,9 @@ body, html, #root {
 
 .Ending {
   --primary-color: #EF3952;
-  --secondary-color: #B36EC7;
-  --tertiary-color: #7B5240;
+  --secondary-color: #7B5240;
+  --tertiary-color: #B36EC7;
   --quad-color: #F2DA70;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   
   /* StarShapes.css */
   --star-color: rgb(128, 255, 138);

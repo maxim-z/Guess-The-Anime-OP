@@ -1,36 +1,19 @@
 import { useEffect, useState, type JSX, type ReactHTMLElement } from 'react';
 import './StarShapes.css'
 import type { HeaderProps } from '@types/props';
+import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
 
-type StarShapesProps = {
-    children?: React.ReactNode;
-  };
-
-function StarShapes({ children }: StarShapesProps): JSX.Element {
+function StarShapes() {
   const [numStars, setStars] = useState(30);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // re render
   }, [numStars]);
 
   useEffect(() => {
-    // set the initial value and update number of stars based on it
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    if (mediaQuery.matches) {
-      setStars(15);
-    }
-    // handle the change
-    const handleResize = (e : MediaQueryListEvent) => {
-      // only change it when screen size changes from mobile to computer
-      setStars(e.matches ? 15 : 30)
-    }
-    // listen to changes
-    mediaQuery.addEventListener('change', handleResize);
-    // remove listener after unmount
-    return () => {
-      mediaQuery.removeEventListener('change', handleResize);
-    }
-  }, []);
+    setStars(isMobile ? 15 : 30); // render less stars for smaller screens
+  }, [isMobile]);
 
   return (
     <div className='stars'>

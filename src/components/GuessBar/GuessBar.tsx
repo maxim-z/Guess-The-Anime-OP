@@ -124,7 +124,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
             
             {/* Put guessed entries here */}
             {guesses.length > 0 && (
-                <ul>
+                <ul className='GuessedList'>
                     {guesses.map((guess, i) => (
                         <li
                             key={`guess_${guess}`}

@@ -8,9 +8,15 @@ function Main() {
     return (
         <div className='MainFilter'>
           <div className='MainContent'>
-            <Dropdown />
-            <OpeningsSongList />
-            <SaveLoad />
+            {/* <div className='PreventScrollable'> */}
+              <Dropdown />
+            {/* </div> */}
+            {/* <div className='SongWrapper'> */}
+              <OpeningsSongList />
+            {/* </div> */}
+            {/* <div className='PreventScrollable'> */}
+              <SaveLoad />
+            {/* </div> */}
           </div>
         </div>
     )

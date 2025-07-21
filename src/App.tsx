@@ -21,7 +21,7 @@ function App() {
   const hideHeader = location.pathname.startsWith('/guess');
 
   return (
-    <div className={mode}>
+    <div className={`App ${mode}`}>
       {/* {!hideHeader && <Header mode={mode} setMode={setMode}/>} */}
       <MemoizedHeader hidden={hideHeader} mode={mode} setMode={updateMode} />
       <Routes>

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { filters, type FilterType } from "@types/filter";
-import type { GuessedStatusType, SongType } from "@types/song";
+import { type GuessedStatusType, type SongType } from "@types/song";
 import './GuessTheSong.css';
 import MediaPlayer from "@components/MediaPlayer/MediaPlayer";
 import GuessBar from "@components/GuessBar/GuessBar";
@@ -10,6 +10,7 @@ import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesC
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useModeContext } from "@components/ContextProviders/ModeContext";
 import type { ModeType } from "@types/mode";
+import { MAX_SONGS } from "@config/config";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
@@ -19,14 +20,12 @@ function GuessTheSong() {
     
     // grab needed parameters from the current url
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const id = queryParams.get('id');
-    const filter = queryParams.get('filter');
+    const [queryParams, setQueryParams] = useState<URLSearchParams | null>(null);
     // get id and filter from /guess?id=...&filter=...
-    const songId = id ? parseInt(id, 10) : null;
-    const decodedFilter = filter ?? "";
+    const [songId, setSongId] = useState<number | null>(null);
+    const [decodedFilter, setDecodedFilter] = useState<FilterType | string>('');
     // check that the id is valid and that decodedFilter matches one of the FilterType strings
-    const validSong = songId && songId > 0 && songId < 1001 && filters.map((f) => f == decodedFilter).length > 0;
+    // const validSong = songId && songId > 0 && songId < 1001 && filters.map((f) => f == decodedFilter).length > 0;
 
     const [song, setSong] = useState<SongType>(null);
     const [error, setError] = useState<string | null>(null);
@@ -37,20 +36,27 @@ function GuessTheSong() {
     
     // update guess states
     const { guessStates, updateGuessStates } = useGuessStatesContext();
-    const filterContext = useFilterContext();
+    const { filter, updateFilter } = useFilterContext();
 
     // replace once ModeContext is written
     const { mode } = useModeContext();
     
     // Did the user guess correctly and win??! and for GuessBar and MediaPlayer
-    const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[mode as ModeType]?.[filterContext.filter]?.[songId ?? ""]?.status ?? 'Attempting');
+    const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[mode as ModeType]?.[filter]?.[songId ?? ""]?.status ?? 'Attempting');
+    // Did an end game state get reached?
+    const [endGameState, setendGameState] = useState(() => status === 'Correct' || status === 'Incorrect');
     
     // grab the song details with the fast api
     const fetchSong = () => {
-        if (!songId) return;
+        if (!songId || decodedFilter === '') {
+            setSong(null);
+            setError(`Song ${songId} with filter does not exist`);
+            return;
+        }
         fetch(`http://localhost:8080/song?id=${songId}&filter=${decodedFilter}`)
             .then((res) => {
                 if (!res.ok) {
+                    setSong(null);
                     setError(`${res.status}: Error fetching song ${songId}`);
                     throw new Error(`Error fetching song ${songId}: ${res.status}`);
                 }
@@ -60,14 +66,39 @@ function GuessTheSong() {
             .catch((err) => console.error("Fetch error:", err));
     }
 
+    // when using buttons to navigate need to read in params from location again
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        setQueryParams(queryParams);
+        const id = queryParams.get('id');
+        const filter = queryParams.get('filter') ?? '';
+        // get id and filter from /guess?id=...&filter=...;
+        const parsedId = id ? parseInt(id) >= 1 && parseInt(id) <= MAX_SONGS ? parseInt(id) : null : null;
+        const decodedFilter = filters.includes(filter as FilterType) ? filter as FilterType : '';
+
+        // check if it's a valid id if not set to null
+        if (parsedId && parsedId >= 1 && parsedId <= MAX_SONGS) {
+            setSongId(parsedId);
+        } else {
+            setSongId(null);
+        }
+        setDecodedFilter(decodedFilter);
+        if (filter !== '') updateFilter(filter as FilterType);
+    }, [location.search]);
+
+    // check if the end game state has been reached
+    useEffect(() => {
+        setendGameState(status === 'Correct' || status === 'Incorrect');
+    }, [status]);
+
     // keep local state in sync
     useEffect(() => {
         fetchSong();
-        const songEntry = guessStates[mode as ModeType]?.[filterContext.filter]?.[songId ?? ''];
+        const songEntry = guessStates[mode as ModeType]?.[filter]?.[songId ?? ''];
         setGuesses(songEntry?.guesses ?? []);
         setHintsRevealed(songEntry?.guesses.length ?? 0);
         setStatus(songEntry?.status ?? 'Attempting');
-    }, [songId, filterContext.filter, guessStates]);
+    }, [songId, filter, guessStates]);
 
     const submitGuess = useCallback((newGuess : string) => {
         const guess = newGuess.trim();
@@ -82,36 +113,67 @@ function GuessTheSong() {
         setStatus(result);
         
         // update context
-        updateGuessStates(mode, filterContext.filter, songId, guess, result);
-    }, [songId, filterContext.filter, guesses, status, guessStates]);
+        updateGuessStates(mode, filter, songId, guess, result);
+    }, [songId, filter, guesses, status, hintsRevealed, guessStates]);
 
     useEffect(() => {
         console.log('guessStates updated', guessStates);
     }, [guessStates]);
 
     // return appropriate html based on song and error states
-    if (validSong && song) {
+    // only returns GuessTheSong if the song fetched from the db exists
+    if (song) {
         return (
-            <div>
-                <div>Guess the song {songId} and {decodedFilter}</div>
-                <div>Num guesses: {hintsRevealed}</div>
+            <div className="GuessTheSongContainer">
+                <div className="Title">Guess song {songId}!</div>
+                <div>{decodedFilter}</div>
+                {/* <div>Num guesses: {hintsRevealed}</div> */}
                 {status === 'Correct' && (
                     <div>You guessed correctly!</div>
                 )}
                 {status === 'Incorrect' && (
                     <div>Better Luck Next Time!</div>
                 )}
-                {guesses}
-                <Hints hintsRevealed={hintsRevealed} song={song} />
-                <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={status === 'Correct' || status === 'Incorrect'} />
-                <MediaPlayer hintsRevealed={hintsRevealed} videoId="o71vyLnNtBo" showVideo={status === 'Correct' || status === 'Incorrect'} />
-                <button onClick={() => navigate(-1)}>Back</button>
+                <div className="AnimeInfoContainer">
+                    {endGameState && (
+                        <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
+                    )}
+                    <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
+                </div>
+                <MediaPlayer hintsRevealed={hintsRevealed} videoId="o71vyLnNtBo" showVideo={endGameState} />
+                <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
+                <div className="ButtonsContainer">
+                    <button 
+                        onClick={() => {
+                            if (songId && queryParams) {
+                                const prevId = songId > 1 ? songId - 1 : MAX_SONGS;
+                                queryParams.set('id', prevId.toString());
+                                navigate(`/guess?${queryParams.toString()}`);
+                            }
+                        }}
+                    >
+                        Prev
+                    </button>
+                    <button onClick={() => navigate('/')}>Back</button>
+                    <button
+                        onClick={() => {
+                            if (songId && queryParams) {
+                                const nextId = songId < MAX_SONGS ? songId + 1 : 1;
+                                queryParams.set('id', nextId.toString());
+                                navigate(`/guess?${queryParams.toString()}`);
+                            }
+                        }}
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         )
     } else if (error) {
         return (
             <div>
                 <div>{error}</div>
+                <button onClick={() => navigate(-1)}>Back</button>
             </div>
         )
     } else {

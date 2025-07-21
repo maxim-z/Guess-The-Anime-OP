@@ -1,3 +1,12 @@
+
+.AnimeSearchList {
+    /* list-style: none; */
+}
+
+.GuessedList {
+    list-style: none;
+}
+
 .Highlighted {
     background-color: rgba(232, 250, 252, 0.5);
 }
