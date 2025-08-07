@@ -125,7 +125,7 @@ function GuessTheSong() {
     if (song) {
         return (
             <div className="GuessTheSongContainer">
-                <div className="Title">Guess song {songId}!</div>
+                <div className="">Guess song {songId}!</div>
                 <div>{decodedFilter}</div>
                 {/* <div>Num guesses: {hintsRevealed}</div> */}
                 {status === 'Correct' && (
@@ -136,7 +136,10 @@ function GuessTheSong() {
                 )}
                 <div className="AnimeInfoContainer">
                     {endGameState && (
-                        <div>
+                        <div 
+                            className="ColWrapper" 
+                            style={{textAlign: 'center'}}
+                        >
                             {song.def_title}
                             <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
                         </div>

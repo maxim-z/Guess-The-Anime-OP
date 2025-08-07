@@ -26,6 +26,7 @@
 }
 
 .AnimeInfoContainer {
+    /* background: blue; */
     display: flex;
     flex-direction: row;
 }

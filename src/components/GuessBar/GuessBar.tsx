@@ -9,6 +9,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [selectedAnime, setSelectedAnime] = useState<string | null>(null);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
+    const lastListElementRef = useRef<HTMLUListElement>(null); //is it ulist? i have to double check
     
     const { mode } = useModeContext();
     const animeList = mode === 'Opening' ? openingAnimeGuessListEnglishTitle : endingAnimeGuessListEnglishTitle;
@@ -96,10 +97,22 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
 
     return (
         <div className='GuessContainer'>
+            {/* Put guessed entries here */}
+            {guesses.length > 0 && (
+                <ul className='GuessedList'>
+                    {guesses.map((guess, i) => (
+                        <li
+                            key={`guess_${guess}_${i}`}
+                            className={(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}>
+                           {guess} 
+                        </li>
+                    ))}
+                </ul>
+            )}
             {/* Want to add a submit button which will use the selectedAnime as input
                 and if the user presses enter in the input it will submit it as well as a guess */}
             {!disabled && (
-                <div>
+            <div>
                 <input 
                     type='text'
                     ref={searchRef}
@@ -117,30 +130,20 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     onBlur={handleBlur}
                 />
                 <button 
+                    className='SubmitSearchButton'
                     onClick={submitGuess}
                     // disabled={!selectedAnime}
                 >
-                    {`${selectedAnime ? 'Submit Guess!' : 'Skip'}`}
+                    {`${selectedAnime ? 'Guess!' : 'Skip'}`}
                 </button>
             </div>)}
             
-            {/* Put guessed entries here */}
-            {guesses.length > 0 && (
-                <ul className='GuessedList'>
-                    {guesses.map((guess, i) => (
-                        <li
-                            key={`guess_${guess}_${i}`}
-                            className={(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}>
-                           {guess} 
-                        </li>
-                    ))}
-                </ul>
-            )}
 
             {filtered.length > 0 && (
                 <ul className='AnimeSearchList'>
                     {filtered.map((anime, i) => (
                         <li
+                            // ref={i == filtered.length - 1 ? } // set a ref for it or something idk? or onChange function?
                             key={anime}
                             className={`AnimeItem ${i == highlightedIndex ? 'Highlighted' : ''}`}
                             onClick={ () => { 

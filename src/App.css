@@ -105,3 +105,9 @@ body {
   --linear-gradient-four: #29ff28;
   --linear-gradient-five: #01ff00;
 }
+
+/* Generic classes */
+.ColWrapper {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,25 @@
+.HintContainer {
+    width: min(400px, 20vw);
+}
+
+.Hint {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    border: 3px solid silver;
+    text-align: center;
+    text-wrap: wrap;
+}
+
+.Hint.NewHint {
+    /* transform: rotate3d(1, 1, 1, 45deg); */
+    animation: flipHints 0.1s ease-in 5;
+}
+
+@keyframes flipHints {
+    0% {
+        transform: rotate3d(0,0,0,0deg);
+    }
+    100% {
+        transform: rotate3d(1,0,0,360deg);
+    }
+}
