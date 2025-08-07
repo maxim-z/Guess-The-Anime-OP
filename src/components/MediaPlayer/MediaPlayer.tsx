@@ -20,22 +20,24 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false); // is video playing?
     const playerRef = useRef<any>(null); // a ref to the iframe player
     const [volume, setVolume] = useState(50); // 0 to 100
-    const [playButton, setPlayButton] = useState(true);
+    const [playButton, setPlayButton] = useState(false);
     const isMobile = useIsMobile();
     
     const handleReady = (e: any) => {
         playerRef.current = e.target;
         // reset everything
         playerRef.current.setVolume(volume);
-        setPlayButton(false); // wait for video to load before being able to play the song
+        setPlayButton(true); // wait for video to load before being able to play the song
         setIsPlaying(false);
         setCurrentTime(0);
     };
 
     const handleClick = () => {
         if (playerRef.current) {
-            // if it's paused then play
-            if (playerRef.current.getPlayerState() === window.YT.PlayerState.PAUSED) {
+            // if it's paused or ready to be played then play
+            if (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED 
+                || playerRef.current.getPlayerState() === window.YT.PlayerState.PAUSED) {
+                console.log("clicked");
                 playerRef.current.playVideo();
                 setIsPlaying(true);
             
@@ -43,20 +45,14 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
             } else if (playerRef.current.getPlayerState() === window.YT.PlayerState.PLAYING) {
                 playerRef.current.pauseVideo();
                 setIsPlaying(false);
-            
-            // when video just loads unmute and play it
-            } else if (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED) {
-                playerRef.current.unMute();
-                playerRef.current.playVideo();
-                setIsPlaying(true);
             }
         }
     };
 
     const resetVideoToStart = () => {
         if (playerRef.current) {
-            playerRef.current.pauseVideo();
             playerRef.current.seekTo(0);
+            playerRef.current.pauseVideo();
             setIsPlaying(false);
             setCurrentTime(0);
         }
@@ -132,15 +128,15 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                 <div className="Media">
                     <div className='PlayButtonContainer'>
                         <button 
-                            className="PlayButton"
+                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'}`}
                             onClick={handleClick}
-                            disabled={playButton}
+                            disabled={!playButton}
                         >
                         </button>
                     </div>
                     <div className='SlidersContainer'>
                         <div className="PlayTimeBar">
-                            <span>{Math.min(currentTime, interval[hintsRevealed])}</span>
+                            <span className='TimeShow'>{Math.min(currentTime, interval[hintsRevealed])}</span>
                             <input 
                                 className="Progress"
                                 type="range" 
@@ -149,7 +145,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                                 value={Math.min(currentTime, interval[hintsRevealed])} 
                                 onChange={(e) => changePlayTime(e)}
                             />
-                            <span>{interval[hintsRevealed]}</span>
+                            <span className='TimeShow'>{interval[hintsRevealed]}</span>
                         </div>
                         <div className="VolumeSlider">
                             <input 

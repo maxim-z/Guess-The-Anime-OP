@@ -9,17 +9,20 @@
     align-items: center;
 }
 
+/* don't need the video to be visible while guessing */
 .YouTubeContainer {
     width: 0%;
     height: 0%;
     /* background: rgba(179, 98, 58, 0.675); */
 }
 
+/* once an end game state is reached need to show the video */
 .FullSizeVideoContainer {
     width: 640px;
     height: 360px;
 }
 
+/* for mobile */
 @media only screen and (max-width: 768px) {
     .FullSizeVideoContainer {
         width: 360px;
@@ -30,7 +33,10 @@
 .Media {
     position: relative;
     width: 50vw;
+    max-width: 300px;
     height: 25vw;
+    max-height: 150px;
+    aspect-ratio: 2 / 1;
     padding: 2vw;
     /* transform: translate(-3%, -10%); */
     background: rgb(23, 128, 90);
@@ -39,7 +45,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 3vw;
 }
 
 .Media::after {
@@ -59,48 +64,77 @@
     background: green;
 }
 
-.PlayButton {
+/* Play Button Triangle */
+.PlayPauseButton {
     position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: -10%;
+    left: calc(50% - 2.5vw);
+    /* transform: translate(-50%, -50%); */
 
     height: 10vw;
     width: 10vw;
     
+    /* background: rgba(0, 0, 0, 0.3); */
     background: none;
     border: none;
 }
 
-.PlayButton::before {
+.PlayPauseButton.Play::before {
     content: '';
     position: absolute;
     left: 3vw;
     top: 0.5vw;
     width: 0;
     height: 0;
-    border-top: 8vw solid transparent;
-    border-left: 16vw solid rgba(0, 0, 0, 0.3);
-    border-bottom: 8vw solid transparent;
+    border-top: min(8vw, 50px) solid transparent;
+    border-left: min(16vw, 100px) solid rgba(0, 0, 0, 0.3);
+    border-bottom: min(8vw, 50px) solid transparent;
     z-index: 0;
     filter: blur(5px);
 }
 
-.PlayButton::after {
+.PlayPauseButton.Play::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 0;
     height: 0;
-    border-top: 7vw solid transparent;
-    border-left: 14vw solid red;
-    border-bottom: 7vw solid transparent;
+    border-top: min(7vw, 45px) solid transparent;
+    border-left: min(14vw, 90px) solid #f21919;
+    border-bottom: min(7vw, 45px) solid transparent;
     /* filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.5)); */
 }
 
-.PlayButton:hover::after {
-    border-left: 14vw solid rgba(184, 69, 69, 0.907);
+.PlayPauseButton.Play:hover::after {
+    border-left: min(14vw, 90px) solid rgba(184, 69, 69, 0.907);
+}
+
+/* Pause Button two sticks */
+.PlayPauseButton.Pause::before {
+    content: '';
+    position: absolute;
+    left: 3vw;
+    top: 0.5vw;
+    width: 0;
+    height: 0;
+    border: min(7vw, 45px) solid black;
+    z-index: 0;
+    filter: blur(5px);
+}
+
+.PlayPauseButton.Pause::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: min(7vw, 45px) solid #f21919;
+}
+
+.PlayPauseButton.Pause:hover::after {
+    border: min(7vw, 45px) solid rgba(184, 69, 69, 0.907);
 }
 
 .SlidersContainer {
@@ -115,7 +149,7 @@
 
 .PlayTimeBar {
     position: absolute;
-    top: 50% ;
+    top: 50%;
     left: 0;
     width: 100%;
     height: 100%;

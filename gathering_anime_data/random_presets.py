@@ -37,12 +37,12 @@ def confirm_1000(fname):
             for index, a in enumerate(all, start=1):
                 print(f"index {index} -> a:{a} b:{to_1000[index-1]}")
 
-# write_order(1380729, 5)
-# write_order(29852731, 5)
-# write_order(32859871, 5)
-# write_order(4982729739, 5)
-# write_order(9387128740, 5)
-# write_order(529567109, 5)
+write_order(1380729, 1000)
+write_order(29852731, 1000)
+write_order(32859871, 1000)
+write_order(4982729739, 1000)
+write_order(9387128740, 1000)
+write_order(529567109, 1000)
 # confirm_1000("1380729.txt")
 # confirm_1000("29852731.txt")
 # confirm_1000("32859871.txt")

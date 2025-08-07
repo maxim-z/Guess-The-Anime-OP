@@ -73,7 +73,7 @@ def save_yt_searches_json(cursor, start_index : int, table, dir, yt_api):
     # max_range = biggest_file_num if len(rows) >= biggest_file_num else len(rows)
     rows = get_table(cursor, table)
     completed = 0
-    for index in range(start_index, len(rows)):
+    for index in range(start_index, len(rows)+1):
         # if a file already exists skip it
         if os.path.exists(os.path.join(dir, f"{index}.json")):
             print(f"Skipping [{index}]")
@@ -91,8 +91,9 @@ def save_yt_searches_json(cursor, start_index : int, table, dir, yt_api):
             break
         # writeTo = os.path.join(dir, f"{index}.json")
         # print(f"saving to {writeTo}")
-        time.sleep(random.uniform(10.0, 15.0))
+        time.sleep(random.uniform(1.5, 3.0))
 
+# uses yt api to get the viewcounts of a max of 50 video ids per call
 def get_youtube_videos_viewcount(yt_api, video_ids):
     ids_string = ",".join(video_ids)
     request = yt_api.videos().list(
@@ -109,50 +110,113 @@ def get_youtube_videos_viewcount(yt_api, video_ids):
         # print(f"video_id: {id} view_count: {view_count}")
     return view_counts
 
-# saves the viewcounts of the videos from the op_search_results/num_search.json into 
-def save_yt_viewcounts_json(yt_api, start, video_ids):
+# saves the viewcounts of the videos from the op_search_results/num_search.json into
+# takes up to 50 video ids which is the max for each search result being used
+def save_yt_viewcounts_json(yt_api, json_index, video_ids):
     viewcounts = get_youtube_videos_viewcount(yt_api, video_ids)
-    print(f"viewCounts -> {viewcounts}")
-    lengthOfSearches = 10 # each op/ed search result contains 10 results
-    for i in range(5):
-        wpath = os.path.join(OP_VIEWCOUNTS_JSON, f"{start+i}.json")
-        print(f"writing to {wpath}")
-        with open(wpath, "w", encoding="utf-8") as wfile:
-            wfile.write("[")
-            # i*10 because we want ranges of 10 since that's how many videos are included in each search
-            # 0-9, 10-19, ... 40-49
-            for index, viewcount in enumerate(viewcounts[i*lengthOfSearches:(i+1)*lengthOfSearches], start=i*lengthOfSearches):
-                vdict = {"videoId": video_ids[index], "viewCount": viewcount}
-                # print(f"index: {index} {vdict}")
-                wfile.write(json.dumps(vdict, ensure_ascii=False))
-                if index < (i+1)*lengthOfSearches - 1: # ex [10:20] grabs 10-19 so we want index < 19 not 20
-                    wfile.write(", ")
-            wfile.write("]")
+    len_viewcounts = len(viewcounts)
+    # print(f"viewCounts -> {viewcounts}")
+    wpath = os.path.join(OP_VIEWCOUNTS_JSON, f"{json_index}.json")
+    print(f"writing to {wpath}")
+    # writing to anime_json/op_viewcounts/json_index.json
+    with open(wpath, "w", encoding="utf-8") as wfile:
+        wfile.write("[")
+        for index, viewcount in enumerate(viewcounts, start=0):
+            vdict = {"videoId": video_ids[index], "viewCount": viewcount}
+            # print(f"index: {index} {vdict}")
+            wfile.write(json.dumps(vdict, ensure_ascii=False))
+            if index < len_viewcounts - 1:
+                wfile.write(", ")
+        wfile.write("]")
 
 # if you want to batch write for 1-1000.json start = 1 end = 1000
+# each file has up to 50 searches and yt api takes a max of 50 so we'll do one yt api call per file
 def save_batch_yt_viewcounts_json(yt_api, start, end):
-    total_batches = int(((end+1) - start) / 5)
-    for i in range(start, end+1, 5):
+    errors = []
+    for i in range(start, end+1):
+        # if this file has already been done skip it
+        vpath = os.path.join(OP_VIEWCOUNTS_JSON, f"{i}.json")
+        if os.path.exists(vpath):
+            print(f"Skipping [{i}]")
+            continue
+
+        # get the max 50 video ids from searches
         video_ids = []
-        # yt api accepts up to 50 video ids per list so 10 per json file which is 5 files
-        for x in range(5):
-            fpath = os.path.join(OP_SEARCH_RESULTS_JSON, f"{i+x}.json")
-            print(f"opening file {fpath}")
-            # just to make sure program doesnt crash on accident
-            if os.path.exists(fpath):
-                with open(fpath, "r", encoding="utf-8") as file:
+        fpath = os.path.join(OP_SEARCH_RESULTS_JSON, f"{i}.json")
+        # print(f"opening file {fpath}")
+        # just to make sure program doesnt crash on accident
+        if os.path.exists(fpath):
+            with open(fpath, "r", encoding="utf-8") as file:
+                try:
                     searches = json.load(file)
                     for search in searches['items']:
                         video_ids.append(search['id']['videoId'])
+                except:
+                    print(f"Skipping [{i}] JSON Decode Error")
+                    errors.append(f"Skipping [{i}] JSON Decode Error")
+                    continue
+        else:
+            print(f"Skipping [{i}] Search file does not exist")
+            errors.append(f"Skipping [{i}] Search file does not exist")
+            continue
 
-        batch_num = int((i - start) / 5) + 1
-        print(video_ids)
+        # print(video_ids)
         if len(video_ids) > 0:
             save_yt_viewcounts_json(yt_api, i, video_ids) # i=1 -> 1.json, i=1000 -> 1000.json
-            print(f"Completed batch {batch_num}/{total_batches}")
+            print(f"Completed [{i}]")
+            time.sleep(random.uniform(1.0, 1.5))
         else:
-            print(f"No youtube id's found batch {batch_num}/{total_batches} not completed")
-        time.sleep(random.uniform(1.0, 1.5))
+            print(f"Zero youtube id's found batch {i}/{end} not completed")
+            errors.append(f"Skipping [{i}] Zero youtube id's found")
+    with open('viewcount_errors.txt', 'w', encoding='utf-8') as f:
+        for e in errors:
+            f.write(f"{e}\n")
+
+# DEPRECATED only use if each file has 10 searches, uses up to 5 files at once to hit max efficicency for yt api call
+# def save_yt_viewcounts_json(yt_api, start, video_ids):
+#     viewcounts = get_youtube_videos_viewcount(yt_api, video_ids)
+#     print(f"viewCounts -> {viewcounts}")
+#     lengthOfSearches = 10 # each op/ed search result contains 10 results
+#     for i in range(5):
+#         wpath = os.path.join(OP_VIEWCOUNTS_JSON, f"{start+i}.json")
+#         print(f"writing to {wpath}")
+#         with open(wpath, "w", encoding="utf-8") as wfile:
+#             wfile.write("[")
+#             # i*10 because we want ranges of 10 since that's how many videos are included in each search
+#             # 0-9, 10-19, ... 40-49
+#             for index, viewcount in enumerate(viewcounts[i*lengthOfSearches:(i+1)*lengthOfSearches], start=i*lengthOfSearches):
+#                 vdict = {"videoId": video_ids[index], "viewCount": viewcount}
+#                 # print(f"index: {index} {vdict}")
+#                 wfile.write(json.dumps(vdict, ensure_ascii=False))
+#                 if index < (i+1)*lengthOfSearches - 1: # ex [10:20] grabs 10-19 so we want index < 19 not 20
+#                     wfile.write(", ")
+#             wfile.write("]")
+
+
+# DEPRECATED only use if each json file contains 10 searches
+# def save_batch_yt_viewcounts_json(yt_api, start, end):
+#     total_batches = int(((end+1) - start) / 5)
+#     for i in range(start, end+1, 5):
+#         video_ids = []
+#         # yt api accepts up to 50 video ids per list so 10 per json file which is 5 files
+#         for x in range(5):
+#             fpath = os.path.join(OP_SEARCH_RESULTS_JSON, f"{i+x}.json")
+#             print(f"opening file {fpath}")
+#             # just to make sure program doesnt crash on accident
+#             if os.path.exists(fpath):
+#                 with open(fpath, "r", encoding="utf-8") as file:
+#                     searches = json.load(file)
+#                     for search in searches['items']:
+#                         video_ids.append(search['id']['videoId'])
+
+#         batch_num = int((i - start) / 5) + 1
+#         print(video_ids)
+#         if len(video_ids) > 0:
+#             save_yt_viewcounts_json(yt_api, i, video_ids) # i=1 -> 1.json, i=1000 -> 1000.json
+#             print(f"Completed batch {batch_num}/{total_batches}")
+#         else:
+#             print(f"No youtube id's found batch {batch_num}/{total_batches} not completed")
+#         time.sleep(random.uniform(1.0, 1.5))
 
 class MaxHeap(object):
     def __init__(self, item): self.item = item

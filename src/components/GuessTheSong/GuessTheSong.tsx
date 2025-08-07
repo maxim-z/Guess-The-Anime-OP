@@ -102,13 +102,13 @@ function GuessTheSong() {
 
     const submitGuess = useCallback((newGuess : string) => {
         const guess = newGuess.trim();
-        if (!songId || guess === '') return;
+        if (!songId) return;
 
         // update local ui
         setHintsRevealed((prev) => prev + 1);
         setGuesses((prev) => [...prev, guess]);
         const guessedAnimeCorrectly = song?.def_title === guess || song?.eng_title === guess;
-        const failedToGuess = hintsRevealed === 6 ? true : false;
+        const failedToGuess = hintsRevealed === 5 ? true : false;
         const result : GuessedStatusType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
         setStatus(result);
         
@@ -136,11 +136,14 @@ function GuessTheSong() {
                 )}
                 <div className="AnimeInfoContainer">
                     {endGameState && (
-                        <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
+                        <div>
+                            {song.def_title}
+                            <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
+                        </div>
                     )}
                     <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
                 </div>
-                <MediaPlayer hintsRevealed={hintsRevealed} videoId="o71vyLnNtBo" showVideo={endGameState} />
+                <MediaPlayer hintsRevealed={hintsRevealed} videoId={song.yt_video_id} showVideo={endGameState} />
                 <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
                 <div className="ButtonsContainer">
                     <button 

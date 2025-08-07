@@ -18,7 +18,9 @@ TOP_1000_OP_DB = os.path.join(FILE_PATH, "../fastapi/top_1000.db")
 # sqlite tables 
 ANIME_TABLE = "anime"
 YT_OPS_TABLE = "yt_ops"
+LEN_YT_OPS = 4450
 YT_EDS_TABLE = "yt_eds"
+LEN_YT_EDS = 7467
 ALL_TABLES = [ANIME_DB, YT_OPS_TABLE, YT_EDS_TABLE]
 # folders
 RANDOM_PRESETS = os.path.join(FILE_PATH, "random_presets/")
@@ -248,3 +250,25 @@ def initialize_random_presets_table(cursor, connection, num_orders):
 # initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS_JSON)
 # create_table_anime(cursor)
 # transfer_anime_to_db(1,200, cursor, connection)
+
+# write viewcounts to yt_ops
+def write_viewcounts(cursor, connection, table):
+    len_table = LEN_YT_OPS if table == YT_OPS_TABLE else YT_EDS_TABLE
+    for i in range(1, len_table+1):
+        fpath = os.path.join(FILE_PATH, f"anime_json/op_viewcounts/{i}.json")
+        if os.path.exists(fpath):
+            with open(fpath, "r", encoding="utf-8") as f:
+                obj = json.load(f)
+                max = len(obj) if len(obj) < 5 else 5
+                videoId = ''
+                highestViewcount = 0
+                for j in range(0, max):
+                    currViewcount = obj[j]['viewCount']
+                    if currViewcount > highestViewcount:
+                        videoId = obj[j]['videoId']
+                        highestViewcount = currViewcount
+                update_row(cursor, connection, table, 'yt_video_id', videoId, i)
+                update_row(cursor, connection, table, 'yt_viewcount', highestViewcount, i)
+            print(f"Completed [{i}]")
+        else:
+            print(f"Skipped [{i}]")

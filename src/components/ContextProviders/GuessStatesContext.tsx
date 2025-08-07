@@ -114,7 +114,7 @@ export const GuessStatesProvider = ({children} : {children: React.ReactNode}) =>
                 // see if guesses are empty
                 const prevGuesses = sectionData[filter]?.[songId]?.guesses ?? [];
                 // update with a new guess if it exists and isn't just an empty string
-                const updatedGuesses = (newGuess != null && newGuess.trim() !== '') ? [...prevGuesses, newGuess] : prevGuesses;
+                const updatedGuesses = (newGuess != null /*&& newGuess.trim() !== ''*/) ? [...prevGuesses, newGuess] : prevGuesses;
                 const updated = {
                     ...prev,
                     [section] : {

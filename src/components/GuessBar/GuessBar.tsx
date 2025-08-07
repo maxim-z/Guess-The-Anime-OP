@@ -51,12 +51,14 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
         if (selectedAnime) {
             // setGuessed((prev) => [...prev, selectedAnime.trim()]);
             onSubmit(selectedAnime.trim());
-            // reset
-            setSearch('');
-            setHighlightedIndex(-1);
-            setSelectedAnime(null);
-            searchRef.current?.focus(); // auto-focus on search
+        } else {
+            onSubmit('Skipped!');
         }
+        // reset
+        setSearch('');
+        setHighlightedIndex(-1);
+        setSelectedAnime(null);
+        searchRef.current?.focus(); // auto-focus on search
     }
 
     // for navigating list with up/down arrows and choosing/submitting with enter
@@ -116,9 +118,9 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                 />
                 <button 
                     onClick={submitGuess}
-                    disabled={!selectedAnime}
+                    // disabled={!selectedAnime}
                 >
-                    Submit Guess!
+                    {`${selectedAnime ? 'Submit Guess!' : 'Skip'}`}
                 </button>
             </div>)}
             
@@ -127,7 +129,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                 <ul className='GuessedList'>
                     {guesses.map((guess, i) => (
                         <li
-                            key={`guess_${guess}`}
+                            key={`guess_${guess}_${i}`}
                             className={(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}>
                            {guess} 
                         </li>
