@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import { filters, type FilterType } from "@types/filter";
-import { type GuessedStatusType, type SongType } from "@types/song";
+import { filters, type FilterType } from "@types";
+import { type GuessedStatusType, type SongType } from "@types";
 import './GuessTheSong.css';
 import MediaPlayer from "@components/MediaPlayer/MediaPlayer";
 import GuessBar from "@components/GuessBar/GuessBar";
@@ -9,7 +9,7 @@ import Hints from "@components/Hints/Hints";
 import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesContext";
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useModeContext } from "@components/ContextProviders/ModeContext";
-import type { ModeType } from "@types/mode";
+import type { ModeType } from "@types";
 import { MAX_SONGS } from "@config/config";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint

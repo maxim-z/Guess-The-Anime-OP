@@ -1,6 +1,5 @@
-import { useEffect, useState, type JSX, type ReactHTMLElement } from 'react';
+import { useEffect, useState } from 'react';
 import './StarShapes.css'
-import type { HeaderProps } from '@types/props';
 import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
 
 function StarShapes() {

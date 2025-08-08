@@ -1,16 +1,14 @@
 import { guessStatesSchema } from "@components/ContextProviders/GuessStatesContext";
 import React, { useCallback } from "react";
 
-type useJsonFilePickerType<T> = {
+type useJsonFilePickerType = {
     // call from button click
     openPicker: () => void;
     // the file input to use
     FileInput: React.ReactElement;
 }
 
-export function useJsonFilePicker<T = unknown>(
-    onLoad: (data: T | null) => void
-): useJsonFilePickerType<T> {
+export function useJsonFilePicker<T = unknown>(onLoad: (data: T | null) => void): useJsonFilePickerType {
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   
   const openPicker = useCallback(() => {

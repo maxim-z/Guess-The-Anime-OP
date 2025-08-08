@@ -1,6 +1,6 @@
 import './Hints.css'
-import type { SongFilterType } from '@types/song'
-import type { HintProps } from '@types/props'
+import type { SongFilterType } from '@types'
+import type { HintProps } from '@types'
 
 function Hints( {hintsRevealed, song, endGameState} : HintProps) {
     const hintCategories : SongFilterType[] = ['num_episodes', 'year_released', 'genres', 'score', 'studio']

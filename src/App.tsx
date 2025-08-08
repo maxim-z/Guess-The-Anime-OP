@@ -1,17 +1,16 @@
 import './App.css'
-import { useState, memo } from 'react'
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { memo } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Header from '@components/Header/Header'
 import MainContent from '@components/MainContent/MainContent'
 import GuessTheSong from '@components/GuessTheSong/GuessTheSong'
-import type { FilterType } from './types/filter'
-import type { HeaderProps, ModeType } from '@types/props'
+import type { MemoizedHeaderProps } from '@types'
 import { useModeContext } from '@components/ContextProviders/ModeContext'
 
 // to avoid re-rendering every time the path changes except for /guess where it should be hidden
-const MemoizedHeader = memo(({ hidden, mode, setMode }: HeaderProps) => {
+const MemoizedHeader = memo(({ hidden, mode, setMode }: MemoizedHeaderProps) => {
   if (hidden) return null;
-  return <Header hidden={hidden} mode={mode} setMode={setMode} />;
+  return <Header mode={mode} setMode={setMode} />;
 });
 
 function App() {

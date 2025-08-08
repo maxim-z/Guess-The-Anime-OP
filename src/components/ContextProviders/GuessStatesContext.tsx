@@ -1,10 +1,10 @@
-import { filters, type FilterType } from "@types/filter"
-import { statusFilters, type GuessedStatusType } from "@types/song"
+import { filters, type FilterType } from "@types"
+import { statusFilters, type GuessedStatusType } from "@types"
 import { createContext, useCallback, useContext, useState, useMemo, useEffect } from "react"
 import fallBackOpeningGuessList from '../../assets/animeopeningguesslist.txt?raw'
 import fallBackEndingGuessList from '../../assets/animeendingguesslist.txt?raw'
 import z from "zod"
-import { modes, type ModeType } from "@types/mode"
+import { modes, type ModeType } from "@types"
 
 // all possible anime guesses for the openings
 export const baseOpeningList = fallBackOpeningGuessList

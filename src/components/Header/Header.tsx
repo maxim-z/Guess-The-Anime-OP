@@ -1,13 +1,14 @@
-import backgroundImgOpening from '/backgroundOpening.jpg'
-import backgroundImgEnding from '/backgroundEnding.jpg'
+// import backgroundImgOpening from '/backgroundOpening.jpg'
+// import backgroundImgEnding from '/backgroundEnding.jpg'
 import flowerField from '/flower field.jpg'
 import layingRiver from '/frieren in river.png'
 import { Link } from 'react-router-dom'
 import './Header.css'
 import StarShapes from '@components/StarShapes/StarShapes'
-import { type HeaderProps, type ModeType } from '@types/props'
+import type { HeaderProps } from '@types'
+import type { ModeType } from '@types'
 
-function Header( { hidden, mode, setMode } : HeaderProps) {
+function Header( { mode, setMode } : HeaderProps) {
   // Mode Changes which go up to App to change the Theme as well as the list of songs displayed in the list
   const toggleMode = () => {
     const nextMode: ModeType = mode === 'Opening' ? 'Ending' : 'Opening';

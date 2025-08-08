@@ -1,8 +1,13 @@
 import type { ModeType } from "./mode";
 import type { SongType } from "./song";
 
-export type HeaderProps = {
+export type MemoizedHeaderProps = {
     hidden: boolean;
+    mode: ModeType;
+    setMode: (mode: ModeType) => void;
+};
+
+export type HeaderProps = {
     mode: ModeType;
     setMode: (mode: ModeType) => void;
 };

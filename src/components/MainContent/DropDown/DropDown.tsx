@@ -1,5 +1,5 @@
 import './DropDown.css'
-import { filters, type FilterType } from '@types/filter';
+import { filters, type FilterType } from '@types';
 import { useNavigate } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
 import { useFilterContext } from '@components/ContextProviders/FilterContext';

@@ -27,11 +27,12 @@
     "baseUrl": "src",
     "paths": {
       "@components/*": ["components/*"],
-      "@types/*": ["types/*"],
+      "@types": ["types/index.ts"],
       "@config/*": ["config/*"]
     },
     /* Make source code visible in dev tools for debugging */
     "sourceMap": true,
   },
-  "include": ["src"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
 }

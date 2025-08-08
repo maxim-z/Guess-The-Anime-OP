@@ -1,4 +1,4 @@
-import type { FilterType } from "@types/filter";
+import type { FilterType } from "@types";
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 type FilterContextType = {

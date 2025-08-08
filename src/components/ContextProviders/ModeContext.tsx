@@ -1,4 +1,4 @@
-import type { ModeType } from "@types/props";
+import type { ModeType } from "@types";
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 type ModeContextType = {

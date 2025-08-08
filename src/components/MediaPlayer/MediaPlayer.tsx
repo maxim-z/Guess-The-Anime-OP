@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './MediaPlayer.css'
-import type { MediaPlayerProps } from '@types/props';
+import type { MediaPlayerProps } from '@types';
 import YouTube from 'react-youtube';
 import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
 

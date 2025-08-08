@@ -2,7 +2,7 @@ import "./SongTile.css"
 import { useModeContext } from "@components/ContextProviders/ModeContext";
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesContext";
-import type { ModeType } from "@types/mode";
+import type { ModeType } from "@types";
 
 function Song( {song_id} : {song_id : number} ) {
     const { mode } = useModeContext();
