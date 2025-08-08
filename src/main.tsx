@@ -11,9 +11,11 @@ import { GuessStatesProvider } from '@components/ContextProviders/GuessStatesCon
 //  Filter
 //    GuessStates
 
+const basename = import.meta.env.PROD ? '/Guess-The-Anime-OP' : '/';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <ModeProvider>
         <FilterProvider>
           <GuessStatesProvider>
