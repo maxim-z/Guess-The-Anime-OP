@@ -150,6 +150,7 @@ function GuessTheSong() {
                 <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
                 <div className="ButtonsContainer">
                     <button 
+                        className="bg-[var(--primary-color)]"
                         onClick={() => {
                             if (songId && queryParams) {
                                 const prevId = songId > 1 ? songId - 1 : MAX_SONGS;
@@ -160,7 +161,12 @@ function GuessTheSong() {
                     >
                         Prev
                     </button>
-                    <button onClick={() => navigate('/')}>Back</button>
+                    <button 
+                        className="bg-[var(--primary-color)] rounded-[1vw]"
+                        onClick={() => navigate('/')}
+                        >
+                            Back
+                    </button>
                     <button
                         onClick={() => {
                             if (songId && queryParams) {

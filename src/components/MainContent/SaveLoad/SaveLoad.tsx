@@ -25,8 +25,18 @@ function SaveLoad() {
     <>
       {FileInput} {/* Hidden FileInput */}
       <div className='SaveLoad'>
-          <button className='SaveButton' onClick={saveGuessStates}>Save Progress</button>
-          <button className='LoadButton' onClick={openPicker}>Load Progress</button>
+          <button 
+            className='SaveButton bg-gray-500 text-white px-4 py-2 rounded' 
+            onClick={saveGuessStates}
+          >
+            Save Progress
+          </button>
+          <button 
+            className='LoadButton bg-gray-500 text-white px-4 py-2 rounded' 
+            onClick={openPicker}
+          >
+            Load Progress
+          </button>
           {alert && (
             <Alert 
               type={alert.type}

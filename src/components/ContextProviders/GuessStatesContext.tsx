@@ -7,7 +7,7 @@ import z from "zod"
 import { modes, type ModeType } from "@types/mode"
 
 // all possible anime guesses for the openings
-const baseOpeningList = fallBackOpeningGuessList
+export const baseOpeningList = fallBackOpeningGuessList
     .split('\n')
     .map(g => g.trim())
     // .filter(Boolean);

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './GuessBar.css'
 import type { GuessBarProps } from '@types/props';
-import { openingAnimeGuessListEnglishTitle, endingAnimeGuessListEnglishTitle } from '@components/ContextProviders/GuessStatesContext';
+import { openingAnimeGuessListEnglishTitle, endingAnimeGuessListEnglishTitle, baseOpeningList } from '@components/ContextProviders/GuessStatesContext';
 import { useModeContext } from '@components/ContextProviders/ModeContext';
 
 function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
@@ -12,7 +12,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const lastListElementRef = useRef<HTMLUListElement>(null); //is it ulist? i have to double check
     
     const { mode } = useModeContext();
-    const animeList = mode === 'Opening' ? openingAnimeGuessListEnglishTitle : endingAnimeGuessListEnglishTitle;
+    const animeList = mode === 'Opening' ? baseOpeningList : endingAnimeGuessListEnglishTitle;
 
     // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
     const filtered = search

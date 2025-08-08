@@ -1,5 +1,5 @@
 .GuessContainer {
-    width: min(400px, 20vw);
+    width: min(400px, 50vw);
     /* background: blue; */
 }
 
@@ -19,6 +19,7 @@
 .GuessedList {
     width: 100%;
     list-style: none;
+    text-align: center;
 }
 
 .AnimeItem {
