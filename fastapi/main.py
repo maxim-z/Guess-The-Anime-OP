@@ -138,7 +138,7 @@ def get_from_table_top_1000_by_viewcount(id):
                         yt_video_id,
                         yt_viewcount
                    FROM top_1000_by_viewcount 
-                   LEFT JOIN anime ON anime.mal_id=top_1000_by_score.anime_id LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
+                   LEFT JOIN anime ON anime.mal_id=top_1000_by_viewcount.anime_id LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
                 #    FROM top_1000_by_viewcount WHERE id=(?)''', (str(id).strip(),))
     song = cursor.fetchone()
     cursor.close()
