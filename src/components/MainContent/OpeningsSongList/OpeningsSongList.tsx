@@ -8,7 +8,7 @@ import FilterTitle from '../FilterTitle/FilterTitle';
 function OpeningsSongList() {
   const filterContext = useFilterContext();
   // const [numSongs, setSongs] = useState(MAX_SONGS); // how many Songs to show, every row will contain a max of 25
-
+  
   return (
     <div className='SongListContainer'>
       <FilterTitle />

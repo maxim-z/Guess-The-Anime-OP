@@ -1,23 +1,40 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
+import os
+import psycopg2
 
-DATABASE = "top_1000.db"
+# DATABASE = "top_1000.db"
+DATABASE_URL = os.getenv("DB_URL")
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:8080"
-]
+# origins = [
+#     "http://localhost",
+#     "http://localhost:8080"
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://maxim-z.github.io/Guess-The-Anime-OP/"],
     # allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET"],
     allow_headers=["*"]
 )
+
+def get_connection():
+    return psycopg2.connect(DATABASE_URL, sslmode='require')
+
+@app.get("/db-test")
+def db_test():
+    try:
+        cur = get_connection().cursor()
+        cur.execute("SELECT count(*) FROM yt_ops;")
+        count = cur.fetchone()[0]
+        cur.close()
+        return {"status": "success", "row_count": count}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
 
 # def get_songs():
 #     conn = sqlite3.connect(DATABASE)
@@ -86,15 +103,18 @@ num = {
 # so for example if yuusha by yoasobi is id 1 in top_1000_by_score when using the random presets for it which would be 4-6
 # if random preset 4 has id 412 with song_order 1 yuusha by yoasobi will now be the 412th element in the song list
 def matched_id(id, filter):
-    conn = sqlite3.connect(DATABASE)
+    # conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT song_order_{num[filter]} FROM {tables[filter]} WHERE id = (?)", (str(id).strip(),))
+    cursor.execute(f"SELECT song_order_{num[filter]} FROM {tables[filter]} WHERE id = (%s)", (str(id).strip(),))
     updated_id = cursor.fetchone()
+    cursor.close()
     conn.close()
     return updated_id[0] # song_order
 
 def get_from_table_top_1000_by_viewcount(id):
-    conn = sqlite3.connect(DATABASE)
+    # conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('''SELECT 
                         anime_id,     
@@ -113,14 +133,16 @@ def get_from_table_top_1000_by_viewcount(id):
                         song_artist,
                         yt_video_id,
                         yt_viewcount
-                   FROM top_1000_by_viewcount LIMIT 1 OFFSET (?)''', (str(id-1).strip(),))
+                   FROM top_1000_by_viewcount LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
                 #    FROM top_1000_by_viewcount WHERE id=(?)''', (str(id).strip(),))
     song = cursor.fetchone()
+    cursor.close()
     conn.close()
     return song
 
 def get_from_table_top_1000_by_score(id):
-    conn = sqlite3.connect(DATABASE)
+    # conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('''SELECT 
                         anime_id,     
@@ -140,9 +162,10 @@ def get_from_table_top_1000_by_score(id):
                         yt_video_id,
                         yt_viewcount
                    FROM top_1000_by_score 
-                   LEFT JOIN anime ON anime.mal_id=top_1000_by_score.anime_id LIMIT 1 OFFSET (?)''', (str(id-1).strip(),))
+                   LEFT JOIN anime ON anime.mal_id=top_1000_by_score.anime_id LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
                 #    FROM top_1000_by_score WHERE id=(?)''', (str(id).strip(),))
     song = cursor.fetchone()
+    cursor.close()
     conn.close()
     return song
 

@@ -18,6 +18,7 @@
     "animejs": "^4.1.2",
     "fastapi": "^0.0.8",
     "fs": "^0.0.1-security",
+    "psycopg2-binary": "^0.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.2",

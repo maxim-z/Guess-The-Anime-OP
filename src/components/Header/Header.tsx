@@ -22,7 +22,7 @@ function Header( { mode, setMode } : HeaderProps) {
         <div className='BannerWrapper'>
           <div className='Banner' style={{backgroundImage: `url(${backgroundImg})`}}>
             <h1 className='Title'>
-              <pre>Guess the Anime{' '}</pre>
+              <pre style={{textAlign: 'center'}}>Guess the Anime{' '}</pre>
               <span className='OpeningEnding' onClick={toggleMode}>
                 {mode}!
                 <StarShapes />

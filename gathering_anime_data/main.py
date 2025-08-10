@@ -16,10 +16,10 @@ def main():
     # save_rows_to_txt(cursor, YT_EDS_TABLE, ['song_title', 'song_artist'], 0, "queries_eds.txt")
 
     # Writing youtube video viewcounts to json
-    save_batch_yt_viewcounts_json(yt_api, 1999, 3500)
+    # save_batch_yt_viewcounts_json(yt_api, 1999, 4500)
 
     # Writing viewcounts to db
-    # write_viewcounts(cursor, connection, YT_OPS_TABLE)
+    write_viewcounts(cursor, connection, YT_OPS_TABLE)
 
     # Writing random presets
     # create_table_random_presets(cursor, connection, 5, 6)

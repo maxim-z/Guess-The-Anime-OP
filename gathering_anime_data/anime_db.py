@@ -254,8 +254,9 @@ def initialize_random_presets_table(cursor, connection, num_orders):
 # write viewcounts to yt_ops
 def write_viewcounts(cursor, connection, table):
     len_table = LEN_YT_OPS if table == YT_OPS_TABLE else YT_EDS_TABLE
+    location = "op" if table == YT_OPS_TABLE else "ed"
     for i in range(1, len_table+1):
-        fpath = os.path.join(FILE_PATH, f"anime_json/op_viewcounts/{i}.json")
+        fpath = os.path.join(FILE_PATH, f"anime_json/{location}_viewcounts/{i}.json")
         if os.path.exists(fpath):
             with open(fpath, "r", encoding="utf-8") as f:
                 obj = json.load(f)
