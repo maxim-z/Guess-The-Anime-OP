@@ -7,7 +7,7 @@
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "dev": "vite",
+    "dev": "vite --port 8080",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

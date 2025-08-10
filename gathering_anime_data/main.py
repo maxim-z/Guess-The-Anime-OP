@@ -10,16 +10,16 @@ def main():
     # create_table_yt_eds(cursor)
     # initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS_JSON)
     # save_yt_searches_json(cursor, 1, YT_OPS_TABLE, OP_SEARCH_RESULTS_JSON, yt_api)
-    # save_yt_searches_json(cursor, 1, YT_EDS_TABLE, ED_SEARCH_RESULTS_JSON, yt_api)
+    save_yt_searches_json(cursor, 1, YT_EDS_TABLE, ED_SEARCH_RESULTS_JSON, yt_api)
 
-    # save_rows_to_txt(cursor, ANIME_TABLE, ['def_title', 'eng_title'], 0, "animeendingguesslist.txt")
+    # save_sanitized_guesslist_to_txt(cursor, ANIME_TABLE, ['def_title', 'eng_title'], 0, "animeopeningguesslist.txt")
     # save_rows_to_txt(cursor, YT_EDS_TABLE, ['song_title', 'song_artist'], 0, "queries_eds.txt")
 
     # Writing youtube video viewcounts to json
     # save_batch_yt_viewcounts_json(yt_api, 1999, 4500)
 
     # Writing viewcounts to db
-    write_viewcounts(cursor, connection, YT_OPS_TABLE)
+    # write_viewcounts(cursor, connection, YT_OPS_TABLE)
 
     # Writing random presets
     # create_table_random_presets(cursor, connection, 5, 6)

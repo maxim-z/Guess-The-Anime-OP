@@ -21,6 +21,8 @@ YT_OPS_TABLE = "yt_ops"
 LEN_YT_OPS = 4450
 YT_EDS_TABLE = "yt_eds"
 LEN_YT_EDS = 7467
+TOP_1000_BY_SCORE = "top_1000_by_score"
+TOP_1000_BY_VIEWCOUNT = "top_1000_by_viewcount"
 ALL_TABLES = [ANIME_DB, YT_OPS_TABLE, YT_EDS_TABLE]
 # folders
 RANDOM_PRESETS = os.path.join(FILE_PATH, "random_presets/")
@@ -199,6 +201,23 @@ def save_rows_to_txt(cursor, table, col_names, start_row, write_to):
                 # if index < len(col_names):
                 #     file.write("\n") # write a space between cols except for col_n and \n
                 file.write("\n")
+    print(f"Wrote to {write_to}!")
+
+# removes duplicates and sorts the list alphabetically
+def save_sanitized_guesslist_to_txt(cursor, table, col_names, start_row, write_to):
+    write_to = os.path.join(FILE_PATH, write_to)
+    with open(write_to, "w", encoding="utf-8") as file:
+        all_titles = []
+        for index, row in enumerate(get_table(cursor, table), start=1):
+            if index < start_row:
+                continue
+            for index, col in enumerate(col_names, start=1):
+                all_titles.append(row[col])
+        
+        sanitized_list = sorted(set(all_titles))
+        for entry in sanitized_list:    
+            file.write(f"{entry}")
+            file.write("\n")
     print(f"Wrote to {write_to}!")
 
 def update_row(cursor, connection, table, col_name, value, row_id):

@@ -46,10 +46,10 @@ function GuessTheSong() {
     // Did an end game state get reached?
     const [endGameState, setendGameState] = useState(() => status === 'Correct' || status === 'Incorrect');
     
-    const API_BASE =
-    process.env.NODE_ENV === "production"
-      ? "https://guess-the-anime-op.onrender.com"
-      : "http://localhost:8080";
+    const API_BASE = "https://guess-the-anime-op.onrender.com";
+    // process.env.NODE_ENV === "production"
+    //   ? "https://guess-the-anime-op.onrender.com"
+    //   : "http://localhost:8080";
 
     // grab the song details with the fast api
     const fetchSong = () => {
@@ -112,7 +112,7 @@ function GuessTheSong() {
         // update local ui
         setHintsRevealed((prev) => prev + 1);
         setGuesses((prev) => [...prev, guess]);
-        const guessedAnimeCorrectly = song?.def_title === guess || song?.eng_title === guess;
+        const guessedAnimeCorrectly = song?.def_title.startsWith(guess) || song?.eng_title.startsWith(guess);
         const failedToGuess = hintsRevealed === 5 ? true : false;
         const result : GuessedStatusType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
         setStatus(result);
@@ -155,7 +155,7 @@ function GuessTheSong() {
                 <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
                 <div className="ButtonsContainer">
                     <button 
-                        className="bg-[var(--primary-color)]"
+                        className="bg-gray-500 text-white px-4 py-2 rounded"
                         onClick={() => {
                             if (songId && queryParams) {
                                 const prevId = songId > 1 ? songId - 1 : MAX_SONGS;
@@ -167,12 +167,13 @@ function GuessTheSong() {
                         Prev
                     </button>
                     <button 
-                        className="bg-[var(--primary-color)] rounded-[1vw]"
+                        className="bg-[var(--primary-color)] text-white px-4 py-2 rounded"
                         onClick={() => navigate('/')}
                         >
                             Back
                     </button>
                     <button
+                        className="bg-gray-500 text-white px-4 py-2 rounded"
                         onClick={() => {
                             if (songId && queryParams) {
                                 const nextId = songId < MAX_SONGS ? songId + 1 : 1;
@@ -190,6 +191,7 @@ function GuessTheSong() {
         return (
             <div>
                 <div>{error}</div>
+                <div>Go back and wait 10-15 seconds and click again the server is spinning back up for you!</div>
                 <button onClick={() => navigate(-1)}>Back</button>
             </div>
         )

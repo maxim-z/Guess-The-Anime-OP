@@ -14,13 +14,19 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const { mode } = useModeContext();
     const animeList = mode === 'Opening' ? baseOpeningList : endingAnimeGuessListEnglishTitle;
 
-    // const [guessed, setGuessed] = useState<string[]>([]); // put user guesses in here and filter them out
-    const filtered = search
+    const [filtered, setFiltered] = useState<string[]>([]);
+    useEffect(() => {
+        const searchList = search
             // return a list of anime that match the search query
             ? animeList.filter((anime) => {
                 const animeLowerCase = anime.toLowerCase();
-                // does anime start with search
-                const matchesSearch = animeLowerCase.startsWith(search.toLowerCase());
+                const searchLowerCase = search.toLocaleLowerCase();
+                // does any word in the anime start with search
+                // checks if search starts with ex. The Apothecary Diaries, Apothecary Diaries, Diaries
+                // so that if person keeps typing past The and to The A it will still show the result because
+                // if we only checked The, Apothecary, and Diaries separately the result would disappear
+                const splitAnime = animeLowerCase.split(' '); // ['The', 'Apothecary', 'Diaries']
+                const matchesSearch = splitAnime.filter((_, i) => splitAnime.slice(i).join(' ').startsWith(searchLowerCase)).length > 0; // 'The Apothecary Diaries', 'Apothecary Diaries', 'Diaries'
                 // is anime already one of the ones guessed
                 const matchesGuessed = guesses.filter((guess) => guess.trim().toLowerCase() === anime.toLowerCase()).length > 0 ? true : false;
                 // if it matches the selected anime filter it out
@@ -29,8 +35,10 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     : true // selectedAnime is null so anime can't include selectedAnime
                 // starts with the search query, has not already been guessed, and is not the currently selected anime
                 return matchesSearch && !matchesGuessed && noMatchSelectedAnime;
-            }).filter((_, i) => i < 5 ? true : false) // get only the top 5 results
+            })
             : [] // search is '' so there is nothing to search
+        setFiltered(searchList.splice(0, 5))
+    }, [search])
 
     useEffect(() => {
         searchRef.current?.focus(); // auto-focus on search
@@ -130,7 +138,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     onBlur={handleBlur}
                 />
                 <button 
-                    className='SubmitSearchButton'
+                    className='SubmitSearchButton bg-gray-500 text-white px-4 py-2 rounded'
                     onClick={submitGuess}
                     // disabled={!selectedAnime}
                 >
@@ -144,12 +152,12 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     {filtered.map((anime, i) => (
                         <li
                             // ref={i == filtered.length - 1 ? } // set a ref for it or something idk? or onChange function?
-                            key={anime}
+                            key={`${anime}_${i}`}
                             className={`AnimeItem ${i == highlightedIndex ? 'Highlighted' : ''}`}
                             onClick={ () => { 
                                 setSearch(anime); 
-                                setSelectedAnime(anime);} 
-                            }
+                                setSelectedAnime(anime);
+                            }}
                             onMouseDown={() => handleSelect(anime)}
                         >
                             {anime}
