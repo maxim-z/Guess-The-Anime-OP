@@ -46,6 +46,11 @@ function GuessTheSong() {
     // Did an end game state get reached?
     const [endGameState, setendGameState] = useState(() => status === 'Correct' || status === 'Incorrect');
     
+    const API_BASE =
+    process.env.NODE_ENV === "production"
+      ? "https://guess-the-anime-op.onrender.com"
+      : "http://localhost:8080";
+
     // grab the song details with the fast api
     const fetchSong = () => {
         if (!songId || decodedFilter === '') {
@@ -53,7 +58,7 @@ function GuessTheSong() {
             setError(`Song ${songId} with filter does not exist`);
             return;
         }
-        fetch(`http://localhost:8080/song?id=${songId}&filter=${decodedFilter}`)
+        fetch(`${API_BASE}/song?id=${songId}&filter=${decodedFilter}`)
             .then((res) => {
                 if (!res.ok) {
                     setSong(null);

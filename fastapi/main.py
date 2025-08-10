@@ -9,14 +9,15 @@ DATABASE_URL = os.getenv("DB_URL")
 
 app = FastAPI()
 
-# origins = [
-#     "http://localhost",
-#     "http://localhost:8080"
-# ]
+FRONTEND_ORIGINS = [
+    "http://localhost",
+    "http://localhost:8080",
+    "https://maxim-z.github.io"  # GitHub Pages domain (no trailing slash)
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://maxim-z.github.io/Guess-The-Anime-OP/"],
+    allow_origins=[FRONTEND_ORIGINS],
     # allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"]
