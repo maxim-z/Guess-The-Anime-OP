@@ -112,25 +112,24 @@ function GuessTheSong() {
         // update local ui
         setHintsRevealed((prev) => prev + 1);
         setGuesses((prev) => [...prev, guess]);
-        const guessedAnimeCorrectly = song?.def_title.startsWith(guess) || song?.eng_title.startsWith(guess);
+        const guessedAnimeCorrectly = song?.def_title.includes(guess) || song?.eng_title.includes(guess);
         const failedToGuess = hintsRevealed === 5 ? true : false;
-        const result : GuessedStatusType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
+        // guessed correctly with hintsRevealed < 5 = WIN
+        // failedToGuess = LOSE
+        // !failedToGuess = ATTEMPTING
+        const result : GuessedStatusType = guessedAnimeCorrectly && !failedToGuess ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
         setStatus(result);
         
         // update context
         updateGuessStates(mode, filter, songId, guess, result);
-    }, [songId, filter, guesses, status, hintsRevealed, guessStates]);
-
-    useEffect(() => {
-        console.log('guessStates updated', guessStates);
-    }, [guessStates]);
+    }, [songId, song, filter, guesses, status, hintsRevealed, guessStates]);
 
     // return appropriate html based on song and error states
     // only returns GuessTheSong if the song fetched from the db exists
     if (song) {
         return (
             <div className="GuessTheSongContainer">
-                <div className="">Guess song {songId}!</div>
+                <div className="">Guess anime {songId}!</div>
                 <div>{decodedFilter}</div>
                 {/* <div>Num guesses: {hintsRevealed}</div> */}
                 {status === 'Correct' && (
@@ -145,7 +144,8 @@ function GuessTheSong() {
                             className="ColWrapper" 
                             style={{textAlign: 'center'}}
                         >
-                            {song.def_title}
+                            <div>{song.eng_title}</div>
+                            <div>{song.def_title}</div>
                             <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
                         </div>
                     )}

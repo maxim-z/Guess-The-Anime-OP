@@ -53,6 +53,8 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
         if (playerRef.current) {
             playerRef.current.seekTo(0);
             playerRef.current.pauseVideo();
+            playerRef.current.playVideo();
+            playerRef.current.pauseVideo();
             setIsPlaying(false);
             setCurrentTime(0);
         }
