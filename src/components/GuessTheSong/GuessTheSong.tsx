@@ -141,12 +141,15 @@ function GuessTheSong() {
                 <div className="AnimeInfoContainer">
                     {endGameState && (
                         <div 
-                            className="ColWrapper" 
-                            style={{textAlign: 'center'}}
+                            className="flex flex-col justify-center content-center items-center" 
                         >
                             <div>{song.eng_title}</div>
                             <div>{song.def_title}</div>
-                            <img src="https://cdn.myanimelist.net/images/anime/1015/138006.webp" alt={`${song.eng_title}`} />
+                            <img 
+                                className="w-1/2 sm:w" 
+                                src={song.img_url} 
+                                alt={`${song.eng_title}`}
+                            />
                         </div>
                     )}
                     <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />

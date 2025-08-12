@@ -4,6 +4,7 @@ import type { HintProps } from '@types'
 
 function Hints( {hintsRevealed, song, endGameState} : HintProps) {
     const hintCategories : SongFilterType[] = ['num_episodes', 'year_released', 'genres', 'score', 'studios']
+    const hintCategoriesBeautified = ['Number of Episodes', 'Year Released', 'Genres', 'Score', 'Studios']
 
     return (
         <div className='HintContainer'>            
@@ -14,7 +15,7 @@ function Hints( {hintsRevealed, song, endGameState} : HintProps) {
                         style={i == hintsRevealed - 1 ? {animation: `flipHints 0.1s ease-in ${Math.floor(Math.random() * 5) + 3}`}
                                                       : {animation: 'none'}}
                     >
-                        {param}: {song[param]}
+                        {hintCategoriesBeautified[i]}: {song[param]}
                     </div>
                 ) : (
                     <div
