@@ -14,7 +14,7 @@ export type SongFilterType =
 |  "score"
 |  "num_members"
 |  "genres"
-|  "studio"
+|  "studios"
 |  "id"
 |  "song_title"
 |  "song_artist"
@@ -32,7 +32,7 @@ export const song_params: SongFilterType[] = [
   "score",
   "num_members",
   "genres",
-  "studio",
+  "studios",
   "id",
   "song_title",
   "song_artist",
@@ -51,7 +51,7 @@ export type SongType = null | {
   score: number,
   num_members: number,
   genres: string,
-  studio: string,
+  studios: string,
   id: number,
   song_title: string,
   song_artist: string,
