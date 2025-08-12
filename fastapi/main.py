@@ -136,7 +136,11 @@ def get_from_table_top_1000_by_viewcount(id):
                         song_title,
                         song_artist,
                         yt_video_id,
-                        yt_viewcount
+                        yt_viewcount,
+                        type,
+                        source,
+                        img_url,
+                        synopsis
                    FROM top_1000_by_viewcount 
                    INNER JOIN anime ON anime.mal_id=top_1000_by_viewcount.anime_id LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
                 #    FROM top_1000_by_viewcount WHERE id=(?)''', (str(id).strip(),))
@@ -165,7 +169,11 @@ def get_from_table_top_1000_by_score(id):
                         song_title,
                         song_artist,
                         yt_video_id,
-                        yt_viewcount
+                        yt_viewcount,
+                        type,
+                        source,
+                        img_url,
+                        synopsis
                    FROM top_1000_by_score 
                    INNER JOIN anime ON anime.mal_id=top_1000_by_score.anime_id LIMIT 1 OFFSET (%s)''', (str(id-1).strip(),))
                 #    FROM top_1000_by_score WHERE id=(?)''', (str(id).strip(),))
@@ -194,7 +202,8 @@ def get_song(id, filter):
              "rank": song[3], "year_released": song[4], "season": song[5],
               "num_episodes": song[6], "score": song[7], "num_members": song[8],
                "genres": song[9], "studios": song[10], "id": song[11],
-                "song_title": song[12], "song_artist": song[13], "yt_video_id": song[14], "yt_viewcount": song[15]}
+                "song_title": song[12], "song_artist": song[13], "yt_video_id": song[14], "yt_viewcount": song[15],
+                "type": song[16], "source": song[17], "img_url": song[18], "synopsis": song[19]}
 
 @app.get("/song")
 def read_song(id: int, filter: str):

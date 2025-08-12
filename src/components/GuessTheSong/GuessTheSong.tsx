@@ -156,7 +156,8 @@ function GuessTheSong() {
                 <div className="ButtonsContainer">
                     <button 
                         className="bg-gray-500 text-white px-4 py-2 rounded"
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.preventDefault()
                             if (songId && queryParams) {
                                 const prevId = songId > 1 ? songId - 1 : MAX_SONGS;
                                 queryParams.set('id', prevId.toString());
@@ -169,12 +170,13 @@ function GuessTheSong() {
                     <button 
                         className="bg-[var(--primary-color)] text-white px-4 py-2 rounded"
                         onClick={() => navigate('/')}
-                        >
-                            Back
+                    >
+                        Back
                     </button>
                     <button
                         className="bg-gray-500 text-white px-4 py-2 rounded"
-                        onClick={() => {
+                        onClick={(e) => {
+                            e.preventDefault()
                             if (songId && queryParams) {
                                 const nextId = songId < MAX_SONGS ? songId + 1 : 1;
                                 queryParams.set('id', nextId.toString());
@@ -192,7 +194,12 @@ function GuessTheSong() {
             <div>
                 <div>{error}</div>
                 <div>Go back and wait 10-15 seconds and click again the server is spinning back up for you!</div>
-                <button onClick={() => navigate(-1)}>Back</button>
+                <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded" 
+                    onClick={() => navigate(-1)}
+                >
+                    Back
+                </button>
             </div>
         )
     } else {

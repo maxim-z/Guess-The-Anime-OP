@@ -20,6 +20,10 @@ export type SongFilterType =
 |  "song_artist"
 |  "yt_video_id"
 |  "yt_viewcount"
+|   "type"
+|   "source"
+|   "img_url"
+|   "synopsis"
 
 export const song_params: SongFilterType[] = [
   "anime_id",
@@ -37,7 +41,11 @@ export const song_params: SongFilterType[] = [
   "song_title",
   "song_artist",
   "yt_video_id",
-  "yt_viewcount"
+  "yt_viewcount",
+  "type",
+  "source",
+  "img_url",
+  "synopsis"
 ] as const;
 
 export type SongType = null | {
@@ -56,7 +64,11 @@ export type SongType = null | {
   song_title: string,
   song_artist: string,
   yt_video_id: string,
-  yt_viewcount: number
+  yt_viewcount: number,
+  type: string,
+  source: string,
+  img_url: string,
+  synopsis: string
 }
 
 export type SongProps = {
