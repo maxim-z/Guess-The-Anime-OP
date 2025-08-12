@@ -1,7 +1,6 @@
 # custom
 gathering_anime_data/anime_json/
 gathering_anime_data/animeguesslist.txt
-gathering_anime_data/main.sql
 gathering_anime_data/queries_eds.txt
 gathering_anime_data/queries_ops.txt
 gathering_anime_data/random_presets/

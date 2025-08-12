@@ -49,7 +49,11 @@ def create_table_anime(cursor):
         score FLOAT DEFAULT 0.0,
         num_members INTEGER DEFAULT 0,
         genres TEXT,
-        studio TEXT
+        studios TEXT,
+        type TEXT,
+        source TEXT,
+        img_url TEXT,
+        synopsis TEXT
     ) WITHOUT ROWID;
     ''')
 
@@ -97,18 +101,20 @@ def write_page_to_db(page, page_number, cursor, connection):
             num_episodes = anime['episodes']
             score = anime['score']
             num_members = anime['members']
-            genres = str(",".join([g['name'] for g in anime['genres']]))
-            studio = anime['studios'][0]['name'] if anime.get('studios') and len(anime['studios']) > 0 else ""
+            genres = str(", ".join([genre['name'] for genre in anime['genres']]))
+            studios = str(", ".join([studio['name'] for studio in anime['studios']]))
+            anime_type = anime['type']
+            source = anime['source']
+            img_url = anime['images']['jpg']['large_image_url']
+            synopsis = anime['synopsis']
 
             cursor.execute('''
                 INSERT INTO anime
-                        (mal_id, eng_title, def_title, jp_title, rank, year_released, season, num_episodes, score, num_members, genres, studio)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (mal_id, eng_title, def_title, jp_title, rank, year_released, season, num_episodes, score, num_members, genres, studio))
+                        (mal_id, eng_title, def_title, jp_title, rank, year_released, season, num_episodes, score, num_members, genres, studios, type, source, img_url, synopsis)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (mal_id, eng_title, def_title, jp_title, rank, year_released, season, num_episodes, score, num_members, genres, studios, anime_type, source, img_url, synopsis))
             connection.commit()
             
-            # print(f"ADDED {eng_title}!")
-
         except Exception as e:
             print(f"SKIPPED! index -> {index} : {e}")
             with open("failed.txt", "a") as f:
@@ -219,6 +225,19 @@ def save_sanitized_guesslist_to_txt(cursor, table, col_names, start_row, write_t
             file.write(f"{entry}")
             file.write("\n")
     print(f"Wrote to {write_to}!")
+
+# executes a .sql file and reads from the .txt where the .sql dumped its results
+# removes duplicates and sorts the list alphabetically
+def save_sql_to_sanitized_guesslist_to_txt(cursor, sql_file, read_from, write_to):
+    write_to = os.path.join(FILE_PATH, write_to)
+    # cursor.execute(f".read {sql_file}")
+    with open(read_from, "r", encoding="utf-8") as file:            
+        sanitized_list = sorted(set(file.read().split('\n')))
+        with open(write_to, "w", encoding="utf-8") as file_w: 
+            for entry in sanitized_list:    
+                file_w.write(f"{entry}")
+                file_w.write("\n")
+        print(f"Wrote to {write_to}!")
 
 def update_row(cursor, connection, table, col_name, value, row_id):
     try:
