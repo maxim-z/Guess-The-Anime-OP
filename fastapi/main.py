@@ -176,14 +176,14 @@ def get_from_table_top_1000_by_score(id):
 
 def get_song(id, filter):
     song = None
-    if filter == song_filters[0]: # by viewcount
-        song = get_from_table_top_1000_by_viewcount(id)
-    elif filter == song_filters[1] or filter == song_filters[2] or filter == song_filters[3]: # random presets 1-3 using by viewcount table
+    if filter == song_filters[0]: # by score
+        song = get_from_table_top_1000_by_score(id)
+    elif filter == song_filters[1] or filter == song_filters[2] or filter == song_filters[3]: # random presets 1-3 using by score table
         song = get_from_table_top_1000_by_viewcount(matched_id(id, filter))
     
-    elif filter == song_filters[4]: # by score
-        song = get_from_table_top_1000_by_score(id)
-    elif filter == song_filters[5] or filter == song_filters[6] or filter == song_filters[7]: # random presets 4-6 using by score table
+    elif filter == song_filters[4]: # by viewcount
+        song = get_from_table_top_1000_by_viewcount(id)
+    elif filter == song_filters[5] or filter == song_filters[6] or filter == song_filters[7]: # random presets 4-6 using by viewcount table
         song = get_from_table_top_1000_by_score(matched_id(id, filter))
 
     if song is None:
