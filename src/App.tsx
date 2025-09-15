@@ -6,6 +6,12 @@ import MainContent from '@components/MainContent/MainContent'
 import GuessTheSong from '@components/GuessTheSong/GuessTheSong'
 import type { MemoizedHeaderProps } from '@types'
 import { useModeContext } from '@components/ContextProviders/ModeContext'
+import { PROD } from '@config/config'
+import Dev from '@components/Dev/Dev'
+import Stats from '@components/Menu/Stats'
+import About from '@components/Menu/About'
+import FAQ from '@components/Menu/FAQ'
+import Rules from '@components/Menu/Rules'
 
 // to avoid re-rendering every time the path changes except for /guess where it should be hidden
 const MemoizedHeader = memo(({ hidden, mode, setMode }: MemoizedHeaderProps) => {
@@ -32,16 +38,21 @@ function App() {
           element={<GuessTheSong />} />
         <Route 
           path="/about" 
-          element={ <div>About</div> } />
+          element={ <About /> } />
         <Route 
           path="/rules" 
-          element={ <div>Rules</div> } />
+          element={ <Rules /> } />
         <Route 
           path="/faq" 
-          element={ <div>FAQ</div> } />
+          element={ <FAQ /> } />
         <Route 
           path="/stats" 
-          element={ <div>Stats</div> } />
+          element={ <Stats /> } />
+        {!PROD && (
+          <Route
+            path="/dev"
+            element={ <Dev /> } />
+        )}
       </Routes>
     </div>
   )

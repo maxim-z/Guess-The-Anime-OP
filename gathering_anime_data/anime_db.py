@@ -289,16 +289,40 @@ def initialize_random_presets_table(cursor, connection, num_orders):
 # create_table_anime(cursor)
 # transfer_anime_to_db(1,200, cursor, connection)
 
-# write viewcounts to yt_ops
+# write anime_json/op/ed_viewcounts to yt_ops
+# def write_viewcounts(cursor, connection, table):
+#     len_table = LEN_YT_OPS if table == YT_OPS_TABLE else YT_EDS_TABLE
+#     location = "op" if table == YT_OPS_TABLE else "ed"
+#     for i in range(1, len_table+1):
+#         fpath = os.path.join(FILE_PATH, f"anime_json/{location}_viewcounts/{i}.json")
+#         if os.path.exists(fpath):
+#             with open(fpath, "r", encoding="utf-8") as f:
+#                 obj = json.load(f)
+#                 max = len(obj) if len(obj) < 5 else 5
+#                 videoId = ''
+#                 highestViewcount = 0
+#                 for j in range(0, max):
+#                     currViewcount = obj[j]['viewCount']
+#                     if currViewcount > highestViewcount:
+#                         videoId = obj[j]['videoId']
+#                         highestViewcount = currViewcount
+#                 update_row(cursor, connection, table, 'yt_video_id', videoId, i)
+#                 update_row(cursor, connection, table, 'yt_viewcount', highestViewcount, i)
+#             print(f"Completed [{i}]")
+#         else:
+#             print(f"Skipped [{i}]")
+
+# write anime_json/op/ed_viewcounts to yt_ops in a smarter way
 def write_viewcounts(cursor, connection, table):
     len_table = LEN_YT_OPS if table == YT_OPS_TABLE else YT_EDS_TABLE
     location = "op" if table == YT_OPS_TABLE else "ed"
     for i in range(1, len_table+1):
+        search_path = os.path.join(FILE_PATH, f"anime_json/{location}_search_results/{i}.json")
         fpath = os.path.join(FILE_PATH, f"anime_json/{location}_viewcounts/{i}.json")
         if os.path.exists(fpath):
             with open(fpath, "r", encoding="utf-8") as f:
                 obj = json.load(f)
-                max = len(obj) if len(obj) < 5 else 5
+                max = len(obj) if len(obj) < 5 else 5 # only want to take into account the top 5 search results by relevance
                 videoId = ''
                 highestViewcount = 0
                 for j in range(0, max):

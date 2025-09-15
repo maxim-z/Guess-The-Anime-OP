@@ -63,7 +63,7 @@ def get_yt_search(query, yt_api, index, dir, max_results=50):
 def save_yt_searches_json(cursor, start_index : int, table, dir, yt_api):
     # check that its a valid directory and grab its files
     if not dir in (OP_SEARCH_RESULTS_JSON, ED_SEARCH_RESULTS_JSON):
-        print("Exiting directory does not match accepted ones")
+        print(f"Exiting directory does not match accepted ones {OP_SEARCH_RESULTS_JSON} {ED_SEARCH_RESULTS_JSON}")
         sys.exit()
     # # sorts file numerically extracting only the digits out of *.json
     # files = sorted([int(re.search(r'\d+', f).group()) for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))])

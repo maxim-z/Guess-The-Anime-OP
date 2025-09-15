@@ -36,6 +36,7 @@ function Header( { mode, setMode } : HeaderProps) {
                 <li><Link to="/rules">Rules</Link></li>
                 <li><Link to="/faq">FAQ</Link></li>
                 <li><Link to="/stats">Stats</Link></li>
+                <li><Link to="/dev">Dev</Link></li>
               </ul>
             </nav>
           </div>
