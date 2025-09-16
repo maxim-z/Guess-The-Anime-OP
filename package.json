@@ -10,7 +10,7 @@
     "dev": "vite --port 8080",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite preview --port 8080",
     "check": "tsc --noEmit"
   },
   "dependencies": {

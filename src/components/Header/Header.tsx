@@ -7,6 +7,18 @@ import './Header.css'
 import StarShapes from '@components/StarShapes/StarShapes'
 import type { HeaderProps } from '@types'
 import type { ModeType } from '@types'
+import { PROD } from '@config/config'
+
+const menuList = [
+  <li><Link to="/" key='link-maincontent'>Home</Link></li>,
+  <li><Link to="/about" key='link-about'>About</Link></li>,
+  <li><Link to="/rules" key='link-rules'>Rules</Link></li>,
+  <li><Link to="/faq" key='link-faq'>FAQ</Link></li>,
+  <li><Link to="/stats" key='link-stats'>Stats</Link></li>,
+  ...(PROD ? [] : [
+    <li><Link to="/dev" key='link-dev'>Dev</Link></li>
+  ])
+];
 
 function Header( { mode, setMode } : HeaderProps) {
   // Mode Changes which go up to App to change the Theme as well as the list of songs displayed in the list
@@ -31,12 +43,7 @@ function Header( { mode, setMode } : HeaderProps) {
             </h1>
             <nav className='NavMenu'>
               <ul>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/about">About</Link></li>
-                <li><Link to="/rules">Rules</Link></li>
-                <li><Link to="/faq">FAQ</Link></li>
-                <li><Link to="/stats">Stats</Link></li>
-                <li><Link to="/dev">Dev</Link></li>
+                {menuList}
               </ul>
             </nav>
           </div>

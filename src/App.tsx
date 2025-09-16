@@ -1,5 +1,5 @@
 import './App.css'
-import { memo } from 'react'
+import React, { memo } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Header from '@components/Header/Header'
 import MainContent from '@components/MainContent/MainContent'
@@ -7,7 +7,6 @@ import GuessTheSong from '@components/GuessTheSong/GuessTheSong'
 import type { MemoizedHeaderProps } from '@types'
 import { useModeContext } from '@components/ContextProviders/ModeContext'
 import { PROD } from '@config/config'
-import Dev from '@components/Dev/Dev'
 import Stats from '@components/Menu/Stats/Stats'
 import About from '@components/Menu/About'
 import FAQ from '@components/Menu/FAQ'
@@ -18,6 +17,28 @@ const MemoizedHeader = memo(({ hidden, mode, setMode }: MemoizedHeaderProps) => 
   if (hidden) return null;
   return <Header mode={mode} setMode={setMode} />;
 });
+
+
+// to exclude dev from production builds
+const DevLazy = React.lazy(() => import("@components/Dev/Dev"));
+const routes = [
+    <Route path="/" element={<MainContent />} key='maincontent' />,
+    <Route path='/guess' element={<GuessTheSong />} key='guess' />,
+    <Route path="/about" element={ <About /> } key='about' />,
+    <Route path="/rules" element={ <Rules /> } key='rules' />,
+    <Route path="/faq" element={ <FAQ /> } key='faq' />,
+    <Route path="/stats" element={ <Stats /> } key='stats' />,
+    ...(PROD ? [] : [
+      <Route
+        path="/dev"
+        element={ 
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <DevLazy />
+          </React.Suspense>
+         }
+         key='dev' />
+    ])
+];
 
 function App() {
   const { mode, updateMode } = useModeContext();
@@ -30,29 +51,7 @@ function App() {
       {/* {!hideHeader && <Header mode={mode} setMode={setMode}/>} */}
       <MemoizedHeader hidden={hideHeader} mode={mode} setMode={updateMode} />
       <Routes>
-        <Route 
-          path="/" 
-          element={<MainContent />} />
-        <Route 
-          path='/guess' 
-          element={<GuessTheSong />} />
-        <Route 
-          path="/about" 
-          element={ <About /> } />
-        <Route 
-          path="/rules" 
-          element={ <Rules /> } />
-        <Route 
-          path="/faq" 
-          element={ <FAQ /> } />
-        <Route 
-          path="/stats" 
-          element={ <Stats /> } />
-        {!PROD && (
-          <Route
-            path="/dev"
-            element={ <Dev /> } />
-        )}
+        {routes}
       </Routes>
     </div>
   )
