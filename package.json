@@ -6,7 +6,7 @@
   "homepage": "https://maxim-z.github.io/Guess-The-Anime-OP/",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "npm run build && gh-pages -d dist",
+    "deploy": "npm run build && cp dist/index.html dist/404.html && gh-pages -d dist",
     "dev": "vite --port 8080",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "animejs": "^4.1.2",
     "fastapi": "^0.0.8",
+    "framer-motion": "^12.23.12",
     "fs": "^0.0.1-security",
     "psycopg2-binary": "^0.0.1",
     "react": "^19.1.0",
