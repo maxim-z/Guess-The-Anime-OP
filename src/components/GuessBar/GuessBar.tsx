@@ -9,6 +9,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [selectedAnime, setSelectedAnime] = useState<string | null>(null);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
+    const animeSearchListElementRef = useRef<HTMLLIElement>(null);
     // const lastListElementRef = useRef<HTMLUListElement>(null); //is it ulist? i have to double check
     
     const { mode } = useModeContext();
@@ -37,12 +38,18 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                 return matchesSearch && !matchesGuessed && noMatchSelectedAnime;
             })
             : [] // search is '' so there is nothing to search
-        setFiltered(searchList.splice(0, 5))
+        setFiltered(searchList.splice(0, 5));
     }, [search])
 
     useEffect(() => {
         searchRef.current?.focus(); // auto-focus on search
     }, []);
+
+    useEffect(() => {
+        if (!animeSearchListElementRef.current) return;
+        // scroll to the element we just highlighted
+        animeSearchListElementRef.current.scrollIntoView();
+    }, [filtered]);
 
     // Re-focus on searchRef
     const handleBlur = () => {
@@ -148,10 +155,11 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
             
 
             {filtered.length > 0 && (
-                <ul className='AnimeSearchList'>
+                <ul id='AnimeSearchListID'
+                className='AnimeSearchList absolute'>
                     {filtered.map((anime, i) => (
                         <li
-                            // ref={i == filtered.length - 1 ? } // set a ref for it or something idk? or onChange function?
+                            ref={i == filtered.length - 1 ? animeSearchListElementRef : null}
                             key={`${anime}_${i}`}
                             className={`AnimeItem ${i == highlightedIndex ? 'Highlighted' : ''}`}
                             onClick={ () => { 

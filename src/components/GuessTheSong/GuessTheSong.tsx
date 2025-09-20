@@ -196,7 +196,7 @@ function GuessTheSong() {
         return (
             <div>
                 <div>{error}</div>
-                <div>I'm currently using a free tier for db hosting so please wait 15-30 seconds and click again the server is spinning back up for you!</div>
+                <div>I'm currently using a free tier for db hosting so please wait 30-60 seconds and click again the server is spinning back up for you!</div>
                 <button
                     className="bg-red-500 text-white px-4 py-2 rounded" 
                     onClick={() => navigate('/')}

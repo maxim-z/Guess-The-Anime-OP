@@ -12,7 +12,7 @@ def main():
     # create_table_yt_eds(cursor)
     # initialize_yt_ops_eds_table(cursor, connection, ANIME_OPS_EDS_JSON)
     # save_yt_searches_json(cursor, 1, YT_OPS_TABLE, OP_SEARCH_RESULTS_JSON, yt_api)
-    save_yt_searches_json(cursor, 5000, YT_EDS_TABLE, ED_SEARCH_RESULTS_JSON, yt_api)
+    save_yt_searches_json(cursor, 4000, YT_EDS_TABLE, ED_SEARCH_RESULTS_JSON, yt_api)
 
     # save_sanitized_guesslist_to_txt(cursor, ANIME_TABLE, ['def_title', 'eng_title'], 0, "animeopeningguesslist.txt")
     # save_sql_to_sanitized_guesslist_to_txt(cursor, 'guesslist.sql', 'results.txt', 'animeopeningguesslist.txt')
