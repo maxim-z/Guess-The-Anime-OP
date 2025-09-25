@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
 import { useFilterContext } from '@components/ContextProviders/FilterContext';
 import Select, { type SingleValue, type StylesConfig } from 'react-select';
-import { motion, useAnimation } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { button } from 'framer-motion/client';
+import { useCallback, useRef, useState } from 'react';
 
 type Option = { value: string, label: string };
 
@@ -41,6 +39,7 @@ function Dropdown() {
   const [animation, setAnimation] = useState<'enter' | 'leave' | 'infinite'>('infinite');
   const currentScale = useRef(1.0);
   const [direction, setDirection] = useState<'none' | 'growing' | 'shrinking'>('none');
+  const [hover, setHover] = useState(false);
   // only have to include numbers that make the transition smooth from infinite animation -> hover and the reverse
   const scalingNums = [1, 1.5] // the min and max scaling for each animation of the element, ::before, ::after for transitions
   const durations = [3.25, 2.75] // for non-hovering and hovering
@@ -86,6 +85,13 @@ function Dropdown() {
       document.documentElement.style.setProperty('--pulse-transition-duration', `${calc}s`);
       console.log('transition time -> ' + calc);
     } else {
+      if (hover) {
+        document.documentElement.style.setProperty('--pulse-scale', '1.5');
+        document.documentElement.style.setProperty('--pulse-duration', '2.75');
+      } else {
+        document.documentElement.style.setProperty('--pulse-scale', '1.1');
+        document.documentElement.style.setProperty('--pulse-duration', '3.25');
+      }
       // force animation switches to render for infinite animation
       // randomSongButtonRef.current.style.animation = 'none';
       // randomSongButtonRef.current.classList.remove('pulseTransition', 'infinite', 'growing', 'shrinking', 'hover');
@@ -186,8 +192,9 @@ function Dropdown() {
             <option className='FilterOptions' key={i} value={f}>{f}</option>
           ))}
         </select> */}
-        {/* <button className='RandomSong' onClick={navRandomSong}>Random Song!</button> */}
+        <button className='RandomSong' onClick={navRandomSong}>Random Song!</button>
         <button 
+          hidden={true}
           className={`RandomSong 
                       ${animation === 'infinite' ? 'pulse--infinite' : `pulse--${animation}-${direction}`}`
                     }
@@ -201,6 +208,7 @@ function Dropdown() {
             });
           }}
           onMouseEnter={() => { 
+            setHover(true);
             if (!randomSongButtonRef.current) return;
             readLiveScale(randomSongButtonRef.current, (scale) => {
               updateTransition(scale);
@@ -212,6 +220,7 @@ function Dropdown() {
             // void randomSongButtonRef.current.offsetWidth; // force reflow
           }}
           onMouseLeave={() => {
+            setHover(false);
             if (!randomSongButtonRef.current) return;
             // readLiveScale(randomSongButtonRef.current, (scale) => {
             //   updateTransition(scale);

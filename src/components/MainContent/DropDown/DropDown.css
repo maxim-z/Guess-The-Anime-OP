@@ -41,7 +41,7 @@
 }
 
 :root {
-  --pulse-scale: 1.1;
+  --pulse-scale: 1.03;
   --pulse-duration: 3.25s;
 
   /* this is where the transition animation that plays once will start into the infinite animation
@@ -80,12 +80,14 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+
+  animation: pulse 3.25s ease-in-out infinite;
 }
 
-/* .RandomSong:hover {
-  --pulse-scale: 1.5;
+.RandomSong:hover {
+  --pulse-scale: 1.15;
   --pulse-duration: 2.75s;
-} */
+}
 
 .pulse--infinite {
   animation: pulse var(--pulse-duration) ease-out infinite;
@@ -139,7 +141,7 @@
 }
 
 
-/* .RandomSong::before {
+.RandomSong::before {
   content: "";
   z-index: -1;
   top: 0;
@@ -158,7 +160,7 @@
 .RandomSong:hover::before {
   opacity: 0.3;
   animation: pulse-fade 2.75s ease-in-out infinite;
-} */
+}
 
 @keyframes pulse-fade {
   0% {
@@ -177,7 +179,7 @@
 
 /* background: linear-gradient(45deg, var(--linear-gradient-one), var(--linear-gradient-two), var(--linear-gradient-three), var(--linear-gradient-four), var(--linear-gradient-five)); */
 /* background: linear-gradient(0deg, var(--linear-gradient-one), var(--primary-color)); */
-/* .RandomSong::after {
+.RandomSong::after {
   content: "";
   z-index: -2;
   top: 0;
@@ -196,7 +198,7 @@
 
 .RandomSong:hover::after {
   --gradient-duration: 3.25s;
-} */
+}
 
 @keyframes moving-gradient {
   0%    { 

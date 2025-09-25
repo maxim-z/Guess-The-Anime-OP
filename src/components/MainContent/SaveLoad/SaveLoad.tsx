@@ -1,5 +1,4 @@
 import { useJsonFilePicker } from '@components/FilePicker/FilePicker';
-import './SaveLoad.css'
 import { useGuessStatesContext, type GuessStatesMap } from '@components/ContextProviders/GuessStatesContext';
 import { useState } from 'react';
 import { Alert } from '@components/Alert/Alert';
@@ -28,17 +27,17 @@ function SaveLoad() {
   return (
     <>
       {FileInput} {/* Hidden FileInput */}
-      <div className='SaveLoad flex gap-4'>
+      <div className='SaveLoad relative flex flex-col items-center gap-[0.5vw] w-[15vw] h-full top-[0.5vw]'>
           <motion.button 
             onHoverStart={() => saveControls.start({ x: 0, transition: { duration: 0.15 }})}
-            onHoverEnd={() => saveControls.start({ x: '-100%', transition: { duration: 0.5 }})}
-            className='SaveButton relative overflow-hidden bg-gray-500 text-white px-4 py-2 rounded' 
+            onHoverEnd={() => saveControls.start({ x: '-101%', transition: { duration: 0.5 }})}
+            className='SaveButton relative overflow-hidden bg-gray-500 text-white text-[11px] sm:text-sm lg:text-lg w-[90%] h-16 lg:h-20 px-4 py-2 rounded' 
             onClick={saveGuessStates}
           >
             <motion.div
               className='absolute top-0 left-0 h-full w-full bg-[var(--primary-color)] rounded z-0'
               animate={saveControls}
-              initial={{ x: '-100%', transition: { duration: 0.15 }}}
+              initial={{ x: '-101%', transition: { duration: 0.15 }}}
             />
             <span 
               className='relative z-10'
@@ -49,14 +48,14 @@ function SaveLoad() {
 
           <motion.button 
             onHoverStart={() => loadControls.start({ x: 0, transition: { duration: 0.15 }})}
-            onHoverEnd={() => loadControls.start({ x: '100%', transition: { duration: 0.5 }})}
-            className='LoadButton relative overflow-hidden bg-gray-500 text-white px-4 py-2 rounded' 
+            onHoverEnd={() => loadControls.start({ x: '101%', transition: { duration: 0.5 }})}
+            className='LoadButton relative overflow-hidden bg-gray-500 text-white text-[11px] sm:text-sm lg:text-lg w-[90%] h-16 lg:h-20 px-4 py-2 rounded' 
             onClick={openPicker}
           >
             <motion.div
-              className='absolute top-0 left-0 h-full w-full bg-green-500 rounded z-0'
+              className='absolute top-0 right-0 h-full w-full bg-green-500 rounded z-0'
               animate={loadControls}
-              initial={{ x: '100%', transition: { duration: 0.15 }}}
+              initial={{ x: '101%', transition: { duration: 0.15 }}}
             />
             <span className='relative z-10'>
               Load Progress

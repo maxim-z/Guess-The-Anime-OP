@@ -18,7 +18,6 @@ const MemoizedHeader = memo(({ hidden, mode, setMode }: MemoizedHeaderProps) => 
   return <Header mode={mode} setMode={setMode} />;
 });
 
-
 // to exclude dev from production builds
 const DevLazy = React.lazy(() => import("@components/Dev/Dev"));
 const routes = [

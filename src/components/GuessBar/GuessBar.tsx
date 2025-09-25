@@ -127,13 +127,13 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
             {/* Want to add a submit button which will use the selectedAnime as input
                 and if the user presses enter in the input it will submit it as well as a guess */}
             {!disabled && (
-            <div>
+            <div className='SearchBarContainer grid grid-cols-4 gap-4 '>
                 <input 
                     type='text'
                     ref={searchRef}
                     disabled={disabled}
                     id='SearchBar'
-                    className='SearchBar'
+                    className='SearchBar col-span-3'
                     placeholder='Guess...'
                     value={search}
                     onChange={(e) => {
@@ -145,7 +145,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     onBlur={handleBlur}
                 />
                 <button 
-                    className='SubmitSearchButton bg-gray-500 text-white px-4 py-2 rounded'
+                    className='SubmitSearchButton bg-gray-500 text-white rounded'
                     onClick={submitGuess}
                     // disabled={!selectedAnime}
                 >
