@@ -3,6 +3,7 @@ import './MediaPlayer.css'
 import type { MediaPlayerProps } from '@types';
 import YouTube from 'react-youtube';
 import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
+import { easeOut, motion } from 'framer-motion';
 
 declare global {
     interface Window {
@@ -10,6 +11,9 @@ declare global {
         YT: any;
     }
 }
+
+// for the record player
+const angles = [0, 60, 120, 160, 200, 240, 280, 320]; // [0, 60, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300];
 
 // how many seconds of audio the player should be allowed to play
 // this is based on how many hints are available to the player
@@ -127,40 +131,120 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                 />
             </div>
             {!showVideo && (
-                <div className="Media">
-                    <div className='PlayButtonContainer'>
-                        <button 
-                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'}`}
-                            onClick={handleClick}
-                            disabled={!playButton}
-                        >
-                        </button>
+            <div className='PlayerContainer relative w-[350px] h-[200px]'>
+
+                <div className="Media absolute w-[300px] h-[150px] bottom-0 left-[25px] 
+                                bg-[var(--primary-color-gradient-two)] rounded-xl
+                                before:content-[''] before:absolute before:inset-0
+                                before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/45 
+                                before:rounded-xl">
+                                    
+                    {/* <div className='SlateReflection absolute w-[300px] h-[150px] bottom-0 bg-gradient-to-b from-zinc-100/20 to-zinc-900/20 rounded-xl'/> */}
+
+                    <div className='ElectronicDisplay absolute w-[135px] h-[25px] top-[25%] left-[50%] -translate-x-1/2 -translate-y-1/2
+                                    bg-black border-2 border-teal-100/70 text-violet-300 font-[Orbitron] tracking-[2px] drop-shadow-[0_0_8px_rgba(80,44,158,0.8)]'>
+                        Hey There
                     </div>
-                    <div className='SlidersContainer'>
+
+                    <div className='TopLeftSpinningRecordContainer relative w-[100px] h-[100px] top-[-35px] left-[-25px]'>
+                        <div className='Record relative w-full h-full rounded-full'>
+                            <div 
+                                className='RecordGradient absolute inset-0 rounded-full
+                                bg-linear-to-r/srgb from-teal-950 to-indigo-500
+                                animate-[spin_3s_linear_infinite]'
+                            />
+                            <div className="RecordRings absolute inset-0 rounded-full 
+                                            [background:repeating-radial-gradient(circle,#0f172a_0px,#0f172a_8px,transparent_9px,transparent_14px)]"/>
+                        </div>
+                        {angles.map((angle) => (
+                            <div
+                                key={angle} 
+                                className={`RecordStickOverlay absolute w-[55px] h-[15px] top-[50%] left-[50%] -translate-y-1/2 bg-black origin-left rounded-r-xl z-2`}
+                                style={{ transform: `rotate(${angle}deg)` }}
+                            />
+                        ))}
+                        <div className='RecordBoundingCircle absolute top-[-5px] left-[-5px] w-[110%] h-[110%] border-[8px] border-black rounded-full z-3'>
+
+                        </div>
+                        {/* <motion.div
+                            key='angle_highlight'
+                            className={`RecordStickOverlay absolute w-[33px] h-[4px] top-[58%] left-[65%] -translate-y-1/2 bg-zinc-50/60 origin-left rotate-30 z-1`}
+                            animate={{ rotate: 30 }}
+                            transition={{ repeat: Infinity, duration: 3, ease: easeOut}}
+                        /> */}
+                    </div>
+
+                    <div className='TopRightButtons overflow-hidden flex flex-row items-end absolute w-[105px] h-[25px] top-[-25px] right-[15px]'>
+                        <div className="ButtonLeft relative w-[35px] h-[15px] rounded-tl-xl rounded-tr-xl bg-green-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30 
+                                        before:rounded-xl"/>
+                        <div className="ButtonLeft relative w-[35px] h-[25px] rounded-tl-xl rounded-tr-xl bg-yellow-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30 
+                                        before:rounded-xl"/>
+                        <div className="ButtonLeft relative w-[35px] h-[20px] rounded-tl-xl rounded-tr-xl bg-cyan-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30
+                                        before:rounded-xl"/>
+                    </div>
+
+                    <div className="VolumeSlider absolute w-[20px] h-[35px] top-[15px] right-[-20px] rounded-r-lg bg-blue-500">
+                        {/* <input 
+                        className="Slider"
+                            type="range" 
+                            min="0" 
+                            max="100" 
+                            value={volume} 
+                            onChange={(e) => changeVolume(e)}
+                            /> */}
+                    </div>
+
+                    <div className='SlidersContainer relative w-full h-[30px] top-[-33px] left-[20px] '>
                         <div className="PlayTimeBar">
-                            <span className='TimeShow'>{Math.min(currentTime, interval[hintsRevealed])}</span>
+                            <span className='TimeShow relative w-[25px] h-[25px] top-[-2px] left-[-10px] text-lg'>{Math.min(currentTime, interval[hintsRevealed])}</span>
                             <input 
-                                className="Progress"
+                                className="Progress w-[80%]"
                                 type="range" 
                                 min="0" 
                                 max={interval[hintsRevealed]} 
                                 value={Math.min(currentTime, interval[hintsRevealed])} 
                                 onChange={(e) => changePlayTime(e)}
                             />
-                            <span className='TimeShow'>{interval[hintsRevealed]}</span>
-                        </div>
-                        <div className="VolumeSlider">
-                            <input 
-                                className="Slider"
-                                type="range" 
-                                min="0" 
-                                max="100" 
-                                value={volume} 
-                                onChange={(e) => changeVolume(e)}
-                            />
+                            <span className='TimeShow relative w-[25px] h-[25px] top-[-2px] right-[-5px] text-lg'>{interval[hintsRevealed]}</span>
                         </div>
                     </div>
+
+                    <div className='PlayButtonContainer absolute w-[250px] h-[80px] bottom-0 left-[25px]'>
+                        <button 
+                            className='ReverseButton flex flex-row absolute w-[60px] h-[40px] top-[10px] left-[10px]
+                                        text-[var(--primary-color)] hover:text-red-500 transition-colors duration-200'
+                        >
+                            <span className='relative text-[40px] top-[5px]'>&lt;</span>
+                            <span className='relative text-[45px] left-[-5px]'>&lt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]'>&lt;</span>
+                        </button>
+                        <button 
+                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'} relative w-[30px] h-[30px] top-[15px] left-[105px] `}
+                            onClick={handleClick}
+                            disabled={!playButton}
+                        >
+                        </button>
+                        <button 
+                            className='ForwardButton flex flex-row absolute w-[60px] h-[40px] top-[10px] right-[10px]
+                                        text-[var(--primary-color)] hover:text-red-500 transition-colors duration-200'
+                        >
+                            <span className='relative text-[40px] top-[5px]'>&gt;</span>
+                            <span className='relative text-[45px] left-[-5px]'>&gt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]'>&gt;</span>
+                        </button>
+                    </div>
+
                 </div>  
+            </div>
             )}
         </div>
     )

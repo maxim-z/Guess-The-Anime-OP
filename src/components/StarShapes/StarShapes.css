@@ -14,10 +14,10 @@
   position: absolute;
 
   transform-origin: center center;
-  animation: spin 3.0s linear infinite;
+  animation: star-spin 3.0s linear infinite;
 }
 
-@keyframes spin {
+@keyframes star-spin {
   0%    { transform: rotate(0deg) scale(1.0); }
   50%   { transform: rotate(180deg) scale(0.5); }
   75%   { transform: rotate(270deg) scale(1.2); }
