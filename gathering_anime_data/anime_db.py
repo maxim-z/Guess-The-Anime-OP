@@ -323,15 +323,23 @@ def write_viewcounts(cursor, connection, table):
             with open(fpath, "r", encoding="utf-8") as f:
                 obj = json.load(f)
                 max = len(obj) if len(obj) < 5 else 5 # only want to take into account the top 5 search results by relevance
-                videoId = ''
-                highestViewcount = 0
-                for j in range(0, max):
-                    currViewcount = obj[j]['viewCount']
-                    if currViewcount > highestViewcount:
-                        videoId = obj[j]['videoId']
-                        highestViewcount = currViewcount
-                update_row(cursor, connection, table, 'yt_video_id', videoId, i)
-                update_row(cursor, connection, table, 'yt_viewcount', highestViewcount, i)
+                
+                sorted_videos_desc = sorted(obj, key=lambda x: x['viewCount'])
+                print(sorted_videos_desc)
+                videoIds = ','.join(v['videoId'] for v in sorted_videos_desc[:5])
+                highestViewcounts = ','.join(v['viewCount'] for v in sorted_videos_desc[:5])
+                update_row(cursor, connection, table, 'yt_video_id', videoIds, i)
+                update_row(cursor, connection, table, 'yt_viewcount', highestViewcounts, i)
+                
+                # videoId = ''
+                # highestViewcount = 0
+                # for j in range(0, max):
+                #     currViewcount = sorted_videos_desc[j]['viewCount']
+                #     if currViewcount > highestViewcount:
+                #         videoId = sorted_videos_desc[j]['videoId']
+                #         highestViewcount = currViewcount
+                # update_row(cursor, connection, table, 'yt_video_id', videoId, i)
+                # update_row(cursor, connection, table, 'yt_viewcount', highestViewcount, i)
             print(f"Completed [{i}]")
         else:
             print(f"Skipped [{i}]")

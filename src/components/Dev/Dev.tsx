@@ -1,7 +1,9 @@
 function Dev() {
 
     return (
-        <div>Dev</div>
+        <div>
+            Dev
+        </div>
     )
 }
 
