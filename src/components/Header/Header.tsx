@@ -30,25 +30,35 @@ function Header( { mode, setMode } : HeaderProps) {
   const backgroundImg = mode === 'Opening' ? layingRiver : flowerField;// : layingRiver;
 
   return (
-    <header className='Header'>
-        <div className='BannerWrapper'>
-          <div className='Banner' style={{backgroundImage: `url(${backgroundImg})`}}>
-            <h1 className='Title'>
-              <pre style={{textAlign: 'center'}}>Guess the Anime{' '}</pre>
-              <span className='OpeningEnding' onClick={toggleMode}>
-                {mode}!
-                <StarShapes />
-              </span>
-              {/* <span className='OpeningEnding' onClick={toggleMode}>Guess the Anime {mode}!</span>               */}
-            </h1>
-            <nav className='NavMenu'>
-              <ul>
-                {menuList}
-              </ul>
-            </nav>
-          </div>
+    <header className="Header w-full h-full max-h-[1080px] text-center">
+      <div className="BannerWrapper relative flex items-center justify-center w-full p-[1vw]">
+        <div
+          className="Banner w-full max-w-[1920px] h-[clamp(40vh,10vw+30vh,65vh)] max-h-[972px] bg-cover bg-center flex flex-col justify-center items-center shrink-0
+                    border-8 border-[var(--primary-color)]"
+          style={{ backgroundImage: `url(${backgroundImg})` }}
+        >
+          <h1 
+            className="Title w-full h-full max-h-[150px] text-white text-[7.35vw] m-0 flex flex-row justify-center items-center 
+                      text-shadow-3xl text-shadow-red-900 md:text-[max(7.5vw,45px)]">
+            {/* style={{ textShadow: '0 0 10px black' }} */}
+            <pre className="text-center">Guess the Anime </pre>
+            <span
+              className="OpeningEnding relative text-[var(--secondary-color)] hover:text-[var(--tertiary-color)]"
+              onClick={toggleMode}
+            >
+              {mode}!
+              <StarShapes />
+            </span>
+          </h1>
+
+          <nav className="NavMenu w-auto p-4 bg-[var(--primary-color)] text-white text-md md:text-md lg:text-3xl xl:text-[40px] rounded-lg lg:rounded-xl">
+            <ul className="flex justify-center gap-4 list-none m-0 p-0">
+              {menuList}
+            </ul>
+          </nav>
         </div>
-      </header>
+      </div>
+  </header>
   );
 }
 

@@ -37,8 +37,6 @@ body {
 
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
-  --random-song-size: max(75px, 10vw);
-
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;

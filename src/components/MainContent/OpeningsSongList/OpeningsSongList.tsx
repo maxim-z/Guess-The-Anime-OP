@@ -10,9 +10,14 @@ function OpeningsSongList() {
   // const [numSongs, setSongs] = useState(MAX_SONGS); // how many Songs to show, every row will contain a max of 25
   
   return (
-    <div className='SongListContainer w-[70vw]'>
-      <FilterTitle /> { /* Filter with Dropdown menu */ }
-      <div className='OpeningsSongList grid grid-cols-5 md: grid-cols-25
+    <div className='SongListContainer'>
+      { /* Filter with Dropdown menu */ }
+      {/* <FilterTitle />  */}
+      <div className='OpeningsSongList grid grid-cols-5 text-sm
+                      sm:grid-cols-10 sm:text-md
+                      md:grid-cols-10 md:text-lg
+                      lg:grid-cols-15
+                      xl:grid-cols-20
                       bg-gradient-to-b from-[var(--primary-color)] via-[var(--primary-color-gradient-two)] to-[var(--primary-color-gradient-three)]'>
         {[...Array(MAX_SONGS)].map((_, i) => {
           const id = i+1;

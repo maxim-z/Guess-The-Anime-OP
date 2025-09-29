@@ -1,281 +1,304 @@
+:root {
+  --pulse-scale: 1.03;
+  --pulse-duration: 3.25s;
+
+  /* this is where the transition animation that plays once will start into the infinite animation
+      for a smooth animation playback */
+  --pulse-scale-transition: 1.0; /* can be any number it will get updated in the updateAnimation function */
+  --pulse-transition-duration: 0.5s;
+
+  --gradient-duration: 9.75s;
+
+  --random-song-size: max(75px, 13vw);
+}
+
+@media (min-width: 500px) { /* md */
   :root {
-    --pulse-scale: 1.03;
-    --pulse-duration: 3.25s;
-  
-    /* this is where the transition animation that plays once will start into the infinite animation
-        for a smooth animation playback */
-    --pulse-scale-transition: 1.0; /* can be any number it will get updated in the updateAnimation function */
-    --pulse-transition-duration: 0.5s;
-  
-    --gradient-duration: 9.75s;
+    --random-song-size: max(100px, 13vw);
   }
-  
-  .RandomSong {
-    width: var(--random-song-size);
-    height: var(--random-song-size);
-    z-index: 0;
-    /* background-color: #c2fbd7; */
-    /* background: transparent; */
-    border-radius: 100%;
-    position: relative;
-    /* box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px; */
-    /* color: green; */
-    /* color: #0075ff; */
-    color: rgba(248, 248, 255, 0.5);
-    cursor: pointer;
-    display: inline-block;
-    /* font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif; */
-    /* padding: 7px 20px; */
-    text-align: center;
-    text-decoration: none;
-    
-    transform-origin: center center;
-    transition: all 0.75s ease-in-out;
-    box-shadow: 0px 0px 10px rgba(255, 254, 198, 1.0);
-  
-    border: 0;
-    font-size: max(2.0vw, 16px);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-  
-    animation: pulse 3.25s ease-in-out infinite;
+}
+@media (min-width: 768px) { /* md */
+  :root {
+    --random-song-size: max(115px, 13vw);
   }
+}
+@media (min-width: 1024px) { /* lg */
+  :root {
+    --random-song-size: max(150px, 13vw);
+  }
+}
+@media (min-width: 1280px) { /* xl */
+  :root {
+    --random-song-size: max(200px, 13vw);
+  }
+}
+
+.RandomSong {
+  width: var(--random-song-size);
+  height: var(--random-song-size);
+  z-index: 0;
+  /* background-color: #c2fbd7; */
+  /* background: transparent; */
+  border-radius: 100%;
+  position: relative;
+  /* box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px; */
+  /* color: green; */
+  /* color: #0075ff; */
+  color: rgba(248, 248, 255, 0.5);
+  cursor: pointer;
+  display: inline-block;
+  /* font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif; */
+  /* padding: 7px 20px; */
+  text-align: center;
+  text-decoration: none;
   
-  .RandomSong:hover {
-    --pulse-scale: 1.15;
-    --pulse-duration: 2.75s;
+  transform-origin: center center;
+  transition: all 0.75s ease-in-out;
+  box-shadow: 0px 0px 10px rgba(255, 254, 198, 1.0);
+
+  border: 0;
+  font-size: max(2.0vw, 16px);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
+  animation: pulse 3.25s ease-in-out infinite;
+}
+
+.RandomSong:hover {
+  --pulse-scale: 1.15;
+  --pulse-duration: 2.75s;
+}
+
+.pulse--infinite {
+  animation: pulse var(--pulse-duration) ease-out infinite;
+}
+
+.pulse--enter-growing {
+  animation: growingPulseTransition var(--pulse-transition-duration) forwards;
+}
+.pulse--leave-growing {
+  animation: growingPulseTransition var(--pulse-transition-duration) forwards;
+}
+.pulse--enter-shrinking {
+  animation: shrinkingPulseTransition var(--pulse-transition-duration) forwards;
+}
+.pulse--leave-shrinking {
+  animation: shrinkingPulseTransition var(--pulse-transition-duration) forwards;
+}
+/* ex. say hover started when pulse was at 1.03 the animation would *jump* but with a transition
+  in between the next animation will start smoothly at 1.0 */
+@keyframes pulse {
+  0% {
+    transform: scale(1.0);
   }
+  50% {
+    transform: scale(var(--pulse-scale));
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes growingPulseTransition {
+  0% {
+    transform: scale(var(--pulse-scale-transition));
+  }
+  50% {
+    transform: scale(var(--pulse-scale));
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes shrinkingPulseTransition {
+  0% {
+    transform: scale(var(--pulse-scale-transition));
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+
+.RandomSong::before {
+  content: "";
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: var(--random-song-size);
+  height: var(--random-song-size);
+  border-radius: 100%;
+  position: absolute;
   
-  .pulse--infinite {
-    animation: pulse var(--pulse-duration) ease-out infinite;
-  }
-  
-  .pulse--enter-growing {
-    animation: growingPulseTransition var(--pulse-transition-duration) forwards;
-  }
-  .pulse--leave-growing {
-    animation: growingPulseTransition var(--pulse-transition-duration) forwards;
-  }
-  .pulse--enter-shrinking {
-    animation: shrinkingPulseTransition var(--pulse-transition-duration) forwards;
-  }
-  .pulse--leave-shrinking {
-    animation: shrinkingPulseTransition var(--pulse-transition-duration) forwards;
-  }
-  /* ex. say hover started when pulse was at 1.03 the animation would *jump* but with a transition
-    in between the next animation will start smoothly at 1.0 */
-  @keyframes pulse {
-    0% {
-      transform: scale(1.0);
-    }
-    50% {
-      transform: scale(var(--pulse-scale));
-    }
-    100% {
-      transform: scale(1.0);
-    }
-  }
-  
-  @keyframes growingPulseTransition {
-    0% {
-      transform: scale(var(--pulse-scale-transition));
-    }
-    50% {
-      transform: scale(var(--pulse-scale));
-    }
-    100% {
-      transform: scale(1.0);
-    }
-  }
-  
-  @keyframes shrinkingPulseTransition {
-    0% {
-      transform: scale(var(--pulse-scale-transition));
-    }
-    100% {
-      transform: scale(1.0);
-    }
-  }
-  
-  
-  .RandomSong::before {
-    content: "";
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: var(--random-song-size);
-    height: var(--random-song-size);
-    border-radius: 100%;
-    position: absolute;
-    
-    transition: opacity 0.25s ease-out;
-    box-shadow: 0px 0px 1vw rgba(255, 254, 198, 1.0);
-    opacity: 0;
-    pointer-events: none;
-  }  
-  
-  .RandomSong:hover::before {
+  transition: opacity 0.25s ease-out;
+  box-shadow: 0px 0px 1vw rgba(255, 254, 198, 1.0);
+  opacity: 0;
+  pointer-events: none;
+}  
+
+.RandomSong:hover::before {
+  opacity: 0.3;
+  animation: pulse-fade 2.75s ease-in-out infinite;
+}
+
+@keyframes pulse-fade {
+  0% {
+    transform: scale(0.95);
     opacity: 0.3;
-    animation: pulse-fade 2.75s ease-in-out infinite;
   }
-  
-  @keyframes pulse-fade {
-    0% {
-      transform: scale(0.95);
-      opacity: 0.3;
-    }
-    50% {
-      transform: scale(1.0);
-      opacity: 1.0;
-    }
-    100% {
-      transform: scale(0.95);
-      opacity: 0.3;
-    }
+  50% {
+    transform: scale(1.0);
+    opacity: 1.0;
   }
-  
-  /* background: linear-gradient(45deg, var(--linear-gradient-one), var(--linear-gradient-two), var(--linear-gradient-three), var(--linear-gradient-four), var(--linear-gradient-five)); */
-  /* background: linear-gradient(0deg, var(--linear-gradient-one), var(--primary-color)); */
-  .RandomSong::after {
-    content: "";
-    z-index: -2;
-    top: 0;
-    left: 0;
-    width: var(--random-song-size);
-    height: var(--random-song-size);
-    border-radius: 100%;
-    position: absolute;
-  
-    pointer-events: none;
-    background: linear-gradient(0deg, rgb(44, 187, 99), rgb(0, 89, 34));
-    background-size: 500%;
-    animation: moving-gradient var(--gradient-duration) linear infinite;
-    filter: blur(10px);
-  }
-  
-  .RandomSong:hover::after {
-    --gradient-duration: 3.25s;
-  }
-  
-  @keyframes moving-gradient {
-    0%    { 
-      background-position: 0 0;
-      transform: rotate(0deg) scale(1.0); 
-    }
-    50%   {
-      transform: rotate(180deg) scale(1.5);
-    }
-    100%  { 
-      background-position: 500% 0;
-      transform: rotate(360deg) scale(1.0); 
-    }
-  }
-  
-  .RandomSong2 {
-    width: 10vw;
-    height: 10vw;
-    border-radius: 100%;
-    position: relative;
-  
-    padding: 1.75vw 0vw;
-    text-align: center;
-    font-size: 2vw;
-    background: transparent;
-    color: rgba(255, 255, 255, 0.6);
-    border: none;
-    cursor: pointer;
-  }
-  
-  .RandomSong2::before {
-    content: '';
-    width: 10vw;
-    height: 10vw;
-    top: 0;
-    left: 0;
-    border-radius: 100%;
-    position: absolute;
-    z-index: -1;
-  
-    background: linear-gradient(180deg, rgb(0, 255, 0), green, blue);
+  100% {
+    transform: scale(0.95);
     opacity: 0.3;
-    animation: pulse-bigger 6.0s linear infinite;
-    filter: blur(10px);
   }
-  
-  @keyframes pulse-bigger {
-    0% {
-      transform: rotate(0deg) scale(1.0);
-    }
-    50% {
-      transform: rotate(180deg) scale(1.01);
-    }
-    100% {
-      transform: rotate(360deg) scale(1.0);
-    }
+}
+
+/* background: linear-gradient(45deg, var(--linear-gradient-one), var(--linear-gradient-two), var(--linear-gradient-three), var(--linear-gradient-four), var(--linear-gradient-five)); */
+/* background: linear-gradient(0deg, var(--linear-gradient-one), var(--primary-color)); */
+.RandomSong::after {
+  content: "";
+  z-index: -2;
+  top: 0;
+  left: 0;
+  width: var(--random-song-size);
+  height: var(--random-song-size);
+  border-radius: 100%;
+  position: absolute;
+
+  pointer-events: none;
+  background: linear-gradient(0deg, rgb(44, 187, 99), rgb(0, 89, 34));
+  background-size: 500%;
+  animation: moving-gradient var(--gradient-duration) linear infinite;
+  filter: blur(10px);
+}
+
+.RandomSong:hover::after {
+  --gradient-duration: 3.25s;
+}
+
+@keyframes moving-gradient {
+  0%    { 
+    background-position: 0 0;
+    transform: rotate(0deg) scale(1.0); 
   }
-  
-  .GradientContainer {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: 100%;
-    overflow: hidden;
-    position: absolute;
+  50%   {
+    transform: rotate(180deg) scale(1.5);
   }
-  
-  .Gradient {
-    top: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;
-    z-index: -1;
-    filter: blur(10px);
+  100%  { 
+    background-position: 500% 0;
+    transform: rotate(360deg) scale(1.0); 
   }
-  
-  .Gradient.one {
-    background: linear-gradient(180deg, rgb(0, 255, 0), green, blue);
+}
+
+.RandomSong2 {
+  width: 10vw;
+  height: 10vw;
+  border-radius: 100%;
+  position: relative;
+
+  padding: 1.75vw 0vw;
+  text-align: center;
+  font-size: 2vw;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+}
+
+.RandomSong2::before {
+  content: '';
+  width: 10vw;
+  height: 10vw;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  position: absolute;
+  z-index: -1;
+
+  background: linear-gradient(180deg, rgb(0, 255, 0), green, blue);
+  opacity: 0.3;
+  animation: pulse-bigger 6.0s linear infinite;
+  filter: blur(10px);
+}
+
+@keyframes pulse-bigger {
+  0% {
+    transform: rotate(0deg) scale(1.0);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.01);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.0);
+  }
+}
+
+.GradientContainer {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 100%;
+  overflow: hidden;
+  position: absolute;
+}
+
+.Gradient {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.Gradient.one {
+  background: linear-gradient(180deg, rgb(0, 255, 0), green, blue);
+  opacity: 0.1;
+  animation: fade 6.0s linear infinite;
+}
+
+.Gradient.two {
+  background: linear-gradient(0deg, DarkRed, rgb(163, 34, 108),  rgb(184, 67, 207));
+  opacity: 0.1;
+  animation: fade-half 2.0s linear infinite;
+  animation-delay: 0.5s;
+  animation-direction: reverse;
+}
+
+@keyframes fade {
+  0% {
+    transform: rotate(0deg) scale(1.0);
     opacity: 0.1;
-    animation: fade 6.0s linear infinite;
   }
-  
-  .Gradient.two {
-    background: linear-gradient(0deg, DarkRed, rgb(163, 34, 108),  rgb(184, 67, 207));
+  50% {
+    transform: rotate(180deg) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) scale(1.0);
     opacity: 0.1;
-    animation: fade-half 2.0s linear infinite;
-    animation-delay: 0.5s;
-    animation-direction: reverse;
   }
-  
-  @keyframes fade {
-    0% {
-      transform: rotate(0deg) scale(1.0);
-      opacity: 0.1;
-    }
-    50% {
-      transform: rotate(180deg) scale(1.5);
-      opacity: 1;
-    }
-    100% {
-      transform: rotate(360deg) scale(1.0);
-      opacity: 0.1;
-    }
+}
+
+@keyframes fade-half {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.1;
   }
-  
-  @keyframes fade-half {
-    0% {
-      transform: rotate(0deg);
-      opacity: 0.1;
-    }
-    50% {
-      transform: rotate(180deg);
-      opacity: 0.5;
-    }
-    100% {
-      transform: rotate(360deg);
-      opacity: 0.1;
-    }
+  50% {
+    transform: rotate(180deg);
+    opacity: 0.5;
   }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.1;
+  }
+}

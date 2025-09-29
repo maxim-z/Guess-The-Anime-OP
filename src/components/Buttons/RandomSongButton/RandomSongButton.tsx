@@ -176,7 +176,7 @@ function RandomSongButton() {
   }
 
   return (
-    <div className='ButtonContainer'>
+    <div className='ButtonContainer relative top-[5.5vw] left-[2.0vw] lg:top-[2.5vw] lg:left-0'>
         <button className='RandomSong' onClick={navRandomSong}>Random Song!</button>
         {/* <button 
           hidden={true}
