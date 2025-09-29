@@ -12,7 +12,7 @@ function Song( {song_id} : {song_id : number} ) {
     const guessed = guessStates[mode as ModeType]?.[filter]?.[song_id]?.status ?? 'None';
 
     return (
-        <div className={`Song ${guessed}`}>
+        <div className={`Song ${guessed} text-center text-s`}>
             {song_id}
         </div>
     )

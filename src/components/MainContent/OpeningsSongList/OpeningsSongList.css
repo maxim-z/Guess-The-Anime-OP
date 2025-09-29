@@ -1,22 +1,22 @@
-.SongListContainer {
+/* .SongListContainer {
     width: 70vw;
     max-height: 100%;
     text-align: center;
     font-size: max(0.5vw, 20px);
-}
+} */
 
-.OpeningsSongList {
+/* .OpeningsSongList {
     padding: 0.5vw;
     max-width: 100%;
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(max(2.6em, 2.6vw), 1fr));
-    /* gap: 2rem; */
+    gap: 2rem;
     justify-content: center;
     align-items: center;
 
     background: linear-gradient(180deg, var(--primary-color), var(--primary-color-gradient-two), var(--primary-color-gradient-three));
-}
+} */
 
 .linky {
     display: inline-block;
