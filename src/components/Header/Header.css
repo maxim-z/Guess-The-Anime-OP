@@ -1,20 +1,19 @@
 /* Header container */
-.Header {
+/* .Header {
   width: 100%;
   height: 100%;
   max-height: 1080px;
   text-align: center;
   background-color: var(--primary-color);
-}
+} */
 
-.BannerWrapper {
+/* .BannerWrapper {
   width: 100%;
   padding: 1vw;
-}
+} */
 
 /* Background block with image */
-.Banner {
-  /* background-image: url('your-image-path.jpg'); or use imported `backgroundImg` */
+/* .Banner {
   background-size: cover;
   background-position: center;
   width: 98vw;
@@ -31,80 +30,62 @@
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-}
-
-/* @media only screen and (max-width: 1200px) {
-  .Banner {
-    height: 50vh;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .Banner {
-    height: 40vh;
-  }
-}
-@media only screen and (max-width: 569px) {
-  .Banner {
-    height: 30vh;
-  }
 } */
 
 /* Guess The Anime Title part styling */
-.Title {
+/* .Title {
   width: 100%;
   height: 100%;
   max-height: 150px;
   color: white;
   font-size: 7.35vw;
-  text-shadow: 0 0 10px black;
   margin: 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-}  
+  text-shadow: 0 0 10px black;
+}   */
 
-@media only screen and (max-width: 768px) {
+/* @media only screen and (max-width: 768px) {
   .Title {
     flex-direction: column;
     font-size: max(8.5vw, 45px);
   }
-}
+} */
 
 /* Opening Title part styling */
-.OpeningEnding {
+/* .OpeningEnding {
   display: block;
   position: relative;
   color: var(--secondary-color);
 }
 .OpeningEnding:hover {
   color: var(--tertiary-color);
-}
+} */
 
 /* Table of Contents below */
-.NavMenu {
+/* .NavMenu {
   padding: 1rem;
   background-color: var(--primary-color);
   color: white;
   border-radius: 1rem;
-}
+} */
 
 /* Center nav list */
-.NavMenu ul {
+/* .NavMenu ul {
   display: flex;
   justify-content: center;
   gap: 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
-}
+} */
 
-.NavMenu ul li {
-  /* margin: 0 0.5rem; */
-  font-size: 1.5rem;
-}
+/* .NavMenu ul li {
+  padding: 5vw;
+} */
 
-.NavMenu ul li:hover {
+/* .NavMenu ul li:hover {
   color: var(--tertiary-color);
-  /* font-size: 1.6rem; */
-}
+} */

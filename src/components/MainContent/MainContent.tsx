@@ -1,3 +1,4 @@
+import RandomSongButton from '@components/Buttons/RandomSongButton/RandomSongButton';
 import { useModeContext } from '@components/ContextProviders/ModeContext'
 import Dropdown from '@components/MainContent/DropDown/DropDown'
 import OpeningsSongList from '@components/MainContent/OpeningsSongList/OpeningsSongList'
@@ -7,20 +8,18 @@ function Main() {
     const { mode } = useModeContext();
 
     return mode === 'Opening' ? (
-        <div className='MainContent flex flex-row justify-center w-[100vw] h-full'>
-          <Dropdown />
-          <OpeningsSongList />
-          <SaveLoad />
-          {/* <div className='w-[15%] h-50 bg-green-800 text-center justify-self-center content-normal'>
-            First Element
+        <div className='MainContent relative flex flex-row justify-center w-[100vw] h-full top-[1.5vw]'>
+          {/* All these elements below add up to 100vw. The button is 20vw, the songlist is 60vw, and the saveload is 20vw */}
+          <div className='flex relative justify-center w-[20vw]'>
+              <RandomSongButton />
           </div>
-          <div className='w-[70%] h-50 mx-auto bg-blue-800 text-center justify-self-center content-normal'>
-            Second Element
+          <div className='flex flex-col items-center justify-center gap-4 w-[60vw]'>
+            <Dropdown />
+            <OpeningsSongList />
           </div>
-          <div className='flex flex-col w-[15%] h-50 bg-red-800 justify-center'>
-            <button>Button One</button>
-            <button>Button Two</button>
-          </div> */}
+          <div className='flex relative flex flex-col items-center gap-[0.5vw] w-[20vw] h-full'>
+            <SaveLoad />
+          </div>
         </div>
     ) : (
       <div>Under Construction</div>
