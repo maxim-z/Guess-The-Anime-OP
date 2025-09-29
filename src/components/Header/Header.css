@@ -39,15 +39,15 @@
   max-height: 150px;
   color: white;
   font-size: 7.35vw;
-  text-shadow: 0 0 10px black;
   margin: 0;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-}  
+  text-shadow: 0 0 10px black;
+}   */
 
-@media only screen and (max-width: 768px) {
+/* @media only screen and (max-width: 768px) {
   .Title {
     flex-direction: column;
     font-size: max(8.5vw, 45px);
@@ -82,10 +82,10 @@
   padding: 0;
 } */
 
-.NavMenu ul li {
-  padding: 0.5vw;
-}
+/* .NavMenu ul li {
+  padding: 5vw;
+} */
 
-.NavMenu ul li:hover {
+/* .NavMenu ul li:hover {
   color: var(--tertiary-color);
-}
+} */

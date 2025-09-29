@@ -1,24 +1,14 @@
 import './RandomSongButton.css'
-import { filters, type FilterType } from '@types';
 import { useNavigate } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
 import { useFilterContext } from '@components/ContextProviders/FilterContext';
-import { type SingleValue, type StylesConfig } from 'react-select';
 import { useCallback, useRef, useState } from 'react';
-
-type Option = { value: string, label: string };
 
 function RandomSongButton() {
   const navigate = useNavigate();
 
   // Filter Updates
   const filterContext = useFilterContext();
-  
-  const handleChange = (choice: SingleValue<Option>) => {
-    if (!choice) return;
-    const selected = choice.value as FilterType;
-    filterContext.updateFilter(selected);
-  };
   
   // get the current scale of the button from the animation
   const getCurrentScale = (el : HTMLElement): number[] => {
@@ -154,25 +144,6 @@ function RandomSongButton() {
   const navRandomSong = () => {
     const randomNum = Math.floor(Math.random() * MAX_SONGS + 1);
     navigate(`/guess?id=${randomNum}&filter=${filterContext.filter}`)
-  }
-
-  // for Select element
-  const selectOptions: Option[] = filters.map((f) => ({
-    value: f,
-    label: f,
-  }));
-  const selectStyles: StylesConfig<Option, false> = {
-    option: (provided, state) => ({
-      ...provided,
-      whiteSpace: 'normal',
-      wordWrap: 'break-word',
-      color: state.isSelected ? 'black' : 'rgba(0, 0, 0, 0.7)',
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      whiteSpace: 'normal',
-      color: 'black',
-    }),
   }
 
   return (

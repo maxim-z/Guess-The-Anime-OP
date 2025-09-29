@@ -3,7 +3,6 @@ import SongTile from '@components/MainContent/OpeningsSongList/SongTile/SongTile
 import { Link } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
 import { useFilterContext } from '@components/ContextProviders/FilterContext';
-import FilterTitle from '../FilterTitle/FilterTitle';
 
 function OpeningsSongList() {
   const filterContext = useFilterContext();
