@@ -14,8 +14,7 @@
 }
 
 /* General */
-.GuessTheSongContainer {
-    /* background: blue; */
+/* .GuessTheSongContainer {
     width: 100%;
     height: 100%;
     display: flex;
@@ -23,13 +22,12 @@
     align-items: center;
     flex-direction: column;
     gap: 1vw;
-}
+} */
 
-.AnimeInfoContainer {
-    /* background: blue; */
+/* .AnimeInfoContainer {
     display: flex;
     flex-direction: row;
-}
+} */
 
 .ButtonsContainer {
     /* background: red; */

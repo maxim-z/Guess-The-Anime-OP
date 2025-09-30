@@ -3,6 +3,9 @@ import './MediaPlayer.css'
 import type { MediaPlayerProps } from '@types';
 import YouTube from 'react-youtube';
 import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
+import { easeOut, motion } from 'framer-motion';
+import SpinningRecord from '@components/Customs/SpinningRecord';
+import ElectronicDisplay from '@components/Customs/ElectronicDisplay';
 
 declare global {
     interface Window {
@@ -10,6 +13,10 @@ declare global {
         YT: any;
     }
 }
+
+// for the record player
+const angles = [0, 60, 120, 160, 200, 240, 280, 320]; // [0, 60, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300];
+const angles2 = [0, 40, 80, 140, 200, 240, 280, 320];
 
 // how many seconds of audio the player should be allowed to play
 // this is based on how many hints are available to the player
@@ -73,20 +80,20 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
             intervalId = setInterval(() => {
                 const time = playerRef.current.getCurrentTime();
                 if (typeof time === "number") {
-                    setCurrentTime(Math.floor(time));
+                    setCurrentTime(time);
                     // check if reached end of the playable section
                     if (time > interval[hintsRevealed]) { // 1, 2, 5, ... seconds
                         resetVideoToStart();
                     }
                 }
-            }, 500);
+            }, 300);
         }
         // clean up interval so that setInterval has the freshest values
         return () => clearInterval(intervalId);
     }, [isPlaying, hintsRevealed]);
 
     const changePlayTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const playAt = Math.floor(Number.parseInt(e.target.value));
+        const playAt = (Number.parseInt(e.target.value));
         setCurrentTime(playAt);
         setIsPlaying(true);
         playerRef.current.seekTo(playAt);
@@ -109,7 +116,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
 
     return ( 
         <div className="MediaContainer">
-            <div className={`${showVideo ? 'FullSizeVideoContainer' : 'YouTubeContainer'}`}>
+            <div className={`${showVideo ? 'w-[360px] h-[240px] md:w-[640px] md:h-[360px]' : 'w-[0%] h-[0%]'}`}>
                 <YouTube
                     videoId={videoId}
                     onReady={handleReady}
@@ -127,40 +134,99 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                 />
             </div>
             {!showVideo && (
-                <div className="Media">
-                    <div className='PlayButtonContainer'>
-                        <button 
-                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'}`}
-                            onClick={handleClick}
-                            disabled={!playButton}
-                        >
-                        </button>
+            <div className='PlayerContainer relative w-[350px] h-[200px] origin-top-left md:scale-135'>
+
+                <div className="Media absolute w-[300px] h-[150px] bottom-0 left-[25px] 
+                                bg-[var(--primary-color-gradient-two)] rounded-xl
+                                before:content-[''] before:absolute before:inset-0
+                                before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/45 
+                                before:rounded-xl">
+                                    
+                    {/* <div className='SlateReflection absolute w-[300px] h-[150px] bottom-0 bg-gradient-to-b from-zinc-100/20 to-zinc-900/20 rounded-xl'/> */}
+
+                    <ElectronicDisplay />
+
+                    <div className='relative bg-green-500 rounded-tr-xl rounded-tl-xl'>
+                        <div className='relative -top-4 -left-16 scale-50'>
+                            <SpinningRecord angles={angles} />
+                        </div>
                     </div>
-                    <div className='SlidersContainer'>
-                        <div className="PlayTimeBar">
-                            <span className='TimeShow'>{Math.min(currentTime, interval[hintsRevealed])}</span>
+                    <div className='absolute -top-4 left-53 scale-50'>
+                        <SpinningRecord angles={angles2} />
+                    </div>
+
+                    <div className='TopRightButtons overflow-hidden flex flex-row items-end absolute w-[105px] h-[25px] top-[-25px] right-[15px]'>
+                        <div className="ButtonLeft relative w-[35px] h-[15px] rounded-tl-xl rounded-tr-xl bg-green-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30 
+                                        before:rounded-xl"/>
+                        <div className="ButtonLeft relative w-[35px] h-[25px] rounded-tl-xl rounded-tr-xl bg-yellow-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30 
+                                        before:rounded-xl"/>
+                        <div className="ButtonLeft relative w-[35px] h-[20px] rounded-tl-xl rounded-tr-xl bg-cyan-500
+                                        active:translate-y-[2px] active:shadow-inner
+                                        before:content-[''] before:absolute before:inset-0
+                                        before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30
+                                        before:rounded-xl"/>
+                    </div>
+
+                    <div className="VolumeSlider absolute w-[20px] h-[35px] top-[15px] right-[-20px] rounded-r-lg bg-blue-500">
+                        {/* <input 
+                        className="Slider"
+                            type="range" 
+                            min="0" 
+                            max="100" 
+                            value={volume} 
+                            onChange={(e) => changeVolume(e)}
+                            /> */}
+                    </div>
+
+                    <div className='SlidersContainer relative w-full h-[30px] top-[-33px] z-1'>
+                        <div className="PlayTimeBar relative flex w-full h-full">
+                            <div className='TimeShow relative w-[25px] h-[25px] left-1 text-lg'>{Math.min(Math.floor(currentTime), interval[hintsRevealed])}</div>
                             <input 
-                                className="Progress"
+                                className="Progress w-[80%]"
                                 type="range" 
                                 min="0" 
                                 max={interval[hintsRevealed]} 
                                 value={Math.min(currentTime, interval[hintsRevealed])} 
                                 onChange={(e) => changePlayTime(e)}
                             />
-                            <span className='TimeShow'>{interval[hintsRevealed]}</span>
-                        </div>
-                        <div className="VolumeSlider">
-                            <input 
-                                className="Slider"
-                                type="range" 
-                                min="0" 
-                                max="100" 
-                                value={volume} 
-                                onChange={(e) => changeVolume(e)}
-                            />
+                            <span className='TimeShow relative w-[25px] h-[25px] left-1 text-lg'>{interval[hintsRevealed]}</span>
                         </div>
                     </div>
+
+                    <div className='PlayButtonContainer absolute w-[250px] h-[80px] bottom-0 left-[25px]'>
+                        <button 
+                            className='ReverseButton flex flex-row absolute w-[60px] h-[40px] top-[10px] left-[10px]
+                                        text-[var(--primary-color)] hover:text-red-500 transition-colors duration-200'
+                        >
+                            <span className='relative text-[40px] top-[5px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
+                            <span className='relative text-[45px] left-[-5px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
+                        </button>
+                        <button 
+                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'} 
+                                        relative w-[30px] h-[30px] top-[15px] left-[105px]
+                                        xs:scale-70 md:scale-60 xl:scale-55`}
+                            onClick={handleClick}
+                            disabled={!playButton}
+                        />
+                        <button 
+                            className='ForwardButton flex flex-row absolute w-[60px] h-full top-[10px] right-[10px]
+                                        text-[var(--primary-color)] active:text-red-500 hover:text-red-500 transition-colors duration-200'
+                        >
+                            <span className='relative text-[40px] top-[5px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
+                            <span className='relative text-[45px] left-[-5px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
+                        </button>
+                    </div>
+
                 </div>  
+            </div>
             )}
         </div>
     )
