@@ -4,6 +4,8 @@ import type { MediaPlayerProps } from '@types';
 import YouTube from 'react-youtube';
 import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
 import { easeOut, motion } from 'framer-motion';
+import SpinningRecord from '@components/Customs/SpinningRecord';
+import ElectronicDisplay from '@components/Customs/ElectronicDisplay';
 
 declare global {
     interface Window {
@@ -14,6 +16,7 @@ declare global {
 
 // for the record player
 const angles = [0, 60, 120, 160, 200, 240, 280, 320]; // [0, 60, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300];
+const angles2 = [0, 40, 80, 140, 200, 240, 280, 320];
 
 // how many seconds of audio the player should be allowed to play
 // this is based on how many hints are available to the player
@@ -77,20 +80,20 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
             intervalId = setInterval(() => {
                 const time = playerRef.current.getCurrentTime();
                 if (typeof time === "number") {
-                    setCurrentTime(Math.floor(time));
+                    setCurrentTime(time);
                     // check if reached end of the playable section
                     if (time > interval[hintsRevealed]) { // 1, 2, 5, ... seconds
                         resetVideoToStart();
                     }
                 }
-            }, 500);
+            }, 300);
         }
         // clean up interval so that setInterval has the freshest values
         return () => clearInterval(intervalId);
     }, [isPlaying, hintsRevealed]);
 
     const changePlayTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const playAt = Math.floor(Number.parseInt(e.target.value));
+        const playAt = (Number.parseInt(e.target.value));
         setCurrentTime(playAt);
         setIsPlaying(true);
         playerRef.current.seekTo(playAt);
@@ -113,7 +116,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
 
     return ( 
         <div className="MediaContainer">
-            <div className={`${showVideo ? 'FullSizeVideoContainer' : 'YouTubeContainer'}`}>
+            <div className={`${showVideo ? 'w-[360px] h-[240px] md:w-[640px] md:h-[360px]' : 'w-[0%] h-[0%]'}`}>
                 <YouTube
                     videoId={videoId}
                     onReady={handleReady}
@@ -131,7 +134,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                 />
             </div>
             {!showVideo && (
-            <div className='PlayerContainer relative w-[350px] h-[200px]'>
+            <div className='PlayerContainer relative w-[350px] h-[200px] origin-top-left md:scale-135'>
 
                 <div className="Media absolute w-[300px] h-[150px] bottom-0 left-[25px] 
                                 bg-[var(--primary-color-gradient-two)] rounded-xl
@@ -141,37 +144,15 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                                     
                     {/* <div className='SlateReflection absolute w-[300px] h-[150px] bottom-0 bg-gradient-to-b from-zinc-100/20 to-zinc-900/20 rounded-xl'/> */}
 
-                    <div className='ElectronicDisplay absolute w-[135px] h-[25px] top-[25%] left-[50%] -translate-x-1/2 -translate-y-1/2
-                                    bg-black border-2 border-teal-100/70 text-violet-300 font-[Orbitron] tracking-[2px] drop-shadow-[0_0_8px_rgba(80,44,158,0.8)]'>
-                        Hey There
+                    <ElectronicDisplay />
+
+                    <div className='relative bg-green-500 rounded-tr-xl rounded-tl-xl'>
+                        <div className='relative -top-4 -left-16 scale-50'>
+                            <SpinningRecord angles={angles} />
+                        </div>
                     </div>
-
-                    <div className='TopLeftSpinningRecordContainer relative w-[100px] h-[100px] top-[-35px] left-[-25px]'>
-                        <div className='Record relative w-full h-full rounded-full'>
-                            <div 
-                                className='RecordGradient absolute inset-0 rounded-full
-                                bg-linear-to-r/srgb from-teal-950 to-indigo-500
-                                animate-[spin_3s_linear_infinite]'
-                            />
-                            <div className="RecordRings absolute inset-0 rounded-full 
-                                            [background:repeating-radial-gradient(circle,#0f172a_0px,#0f172a_8px,transparent_9px,transparent_14px)]"/>
-                        </div>
-                        {angles.map((angle) => (
-                            <div
-                                key={angle} 
-                                className={`RecordStickOverlay absolute w-[55px] h-[15px] top-[50%] left-[50%] -translate-y-1/2 bg-black origin-left rounded-r-xl z-2`}
-                                style={{ transform: `rotate(${angle}deg)` }}
-                            />
-                        ))}
-                        <div className='RecordBoundingCircle absolute top-[-5px] left-[-5px] w-[110%] h-[110%] border-[8px] border-black rounded-full z-3'>
-
-                        </div>
-                        {/* <motion.div
-                            key='angle_highlight'
-                            className={`RecordStickOverlay absolute w-[33px] h-[4px] top-[58%] left-[65%] -translate-y-1/2 bg-zinc-50/60 origin-left rotate-30 z-1`}
-                            animate={{ rotate: 30 }}
-                            transition={{ repeat: Infinity, duration: 3, ease: easeOut}}
-                        /> */}
+                    <div className='absolute -top-4 left-53 scale-50'>
+                        <SpinningRecord angles={angles2} />
                     </div>
 
                     <div className='TopRightButtons overflow-hidden flex flex-row items-end absolute w-[105px] h-[25px] top-[-25px] right-[15px]'>
@@ -203,9 +184,9 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                             /> */}
                     </div>
 
-                    <div className='SlidersContainer relative w-full h-[30px] top-[-33px] left-[20px] '>
-                        <div className="PlayTimeBar">
-                            <span className='TimeShow relative w-[25px] h-[25px] top-[-2px] left-[-10px] text-lg'>{Math.min(currentTime, interval[hintsRevealed])}</span>
+                    <div className='SlidersContainer relative w-full h-[30px] top-[-33px] z-1'>
+                        <div className="PlayTimeBar relative flex w-full h-full">
+                            <div className='TimeShow relative w-[25px] h-[25px] left-1 text-lg'>{Math.min(Math.floor(currentTime), interval[hintsRevealed])}</div>
                             <input 
                                 className="Progress w-[80%]"
                                 type="range" 
@@ -214,7 +195,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                                 value={Math.min(currentTime, interval[hintsRevealed])} 
                                 onChange={(e) => changePlayTime(e)}
                             />
-                            <span className='TimeShow relative w-[25px] h-[25px] top-[-2px] right-[-5px] text-lg'>{interval[hintsRevealed]}</span>
+                            <span className='TimeShow relative w-[25px] h-[25px] left-1 text-lg'>{interval[hintsRevealed]}</span>
                         </div>
                     </div>
 
@@ -223,23 +204,24 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo } : MediaPlayerProps) {
                             className='ReverseButton flex flex-row absolute w-[60px] h-[40px] top-[10px] left-[10px]
                                         text-[var(--primary-color)] hover:text-red-500 transition-colors duration-200'
                         >
-                            <span className='relative text-[40px] top-[5px]'>&lt;</span>
-                            <span className='relative text-[45px] left-[-5px]'>&lt;</span>
-                            <span className='relative text-[40px] top-[5px] left-[-10px]'>&lt;</span>
+                            <span className='relative text-[40px] top-[5px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
+                            <span className='relative text-[45px] left-[-5px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]' style={{ textShadow: "0 0 10px black" }}>&lt;</span>
                         </button>
                         <button 
-                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'} relative w-[30px] h-[30px] top-[15px] left-[105px] `}
+                            className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'} 
+                                        relative w-[30px] h-[30px] top-[15px] left-[105px]
+                                        xs:scale-70 md:scale-60 xl:scale-55`}
                             onClick={handleClick}
                             disabled={!playButton}
-                        >
-                        </button>
+                        />
                         <button 
-                            className='ForwardButton flex flex-row absolute w-[60px] h-[40px] top-[10px] right-[10px]
-                                        text-[var(--primary-color)] hover:text-red-500 transition-colors duration-200'
+                            className='ForwardButton flex flex-row absolute w-[60px] h-full top-[10px] right-[10px]
+                                        text-[var(--primary-color)] active:text-red-500 hover:text-red-500 transition-colors duration-200'
                         >
-                            <span className='relative text-[40px] top-[5px]'>&gt;</span>
-                            <span className='relative text-[45px] left-[-5px]'>&gt;</span>
-                            <span className='relative text-[40px] top-[5px] left-[-10px]'>&gt;</span>
+                            <span className='relative text-[40px] top-[5px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
+                            <span className='relative text-[45px] left-[-5px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
+                            <span className='relative text-[40px] top-[5px] left-[-10px]' style={{ textShadow: "0 0 10px black" }}>&gt;</span>
                         </button>
                     </div>
 

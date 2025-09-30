@@ -9,8 +9,8 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     const [selectedAnime, setSelectedAnime] = useState<string | null>(null);
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
-    const animeSearchListElementRef = useRef<HTMLLIElement>(null);
-    // const lastListElementRef = useRef<HTMLUListElement>(null); //is it ulist? i have to double check
+    // used to keep guesses in users view when searching
+    const animeSearchListElementRef = useRef<HTMLUListElement>(null);
     
     const { mode } = useModeContext();
     const animeList = mode === 'Opening' ? baseOpeningList : endingAnimeGuessListEnglishTitle;
@@ -111,14 +111,15 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
     });
 
     return (
-        <div className='GuessContainer'>
+        <div className='GuessContainer relative flex flex-col justify-center'>
             {/* Put guessed entries here */}
             {guesses.length > 0 && (
-                <ul className='GuessedList'>
+                <ul className='GuessedList p-1 flex flex-col items-center'>
                     {guesses.map((guess, i) => (
                         <li
                             key={`guess_${guess}_${i}`}
-                            className={(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}>
+                            className={`${(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}
+                                        text-center w-[50%]`}>
                            {guess} 
                         </li>
                     ))}
@@ -127,13 +128,13 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
             {/* Want to add a submit button which will use the selectedAnime as input
                 and if the user presses enter in the input it will submit it as well as a guess */}
             {!disabled && (
-            <div className='SearchBarContainer grid grid-cols-4 gap-4 '>
+            <div className='SearchBarContainer flex flex-row gap-4 justify-center'>
                 <input 
                     type='text'
                     ref={searchRef}
                     disabled={disabled}
                     id='SearchBar'
-                    className='SearchBar col-span-3'
+                    className='SearchBar'
                     placeholder='Guess...'
                     value={search}
                     onChange={(e) => {
@@ -145,7 +146,7 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                     onBlur={handleBlur}
                 />
                 <button 
-                    className='SubmitSearchButton bg-gray-500 text-white rounded'
+                    className='SubmitSearchButton bg-gray-500 text-white rounded p-1'
                     onClick={submitGuess}
                     // disabled={!selectedAnime}
                 >
@@ -156,12 +157,13 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
 
             {filtered.length > 0 && (
                 <ul id='AnimeSearchListID'
-                className='AnimeSearchList absolute'>
+                    ref={animeSearchListElementRef}
+                    className='AnimeSearchList absolute w-[100%] bg-black top-[100%] left-0'>
                     {filtered.map((anime, i) => (
                         <li
-                            ref={i == filtered.length - 1 ? animeSearchListElementRef : null}
+                            // ref={i == filtered.length - 1 ? animeSearchListElementRef : null}
                             key={`${anime}_${i}`}
-                            className={`AnimeItem ${i == highlightedIndex ? 'Highlighted' : ''}`}
+                            className={`AnimeItem ${i == highlightedIndex ? 'Highlighted' : ''} w-[100%] text-wrap`}
                             onClick={ () => { 
                                 setSearch(anime); 
                                 setSelectedAnime(anime);
