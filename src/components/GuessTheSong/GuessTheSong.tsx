@@ -11,12 +11,15 @@ import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useModeContext } from "@components/ContextProviders/ModeContext";
 import type { ModeType } from "@types";
 import { MAX_SONGS } from "@config/config";
+import { useIsMobile } from "@components/CustomUseHooks/UseIsMobile";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
 function GuessTheSong() {
     // for back button to go to home page
     const navigate = useNavigate();
+    // for mobile
+    const isMobile = useIsMobile();
     
     // grab needed parameters from the current url
     const location = useLocation();
@@ -128,7 +131,7 @@ function GuessTheSong() {
     // only returns GuessTheSong if the song fetched from the db exists
     if (song) {
         return (
-            <div className="GuessTheSongContainer">
+            <div className="GuessTheSongContainer w-[100%] h-[100%] flex flex-col items-center justify-center gap-[1vw]">
                 <div className="">Guess anime {songId}!</div>
                 <div>{decodedFilter}</div>
                 {/* <div>Num guesses: {hintsRevealed}</div> */}
@@ -138,24 +141,53 @@ function GuessTheSong() {
                 {status === 'Incorrect' && (
                     <div>Better Luck Next Time!</div>
                 )}
-                <div className="AnimeInfoContainer">
+                <div className="AnimeInfoContainer flex justify-center w-[80vw] max-w-[640px]">
                     {endGameState && (
                         <div 
-                            className="flex flex-col justify-center content-center items-center" 
+                            className="flex flex-col text-center w-full" 
                         >
-                            <div>{song.eng_title}</div>
-                            <div>{song.def_title}</div>
-                            <img 
-                                className="w-1/2 sm:w" 
-                                src={song.img_url} 
-                                alt={`${song.eng_title}`}
-                            />
+                            {!song.def_title.startsWith(song.eng_title) && song.eng_title !== song.def_title ? (
+                                <div className="flex flex-col p-2">
+                                    <div>{song.eng_title}</div>
+                                    <div>{song.def_title}</div>
+                                </div>
+                            ) : (
+                                <div className="p-2">{song.eng_title}</div>
+                            )}
+                            <div className="flex flex-row justify-center">
+                                <div className="w-1/2 flex justify-center">
+                                    <img 
+                                        className="aspect-[2/3] max-h-[300px]" 
+                                        src={song.img_url} 
+                                        alt={`${song.eng_title}`}
+                                    />
+                                </div>
+                                <div className="w-1/2 flex flex-col items-center content-center justify-center gap-4">
+                                    <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
+                                    {!isMobile && (
+                                        <div className="w-[100%]">
+                                            <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
-                    <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
+                    {!endGameState && (
+                        <div className="w-1/2 flex justify-center">
+                            <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
+                        </div>
+                    )}
                 </div>
-                <MediaPlayer hintsRevealed={hintsRevealed} videoId={song.yt_video_id} showVideo={endGameState} />
-                <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
+                <div className="MediaWrapper relative w-[350px] h-[180px] -top-5 md:w-[475px] md:h-[225px] md:-top-10">
+                    <MediaPlayer hintsRevealed={hintsRevealed} videoId={song.yt_video_id} showVideo={endGameState} />
+                </div>
+                {!endGameState && (
+                    <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
+                )}
+                {endGameState && isMobile && (
+                    <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
+                )}
                 <div className="ButtonsContainer">
                     <button 
                         className="bg-gray-500 text-white px-4 py-2 rounded"

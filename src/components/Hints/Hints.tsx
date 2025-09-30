@@ -7,7 +7,7 @@ function Hints( {hintsRevealed, song, endGameState} : HintProps) {
     const hintCategoriesBeautified = ['Number of Episodes', 'Year Released', 'Genres', 'Score', 'Studios']
 
     return (
-        <div className='HintContainer'>            
+        <div className='HintContainer w-[90%]'>            
             {song && hintCategories.map((param, i) => {
                 return (i < hintsRevealed || endGameState) ? ( 
                     <div

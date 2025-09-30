@@ -30,3 +30,7 @@ export type MediaPlayerProps = {
     videoId: string;
     showVideo: boolean;
 }
+
+export type SpinningRecordProps = {
+    angles: number[];
+}
