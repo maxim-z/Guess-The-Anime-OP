@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { filters, type FilterType } from "@types";
 import { type GuessedStatusType, type SongType } from "@types";
 import './GuessTheSong.css';
@@ -48,6 +48,9 @@ function GuessTheSong() {
     const [status, setStatus] = useState<GuessedStatusType>(() => guessStates[mode as ModeType]?.[filter]?.[songId ?? ""]?.status ?? 'Attempting');
     // Did an end game state get reached?
     const [endGameState, setendGameState] = useState(() => status === 'Correct' || status === 'Incorrect');
+
+    // After a guess is made scroll to the Hints
+    const hintsRef = useRef<HTMLDivElement>(null);
     
     const API_BASE = "https://guess-the-anime-op.onrender.com";
     // process.env.NODE_ENV === "production"
@@ -125,6 +128,10 @@ function GuessTheSong() {
         
         // update context
         updateGuessStates(mode, filter, songId, guess, result);
+
+        // scroll up to hints
+        if (!hintsRef.current) return;
+        hintsRef.current?.scrollIntoView();
     }, [songId, song, filter, guesses, status, hintsRevealed, guessStates]);
 
     // return appropriate html based on song and error states
@@ -174,13 +181,21 @@ function GuessTheSong() {
                         </div>
                     )}
                     {!endGameState && (
-                        <div className="w-1/2 flex justify-center">
+                        <div 
+                            ref={hintsRef}
+                            className="w-1/2 flex justify-center"
+                        >
                             <Hints hintsRevealed={hintsRevealed} song={song} endGameState={endGameState} />
                         </div>
                     )}
                 </div>
                 <div className="MediaWrapper relative w-[350px] h-[180px] -top-5 md:w-[475px] md:h-[225px] md:-top-10">
-                    <MediaPlayer hintsRevealed={hintsRevealed} videoId={song.yt_video_id} showVideo={endGameState} />
+                    <MediaPlayer 
+                        hintsRevealed={hintsRevealed} 
+                        videoId={song.yt_video_id} 
+                        showVideo={endGameState}
+                        songTitle={song.song_title} 
+                        songArtist={song.song_artist} />
                 </div>
                 {!endGameState && (
                     <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />

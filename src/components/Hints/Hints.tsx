@@ -21,7 +21,7 @@ function Hints( {hintsRevealed, song, endGameState} : HintProps) {
                     <div
                         className='Hint Hidden'
                     >
-                        ??????????
+                        Hint #{i+1}
                     </div>
                 )
             })}

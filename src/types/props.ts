@@ -29,6 +29,14 @@ export type MediaPlayerProps = {
     hintsRevealed: number;
     videoId: string;
     showVideo: boolean;
+    songArtist: string;
+    songTitle: string;
+}
+
+export type ElectronicDisplayProps = {
+    hintsRevealed: number;
+    songTitle: string;
+    songArtist: string;
 }
 
 export type SpinningRecordProps = {
