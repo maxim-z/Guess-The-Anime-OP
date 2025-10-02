@@ -115,15 +115,17 @@ function GuessTheSong() {
         const guess = newGuess.trim();
         if (!songId) return;
 
+        // evaluate guess
+        // game ends if the user guesses correctly or if they get all 5 hints and guess incorrectly
+        const guessedAnimeCorrectly = song?.def_title.includes(guess) || song?.eng_title.includes(guess);
+        const failedToGuess = hintsRevealed === 5 ? true : false;
+        // guessed correctly = WIN
+        // failedToGuess = LOSE
+        // !failedToGuess = ATTEMPTING
+        const result : GuessedStatusType = guessedAnimeCorrectly ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting');
         // update local ui
         setHintsRevealed((prev) => prev + 1);
         setGuesses((prev) => [...prev, guess]);
-        const guessedAnimeCorrectly = song?.def_title.includes(guess) || song?.eng_title.includes(guess);
-        const failedToGuess = hintsRevealed === 5 ? true : false;
-        // guessed correctly with hintsRevealed < 5 = WIN
-        // failedToGuess = LOSE
-        // !failedToGuess = ATTEMPTING
-        const result : GuessedStatusType = guessedAnimeCorrectly && !failedToGuess ? 'Correct' : (failedToGuess ? 'Incorrect' : 'Attempting')
         setStatus(result);
         
         // update context
@@ -139,14 +141,18 @@ function GuessTheSong() {
     if (song) {
         return (
             <div className="GuessTheSongContainer w-[100%] h-[100%] flex flex-col items-center justify-center gap-[1vw]">
-                <div className="">Guess anime {songId}!</div>
+                <h1 
+                    className="Title w-full text-center"
+                >
+                    Guess Anime {mode} {songId}!
+                </h1>
                 <div>{decodedFilter}</div>
                 {/* <div>Num guesses: {hintsRevealed}</div> */}
                 {status === 'Correct' && (
-                    <div>You guessed correctly!</div>
+                    <div className="w-full text-center animate-bounce">You guessed correctly!</div>
                 )}
                 {status === 'Incorrect' && (
-                    <div>Better Luck Next Time!</div>
+                    <div className="w-full text-center">Better Luck Next Time!</div>
                 )}
                 <div className="AnimeInfoContainer flex justify-center w-[80vw] max-w-[640px]">
                     {endGameState && (
@@ -189,21 +195,20 @@ function GuessTheSong() {
                         </div>
                     )}
                 </div>
-                <div className="MediaWrapper relative w-[350px] h-[180px] -top-5 md:w-[475px] md:h-[225px] md:-top-10">
-                    <MediaPlayer 
-                        hintsRevealed={hintsRevealed} 
-                        videoId={song.yt_video_id} 
-                        showVideo={endGameState}
-                        songTitle={song.song_title} 
-                        songArtist={song.song_artist} />
-                </div>
+                <MediaPlayer 
+                    hintsRevealed={hintsRevealed} 
+                    videoId={song.yt_video_id} 
+                    showVideo={endGameState}
+                    songTitle={song.song_title} 
+                    songArtist={song.song_artist} 
+                />
                 {!endGameState && (
                     <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
                 )}
                 {endGameState && isMobile && (
                     <GuessBar onSubmit={submitGuess} guesses={guesses} won={status === 'Correct'} disabled={endGameState} />
                 )}
-                <div className="ButtonsContainer">
+                <div className="ButtonsContainer w-full h-full flex flex-row items-center justify-center gap-[1vw]">
                     <button 
                         className="bg-gray-500 text-white px-4 py-2 rounded"
                         onClick={(e) => {

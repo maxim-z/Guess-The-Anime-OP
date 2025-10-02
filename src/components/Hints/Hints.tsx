@@ -11,6 +11,7 @@ function Hints( {hintsRevealed, song, endGameState} : HintProps) {
             {song && hintCategories.map((param, i) => {
                 return (i < hintsRevealed || endGameState) ? ( 
                     <div
+                        key={`revealedhint_${i}`}
                         className={`Hint ${i == hintsRevealed-1 ? 'NewHint' : ''}`}
                         style={i == hintsRevealed - 1 ? {animation: `flipHints 0.1s ease-in ${Math.floor(Math.random() * 5) + 3}`}
                                                       : {animation: 'none'}}
@@ -19,6 +20,7 @@ function Hints( {hintsRevealed, song, endGameState} : HintProps) {
                     </div>
                 ) : (
                     <div
+                        key={`hiddenhint_${i}`}
                         className='Hint Hidden'
                     >
                         Hint #{i+1}
