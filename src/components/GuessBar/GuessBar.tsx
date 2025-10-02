@@ -119,8 +119,8 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
                         <li
                             key={`guess_${guess}_${i}`}
                             className={`${(won && i == guesses.length-1) ? 'CorrectGuess' : 'IncorrectGuess'}
-                                        text-center w-[50%]`}>
-                           {guess} 
+                                        text-center`}>
+                           {i+1}. {guess} 
                         </li>
                     ))}
                 </ul>
