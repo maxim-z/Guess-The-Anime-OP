@@ -10,13 +10,13 @@ import type { ModeType } from '@types'
 import { PROD } from '@config/config'
 
 const menuList = [
-  <li className='hover:text-[var(--tertiary-color)]'><Link to="/" key='link-maincontent'>Home</Link></li>,
-  <li className='hover:text-[var(--tertiary-color)]'><Link to="/about" key='link-about'>About</Link></li>,
-  <li className='hover:text-[var(--tertiary-color)]'><Link to="/rules" key='link-rules'>Rules</Link></li>,
-  <li className='hover:text-[var(--tertiary-color)]'><Link to="/faq" key='link-faq'>FAQ</Link></li>,
-  <li className='hover:text-[var(--tertiary-color)]'><Link to="/stats" key='link-stats'>Stats</Link></li>,
+  <li key={'header_li_1'} className='hover:text-[var(--tertiary-color)]'><Link to="/" key='link-maincontent'>Home</Link></li>,
+  <li key={'header_li_2'} className='hover:text-[var(--tertiary-color)]'><Link to="/about" key='link-about'>About</Link></li>,
+  <li key={'header_li_3'} className='hover:text-[var(--tertiary-color)]'><Link to="/rules" key='link-rules'>Rules</Link></li>,
+  <li key={'header_li_4'} className='hover:text-[var(--tertiary-color)]'><Link to="/faq" key='link-faq'>FAQ</Link></li>,
+  <li key={'header_li_5'} className='hover:text-[var(--tertiary-color)]'><Link to="/stats" key='link-stats'>Stats</Link></li>,
   ...(PROD ? [] : [
-    <li className='hover:text-[var(--tertiary-color)]'><Link to="/dev" key='link-dev'>Dev</Link></li>
+    <li key={'header_li_6'} className='hover:text-[var(--tertiary-color)]'><Link to="/dev" key='link-dev'>Dev</Link></li>
   ])
 ];
 
