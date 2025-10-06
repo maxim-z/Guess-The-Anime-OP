@@ -41,19 +41,24 @@ function GuessBar({onSubmit, guesses, won, disabled} : GuessBarProps) {
         setFiltered(searchList.splice(0, 5));
     }, [search])
 
-    useEffect(() => {
-        searchRef.current?.focus(); // auto-focus on search
-    }, []);
-
+    
     useEffect(() => {
         if (!animeSearchListElementRef.current) return;
         // scroll to the element we just highlighted
         animeSearchListElementRef.current.scrollIntoView();
     }, [filtered]);
+    
+    // useEffect(() => {
+    //     if (!/Mobi|Android/i.test(navigator.userAgent)) {
+    //         searchRef.current?.focus(); // auto-focus on search
+    //     }
+    // }, []);
 
     // Re-focus on searchRef
     const handleBlur = () => {
-        setTimeout(() => searchRef.current?.focus(), 0); // let other events resolve
+        // if (!/Mobi|Android/i.test(navigator.userAgent)) {
+        //     setTimeout(() => searchRef.current?.focus(), 0); // let other events resolve
+        // }
     };
 
     // for choosing out of list with mouse

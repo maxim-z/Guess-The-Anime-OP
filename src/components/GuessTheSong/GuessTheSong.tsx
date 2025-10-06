@@ -10,7 +10,7 @@ import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesC
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useModeContext } from "@components/ContextProviders/ModeContext";
 import type { ModeType } from "@types";
-import { MAX_SONGS } from "@config/config";
+import { MAX_SONGS, PROD } from "@config/config";
 import { useIsMobile } from "@components/CustomUseHooks/UseIsMobile";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
@@ -51,11 +51,9 @@ function GuessTheSong() {
 
     // After a guess is made scroll to the Hints
     const hintsRef = useRef<HTMLDivElement>(null);
-    
-    const API_BASE = "https://guess-the-anime-op.onrender.com";
-    // process.env.NODE_ENV === "production"
-    //   ? "https://guess-the-anime-op.onrender.com"
-    //   : "http://localhost:8080";
+
+    // what base to fetch with
+    const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
 
     // grab the song details with the fast api
     const fetchSong = () => {
@@ -65,7 +63,9 @@ function GuessTheSong() {
             return;
         }
         fetch(`${API_BASE}/song?id=${songId}&filter=${decodedFilter}`)
-            .then((res) => {
+            .then(async (res) => {
+                // const text = await res.text();
+                // console.log("Fetch response text:", text);
                 if (!res.ok) {
                     setSong(null);
                     setError(`${res.status}: Error fetching song ${songId}`);

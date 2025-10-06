@@ -40,7 +40,8 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
         setCurrentTime(0);
     };
 
-    const handleClick = () => {
+    const togglePlayPause = (e: React.MouseEvent | React.TouchEvent) => {
+        // e.preventDefault();
         if (playerRef.current) {
             // if it's paused or ready to be played then play
             if (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED 
@@ -58,7 +59,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
     };
 
     const resetVideoToStart = () => {
-        if (playerRef.current && (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED || playerRef.current.getPlayerState() === window.YT.PlayerState.PAUSED || playerRef.current.getPlayerState() === window.YT.PlayerState.PLAYING)) {
+        if (playerRef.current) { // && (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED || playerRef.current.getPlayerState() === window.YT.PlayerState.PAUSED || playerRef.current.getPlayerState() === window.YT.PlayerState.PLAYING)) {
             playerRef.current.seekTo(0);
             playerRef.current.pauseVideo();
         }
@@ -128,15 +129,15 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
         hidden: { opacity: 0 },
         show: { opacity: 1, y: 45, scale: 1, transition},
         plusVol: { opacity: 1, y: 45, scale: 1, transition },
-        minusVol: { opacity: 1, y: 45, scale: 1.5, color: 'red', fastTransition},
-        bumpReset: { scale: 1, color: 'white' }
+        minusVol: { opacity: 1, y: 45, scale: 1.5, fastTransition},
+        bumpReset: { scale: 1 }
     };
     const plusVariants = {
         hidden: { opacity: 0, scale: 1 },
         show: { opacity: 1, y: -45, scale: 1, transition},
-        plusVol: { opacity: 1, y: -45, scale: 1.5, color: 'red', fastTransition},
+        plusVol: { opacity: 1, y: -45, scale: 1.5, fastTransition},
         minusVol: { opacity: 1, y: -45, scale: 1, transition },
-        bumpReset: { scale: 1, color: 'white' }
+        bumpReset: { scale: 1 }
     };
     const sliderVariants = {
         hidden: { opacity: 0 },
@@ -240,7 +241,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                                             before:content-[''] before:absolute before:inset-0
                                             before:bg-gradient-to-b before:from-zinc-100/20 before:to-zinc-900/30 
                                             before:rounded-xl"
-                                onClick={handleClick} />
+                                onClick={togglePlayPause} />
                             <div className="ButtonLeft relative w-[35px] h-[20px] rounded-tl-xl rounded-tr-xl bg-cyan-500
                                             active:translate-y-[2px] active:shadow-inner
                                             before:content-[''] before:absolute before:inset-0
@@ -269,6 +270,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                                 animate={controlsVolume}
                                 whileHover='show'
                                 whileTap='show'
+                                onPointerDown={(e) => e.preventDefault()} // prevent page scrolling on pc/mobile
                             >
                                 <motion.p 
                                     variants={plusVariants}
@@ -340,7 +342,10 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                                 className={`PlayPauseButton ${isPlaying ? 'Pause' : 'Play'} 
                                             relative w-[30px] h-[30px] top-[15px] left-[105px]
                                             xs:scale-70 md:scale-60 xl:scale-55`}
-                                onClick={handleClick}
+                                onClick={togglePlayPause}
+                                // onTouchEnd={togglePlayPause}
+                                // onPointerUp={togglePlayPause}
+                                style={{ touchAction: 'manipulation' }}
                                 disabled={!playButton}
                             />
                             <button 

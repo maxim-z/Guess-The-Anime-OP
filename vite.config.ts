@@ -11,6 +11,10 @@ export default defineConfig(({ mode } ) => {
   return {
     base: isProduction ? '/Guess-The-Anime-OP/' : '/',
     plugins: [react(), tailwindcss()],
+    server: {
+      host: true,
+      port: 8080
+    },
     resolve: {
       alias: {
         '@components': path.resolve(__dirname, 'src/components'),
