@@ -11,6 +11,9 @@ import Stats from '@components/Menu/Stats/Stats'
 import About from '@components/Menu/About'
 import FAQ from '@components/Menu/FAQ'
 import Rules from '@components/Menu/Rules'
+// import NineTailsFox from '/naruto_nine_tailed_fox.jpg'
+
+const backgroundImg = null; // NineTailsFox;
 
 // to avoid re-rendering every time the path changes except for /guess where it should be hidden
 const MemoizedHeader = memo(({ hidden, mode, setMode }: MemoizedHeaderProps) => {
@@ -46,7 +49,7 @@ function App() {
   const hideHeader = location.pathname.startsWith('/guess');
 
   return (
-    <div className={`App ${mode}`}>
+    <div className={`App ${mode}`} style={{ backgroundImage: `url(${backgroundImg})`}}>
       {/* {!hideHeader && <Header mode={mode} setMode={setMode}/>} */}
       <MemoizedHeader hidden={hideHeader} mode={mode} setMode={updateMode} />
       <Routes>

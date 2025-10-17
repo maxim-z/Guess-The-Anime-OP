@@ -10,8 +10,8 @@ import { useGuessStatesContext } from "@components/ContextProviders/GuessStatesC
 import { useFilterContext } from "@components/ContextProviders/FilterContext";
 import { useModeContext } from "@components/ContextProviders/ModeContext";
 import type { ModeType } from "@types";
-import { MAX_SONGS, PROD } from "@config/config";
-import { useIsMobile } from "@components/CustomUseHooks/UseIsMobile";
+import { MAX_SONGS } from "@config/config";
+import { useIsMobile } from "@components/CustomUseHooks/useIsMobile";
 
 // Query the DB by wrapping a python script with a fastapi and having this file call the endpoint
 
@@ -134,7 +134,7 @@ function GuessTheSong() {
         // scroll up to hints
         if (!hintsRef.current) return;
         hintsRef.current?.scrollIntoView();
-    }, [songId, song, filter, guesses, status, hintsRevealed, guessStates]);
+    }, [songId, song, filter, guesses, status, hintsRevealed, guessStates]); 
 
     // return appropriate html based on song and error states
     // only returns GuessTheSong if the song fetched from the db exists

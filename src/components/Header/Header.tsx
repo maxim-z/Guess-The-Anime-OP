@@ -30,7 +30,7 @@ function Header( { mode, setMode } : HeaderProps) {
   const backgroundImg = mode === 'Opening' ? layingRiver : flowerField;// : layingRiver;
 
   return (
-    <header className="Header w-full h-full max-h-[1080px] text-center border-12 lg:border-8 border-[var(--primary-color)]">
+    <header className="Header w-full h-full max-h-[1080px] text-center border-12 lg:border-8 border-[var(--primary-color)] z-20">
       <div className="BannerWrapper relative flex items-center justify-center w-full">
         <div
           className="Banner w-full aspect-[6/5] md:aspect-[2/1] lg:aspect-[3.5/1] max-w-[1920px] max-h-[972px] bg-cover bg-center 

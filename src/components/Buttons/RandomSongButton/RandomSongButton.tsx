@@ -2,7 +2,7 @@ import './RandomSongButton.css'
 import { useNavigate } from 'react-router-dom';
 import { MAX_SONGS } from '@config/config';
 import { useFilterContext } from '@components/ContextProviders/FilterContext';
-import { useCallback, useRef, useState } from 'react';
+// import { useCallback, useRef, useState } from 'react';
 
 function RandomSongButton() {
   const navigate = useNavigate();
@@ -10,107 +10,107 @@ function RandomSongButton() {
   // Filter Updates
   const filterContext = useFilterContext();
   
-  // get the current scale of the button from the animation
-  const getCurrentScale = (el : HTMLElement): number[] => {
-    const style = getComputedStyle(el);
-    const styleBefore = getComputedStyle(el, '::before');
-    const styleAfter = getComputedStyle(el, '::after');
-    const matrix = new DOMMatrixReadOnly(style.transform);
-    const matrixBefore = new DOMMatrixReadOnly(styleBefore.transform);
-    const matrixAfter = new DOMMatrixReadOnly(styleAfter.transform);
-    // assumes uniform scaling
-    return [matrix.a, matrixBefore.a, matrixAfter.a]; // returns scaling of element, element::before, element::after
-  }
+  // // get the current scale of the button from the animation
+  // const getCurrentScale = (el : HTMLElement): number[] => {
+  //   const style = getComputedStyle(el);
+  //   const styleBefore = getComputedStyle(el, '::before');
+  //   const styleAfter = getComputedStyle(el, '::after');
+  //   const matrix = new DOMMatrixReadOnly(style.transform);
+  //   const matrixBefore = new DOMMatrixReadOnly(styleBefore.transform);
+  //   const matrixAfter = new DOMMatrixReadOnly(styleAfter.transform);
+  //   // assumes uniform scaling
+  //   return [matrix.a, matrixBefore.a, matrixAfter.a]; // returns scaling of element, element::before, element::after
+  // }
 
-  // FOR USE IN SMOOTH TRANSITIONS BETWEEN LINEAR ANIMATIONS WITH A SINGLE GROWING/SHRINKING PHASE
-  // Animation for random song button
-  // Only works if scaling goes up then down ex. [1, 1.5, 1] can't handle complex ones like [1, 1.5, 1.2, 2.1, 1]
-  const randomSongButtonRef = useRef<HTMLButtonElement>(null);
-  const [animation, setAnimation] = useState<'enter' | 'leave' | 'infinite'>('infinite');
-  const currentScale = useRef(1.0);
-  const [direction, setDirection] = useState<'none' | 'growing' | 'shrinking'>('none');
-  const [hover, setHover] = useState(false);
-  // only have to include numbers that make the transition smooth from infinite animation -> hover and the reverse
-  const scalingNums = [1, 1.5] // the min and max scaling for each animation of the element, ::before, ::after for transitions
-  const durations = [3.25, 2.75] // for non-hovering and hovering
-  // the states will be added as a class for the button which will switch between the animations
-  const updateAnimation = useCallback(() => {
-    if (!randomSongButtonRef.current) return;
-    // randomSongButtonRef.current.style.animation = 'none';
-    if (animation === 'enter' || animation === 'leave') {
-      // force animation switches to render
-      // randomSongButtonRef.current.classList.remove('pulseTransition', 'infinite', 'growing', 'shrinking', 'hover');
-      // void randomSongButtonRef.current.offsetWidth; // force reflow
-      // randomSongButtonRef.current.classList.add('pulseTransition');
-      console.log(animation + ' ' + direction);
+  // // FOR USE IN SMOOTH TRANSITIONS BETWEEN LINEAR ANIMATIONS WITH A SINGLE GROWING/SHRINKING PHASE
+  // // Animation for random song button
+  // // Only works if scaling goes up then down ex. [1, 1.5, 1] can't handle complex ones like [1, 1.5, 1.2, 2.1, 1]
+  // const randomSongButtonRef = useRef<HTMLButtonElement>(null);
+  // const [animation, setAnimation] = useState<'enter' | 'leave' | 'infinite'>('infinite');
+  // const currentScale = useRef(1.0);
+  // const [direction, setDirection] = useState<'none' | 'growing' | 'shrinking'>('none');
+  // const [hover, setHover] = useState(false);
+  // // only have to include numbers that make the transition smooth from infinite animation -> hover and the reverse
+  // const scalingNums = [1, 1.5] // the min and max scaling for each animation of the element, ::before, ::after for transitions
+  // const durations = [3.25, 2.75] // for non-hovering and hovering
+  // // the states will be added as a class for the button which will switch between the animations
+  // const updateAnimation = useCallback(() => {
+  //   if (!randomSongButtonRef.current) return;
+  //   // randomSongButtonRef.current.style.animation = 'none';
+  //   if (animation === 'enter' || animation === 'leave') {
+  //     // force animation switches to render
+  //     // randomSongButtonRef.current.classList.remove('pulseTransition', 'infinite', 'growing', 'shrinking', 'hover');
+  //     // void randomSongButtonRef.current.offsetWidth; // force reflow
+  //     // randomSongButtonRef.current.classList.add('pulseTransition');
+  //     console.log(animation + ' ' + direction);
 
-      document.documentElement.style.setProperty('--pulse-scale-transition', `${currentScale.current}`);
-      let calc = 0;
-      if (direction === 'growing') {
-        // randomSongButtonRef.current.classList.add('growing');
-        // since it's growing at least half of the animation is yet to be completed plus how much more to reach maxScaling
-        if (animation === 'enter') { // use hover speed
-          calc = (((scalingNums[1] - currentScale.current) / scalingNums[1]) * durations[1] + durations[1]) / 2.0; // ((maxScale - currScale) / maxScale) * hoverAnimationDuration + hoverAnimationDuration / 2.0
-          // have to change maxScale
-          document.documentElement.style.setProperty('--pulse-scale', '1.5');
-          document.documentElement.style.setProperty('--pulse-duration', '2.75');
-        } else { // use normal speed
-          calc = (((scalingNums[1] - currentScale.current) / scalingNums[1]) * durations[0] + durations[0]) / 2.0; // ((maxScale - currScale) / maxScale) * hoverAnimationDuration + hoverAnimationDuration / 2.0
-          document.documentElement.style.setProperty('--pulse-scale', '1.1');
-          document.documentElement.style.setProperty('--pulse-duration', '3.25');
-        }
-      } else if (direction === 'shrinking') {
-        // randomSongButtonRef.current.classList.add('shrinking');
-        // since it's shrinking we need to calculate how much more to reach minScaling
-        if (animation === 'enter') { // use hover speed
-          calc = ((currentScale.current - scalingNums[0]) / scalingNums[0]) * durations[1] / 2.0; // ((currScale - minScale) / minScale) * hoverAnimationDuration
-          document.documentElement.style.setProperty('--pulse-scale', '1.5');
-          document.documentElement.style.setProperty('--pulse-duration', '2.75');
-        } else { // use normal speed
-          calc = ((currentScale.current - scalingNums[0]) / scalingNums[0]) * durations[0] / 2.0; // ((currScale - minScale) / minScale) * hoverAnimationDuration
-          document.documentElement.style.setProperty('--pulse-scale', '1.1');
-          document.documentElement.style.setProperty('--pulse-duration', '3.25');
-        }
-      }
-      document.documentElement.style.setProperty('--pulse-transition-duration', `${calc}s`);
-      console.log('transition time -> ' + calc);
-    } else {
-      if (hover) {
-        document.documentElement.style.setProperty('--pulse-scale', '1.5');
-        document.documentElement.style.setProperty('--pulse-duration', '2.75');
-      } else {
-        document.documentElement.style.setProperty('--pulse-scale', '1.1');
-        document.documentElement.style.setProperty('--pulse-duration', '3.25');
-      }
-      // force animation switches to render for infinite animation
-      // randomSongButtonRef.current.style.animation = 'none';
-      // randomSongButtonRef.current.classList.remove('pulseTransition', 'infinite', 'growing', 'shrinking', 'hover');
-      // randomSongButtonRef.current.classList.add('infinite');
-      // void randomSongButtonRef.current.offsetWidth; // force reflow
-      console.log('infinite')
-    }
-    void randomSongButtonRef.current.offsetWidth; // force reflow
-    console.log('currentScale -> ' + currentScale.current);
-    console.log(randomSongButtonRef.current.classList);
-  }, [animation, currentScale, direction]);
-  // update scaling and the direction in which transition should go
-  const updateTransition = ((currScaling : number) => {
-    if (currScaling >= currentScale.current) {
-      setDirection('growing');
-    } else {
-      setDirection('shrinking');
-    }
-    // console.log(`current scale -> ${currScaling} past scale -> ${currentScale.current}`)
-    currentScale.current = currScaling;
-  });
+  //     document.documentElement.style.setProperty('--pulse-scale-transition', `${currentScale.current}`);
+  //     let calc = 0;
+  //     if (direction === 'growing') {
+  //       // randomSongButtonRef.current.classList.add('growing');
+  //       // since it's growing at least half of the animation is yet to be completed plus how much more to reach maxScaling
+  //       if (animation === 'enter') { // use hover speed
+  //         calc = (((scalingNums[1] - currentScale.current) / scalingNums[1]) * durations[1] + durations[1]) / 2.0; // ((maxScale - currScale) / maxScale) * hoverAnimationDuration + hoverAnimationDuration / 2.0
+  //         // have to change maxScale
+  //         document.documentElement.style.setProperty('--pulse-scale', '1.5');
+  //         document.documentElement.style.setProperty('--pulse-duration', '2.75');
+  //       } else { // use normal speed
+  //         calc = (((scalingNums[1] - currentScale.current) / scalingNums[1]) * durations[0] + durations[0]) / 2.0; // ((maxScale - currScale) / maxScale) * hoverAnimationDuration + hoverAnimationDuration / 2.0
+  //         document.documentElement.style.setProperty('--pulse-scale', '1.1');
+  //         document.documentElement.style.setProperty('--pulse-duration', '3.25');
+  //       }
+  //     } else if (direction === 'shrinking') {
+  //       // randomSongButtonRef.current.classList.add('shrinking');
+  //       // since it's shrinking we need to calculate how much more to reach minScaling
+  //       if (animation === 'enter') { // use hover speed
+  //         calc = ((currentScale.current - scalingNums[0]) / scalingNums[0]) * durations[1] / 2.0; // ((currScale - minScale) / minScale) * hoverAnimationDuration
+  //         document.documentElement.style.setProperty('--pulse-scale', '1.5');
+  //         document.documentElement.style.setProperty('--pulse-duration', '2.75');
+  //       } else { // use normal speed
+  //         calc = ((currentScale.current - scalingNums[0]) / scalingNums[0]) * durations[0] / 2.0; // ((currScale - minScale) / minScale) * hoverAnimationDuration
+  //         document.documentElement.style.setProperty('--pulse-scale', '1.1');
+  //         document.documentElement.style.setProperty('--pulse-duration', '3.25');
+  //       }
+  //     }
+  //     document.documentElement.style.setProperty('--pulse-transition-duration', `${calc}s`);
+  //     console.log('transition time -> ' + calc);
+  //   } else {
+  //     if (hover) {
+  //       document.documentElement.style.setProperty('--pulse-scale', '1.5');
+  //       document.documentElement.style.setProperty('--pulse-duration', '2.75');
+  //     } else {
+  //       document.documentElement.style.setProperty('--pulse-scale', '1.1');
+  //       document.documentElement.style.setProperty('--pulse-duration', '3.25');
+  //     }
+  //     // force animation switches to render for infinite animation
+  //     // randomSongButtonRef.current.style.animation = 'none';
+  //     // randomSongButtonRef.current.classList.remove('pulseTransition', 'infinite', 'growing', 'shrinking', 'hover');
+  //     // randomSongButtonRef.current.classList.add('infinite');
+  //     // void randomSongButtonRef.current.offsetWidth; // force reflow
+  //     console.log('infinite')
+  //   }
+  //   void randomSongButtonRef.current.offsetWidth; // force reflow
+  //   console.log('currentScale -> ' + currentScale.current);
+  //   console.log(randomSongButtonRef.current.classList);
+  // }, [animation, currentScale, direction]);
+  // // update scaling and the direction in which transition should go
+  // const updateTransition = ((currScaling : number) => {
+  //   if (currScaling >= currentScale.current) {
+  //     setDirection('growing');
+  //   } else {
+  //     setDirection('shrinking');
+  //   }
+  //   // console.log(`current scale -> ${currScaling} past scale -> ${currentScale.current}`)
+  //   currentScale.current = currScaling;
+  // });
 
-  // more accurate reading of scaling of element
-  const readLiveScale = (el: HTMLElement, f: (scale: number) => void) => {
-    requestAnimationFrame(() => {
-      const [scale] = getCurrentScale(el);
-      f(scale);
-    });
-  };
+  // // more accurate reading of scaling of element
+  // const readLiveScale = (el: HTMLElement, f: (scale: number) => void) => {
+  //   requestAnimationFrame(() => {
+  //     const [scale] = getCurrentScale(el);
+  //     f(scale);
+  //   });
+  // };
 
   // const randomSongButtonControls = useAnimation();
   // const beforeControls = useAnimation();

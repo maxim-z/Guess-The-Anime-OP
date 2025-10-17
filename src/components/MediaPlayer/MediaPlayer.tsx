@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import './MediaPlayer.css'
 import type { MediaPlayerProps } from '@types';
 import YouTube from 'react-youtube';
-import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
-import { easeOut, motion, useAnimation } from 'framer-motion';
+import { useIsMobile } from '@components/CustomUseHooks/useIsMobile';
+import { motion, useAnimation } from 'framer-motion';
 import SpinningRecord from '@components/Customs/SpinningRecord';
 import ElectronicDisplay from '@components/Customs/ElectronicDisplay';
 
@@ -27,34 +27,51 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
     const [isPlaying, setIsPlaying] = useState(false); // is video playing?
     const playerRef = useRef<any>(null); // a ref to the iframe player
     const [volume, setVolume] = useState(50); // 0 to 100
-    const [playButton, setPlayButton] = useState(false);
+    // const [playButton, setPlayButton] = useState(false);
     const isMobile = useIsMobile();
     const controlsVolume = useAnimation();
     
     const handleReady = (e: any) => {
-        playerRef.current = e.target;
-        // reset everything
-        playerRef.current.setVolume(volume);
-        setPlayButton(true); // wait for video to load before being able to play the song
-        setIsPlaying(false);
-        setCurrentTime(0);
+        console.log(e);
+        // playerRef.current = e.target;
+        // // reset everything
+        // playerRef.current.setVolume(volume);
+        // setPlayButton(true); // wait for video to load before being able to play the song
+        // setIsPlaying(false);
+        // setCurrentTime(0);
+
+        // // Get the actual iframe element
+        // const iframe = e.target.getIframe();
+        // console.log(iframe.textContent);
+
+        // // Make sure it exists before applying styles
+        // if (iframe) {
+        //     iframe.style.pointerEvents = 'none';
+        // }
+    };
+
+    const onVideoStateChange = (e: any) => {
+        const state = e.data;
+        console.log("Video State Change: ", state);
+        if (state === window.YT.PlayerState.PLAYING) {
+            setIsPlaying(true);
+        } else if (state === window.YT.PlayerState.CUED || state === window.YT.PlayerState.PAUSED) {
+            setIsPlaying(false);
+        }
     };
 
     const togglePlayPause = (e: React.MouseEvent | React.TouchEvent) => {
         // e.preventDefault();
-        if (playerRef.current) {
-            // if it's paused or ready to be played then play
-            if (playerRef.current.getPlayerState() === window.YT.PlayerState.CUED 
-                || playerRef.current.getPlayerState() === window.YT.PlayerState.PAUSED) {
-                console.log("clicked");
-                playerRef.current.playVideo();
-                setIsPlaying(true);
-            
-            // if it's playing then pause it
-            } else if (playerRef.current.getPlayerState() === window.YT.PlayerState.PLAYING) {
-                playerRef.current.pauseVideo();
-                setIsPlaying(false);
-            }
+        console.log(e);
+        if (!playerRef.current) return;
+        // if it's playing then pause it
+        if (isPlaying) {
+            playerRef.current.pauseVideo();
+            console.log('pause');
+        // if it's paused or ready to be played then play
+        } else {
+            playerRef.current.playVideo();
+            console.log('play');
         }
     };
 
@@ -181,6 +198,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                             modestbranding: 1,
                             rel: 0,
                             enablejsapi: 1,
+                            playsinline: 1,
                         },
                     }}
                 />
@@ -191,8 +209,26 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
             <div className="MediaContainer w-full h-[200px] md:h-[270px] flex items-center justify-center">
                 <div className='w-0 h-0'/>
                     <YouTube
+                        // className='pointer-events-none'
                         videoId={videoId}
-                        onReady={handleReady}
+                        onReady={(event) => {
+                            playerRef.current = event.target;
+                            // reset everything
+                            event.target.setVolume(volume);
+                            // setPlayButton(true); // wait for video to load before being able to play the song
+                            setIsPlaying(false);
+                            setCurrentTime(0);
+                    
+                            // Get the actual iframe element
+                            const iframe = event.target.getIframe();
+                            console.log(iframe.textContent);
+                    
+                            // Make sure it exists before applying styles
+                            if (iframe) {
+                                // iframe.style.pointerEvents = 'none';
+                            }
+                        }}
+                        onStateChange={onVideoStateChange}
                         opts={{
                             width: '0',
                             height: '0',
@@ -202,6 +238,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                                 modestbranding: 1,
                                 rel: 0,
                                 enablejsapi: 1,
+                                playsinline: 1,
                             },
                         }} />
                 
@@ -346,7 +383,7 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                                 // onTouchEnd={togglePlayPause}
                                 // onPointerUp={togglePlayPause}
                                 style={{ touchAction: 'manipulation' }}
-                                disabled={!playButton}
+                                // disabled={!playButton} 
                             />
                             <button 
                                 className='ForwardButton flex flex-row absolute w-[60px] h-full top-[10px] right-[10px]
@@ -358,6 +395,29 @@ function MediaPlayer({ hintsRevealed, videoId, showVideo, songTitle, songArtist 
                             </button>
                         </div>
         
+                        <div className='flex relative w-[500px] h-10 top-35 gap-4'>
+                            <button
+                                className='select-none touch-manipulation bg-slate-500 hover:bg-red-400 active:bg-red-400 z-10' 
+                                onClick={togglePlayPause}
+                                style={{ touchAction: 'manipulation' }}>
+                                OnClick
+                            </button>
+                            <button
+                                className='select-none touch-manipulation bg-slate-500 hover:bg-red-400 active:bg-red-400 z-10' 
+                                onClick={togglePlayPause}>
+                                OnTouchEnd
+                            </button>
+                            <button
+                                className={`select-none touch-manipulation bg-slate-500 hover:bg-red-400 active:bg-red-400 z-10`}
+                                onPointerUp={togglePlayPause}
+                                style={{
+                                    touchAction: 'manipulation',
+                                    WebkitTapHighlightColor: 'transparent',
+                                    zIndex: 20,
+                                }}
+                            >OnPointerUp</button>
+                        </div>
+
                     </div>  
                 </div>
             </div>

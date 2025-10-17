@@ -31,6 +31,7 @@ body {
   --secondary-color: #E0D0EA;
   --tertiary-color: #F7C8D2;
   --quad-color: #364832;
+  --app-bg-color: #16304e;
 
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -56,6 +57,7 @@ body {
   justify-content: center;
   align-items: center;
   /* overflow: hidden; */
+  background: var(--app-bg-color);
 }
 
 .Opening {

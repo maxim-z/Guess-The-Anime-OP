@@ -199,3 +199,12 @@ def get_song(id: int, filter: str):
 @app.get("/song")
 def read_song(id: int, filter: str):
     return get_song(id, filter)
+
+# page = 1-200 as there are 5 songs on each page
+@app.get("/page")
+def read_page(pageNum: int, filter: str):
+    res = []
+    for x in range(5):
+        song_id = (pageNum-1)*5 + x + 1
+        res.append(get_song(song_id, filter))
+    return res

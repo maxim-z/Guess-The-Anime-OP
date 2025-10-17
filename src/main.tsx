@@ -7,6 +7,13 @@ import { ModeProvider } from '@components/ContextProviders/ModeContext.tsx'
 import { FilterProvider } from '@components/ContextProviders/FilterContext.tsx'
 import { GuessStatesProvider } from '@components/ContextProviders/GuessStatesContext.tsx'
 
+// Debugging on mobile
+import eruda from 'eruda';
+
+if (import.meta.env.DEV) {
+  eruda.init();
+}
+
 // Mode
 //  Filter
 //    GuessStates

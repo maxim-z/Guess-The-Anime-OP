@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './StarShapes.css'
-import { useIsMobile } from '@components/CustomUseHooks/UseIsMobile';
+import { useIsMobile } from '@components/CustomUseHooks/useIsMobile';
 
 function StarShapes() {
   const [numStars, setStars] = useState(30);

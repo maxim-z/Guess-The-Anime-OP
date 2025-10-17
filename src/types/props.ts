@@ -42,3 +42,19 @@ export type ElectronicDisplayProps = {
 export type SpinningRecordProps = {
     angles: number[];
 }
+
+export type DropDownProps = {
+    options: [];
+}
+
+export type MovingTextProps = {
+    text: string; // the text being animated
+    moveDirection: number; // 1 = left->right, 2 = right->left, 3 = top->bottom, 4 = bottom->top
+    width: number; // width of the box that it's position will be randomized within
+    height: number; // height of the box
+}
+
+export type MovingTextContainerProps = {
+    width: number;
+    height: number;
+}
